@@ -126,6 +126,19 @@ OpenOCD can program the flash program memory from a binary file.
 %% \end{minted}
 
 \section{Errors}
-\label{errors}
+\label{openocd_errors}
 
-See \wikiref{OpenOCD_errors}{OpenOCD errors}.
+\verb+Error: libusb_open() failed with LIBUSB_ERROR_ACCESS+ On Linux
+you need to give permissions to access the USB.  You can do this by
+finding the file \file{99-openocd.rules} that comes with the OpenOCD
+distribution and then:
+%
+\begin{minted}{bash}
+  $ sudo cp 99-openocd.rules /etc/udev/udev.rules
+  $ sudo udevadm control --reload
+\end{minted}
+%
+Finally, you need to reconnect the ST-link device.
+
+
+See also \wikiref{OpenOCD_errors}{OpenOCD errors}.
