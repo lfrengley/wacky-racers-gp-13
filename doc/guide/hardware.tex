@@ -33,7 +33,7 @@ The system requirements are specified in the assignment instructions.
   trigger an oscilloscope for debugging.
 
 \item
-  Have the SAM4S erase pin connected to a test point close to a 3.3\,V
+  Have the SAM4S \pin{ERASE} pin connected to a test point close to a 3.3\,V
   testpoint. This is useful to completely erase the SAM4S flash memory
   when nothing works.
 
@@ -99,7 +99,7 @@ voltage regulator.
 \textbf{Many of the peripheral pins are dedicated and cannot be
   reassigned in software}, e.g., SPI, TWI, and USB pins. Note, there
 are restrictions on the PWM pins.  See Table~11-2 in the SAM4S
-datasheet for the pin assignments.  Also see \hyperref[PIO pins] {PIO
+datasheet for the pin assignments.  Also see \hyperref[PIO pins]{PIO
   pins} for electrical characteristics.
 
 By default the \pin{PB4} and \pin{PB5} pins are configured for the
@@ -244,13 +244,16 @@ jumping in software to make it work. Documentation is available at
 \url{https://invensense.tdk.com/products/motion-tracking/9-axis/mpu-9250/}.
 
 It has two different I2C addresses (0x68 and Ox69) depending on the
-state of the AD0 pin.
+state of the \pin{AD0} pin.
 
 
 \subsection{Buck converter}\label{buck-converter}
 
-The buck converter is a switch-mode regulator that converts the
-battery voltages to 5\,V DC.
+The ADP2302ARDZ-5.0 buck converter is a switch-mode regulator that
+converts the battery voltages to 5\,V DC.  It seems to operate with a
+battery voltage as low as 5.4\,V.  This part has a fixed voltage
+output and so a voltage divider is not required in the feedback
+circuit.
 
 
 \subsection{Voltage regulators}\label{voltage-regulators}
@@ -265,6 +268,17 @@ tens of milliseconds depending on the capacitive load and current draw.
 
 Note, some regulators have pins that you must not connect. Some have
 multiple pins for the same purpose; these must all be connected.
+
+
+\subsection{Level-shifter}\label{level-shifter}
+
+A level-shifter is required to convert the 3.3\,V signal levels from
+the SAM4S to 5\,V for the \hyperref[LED-tape]{LED tape}.  This can be
+achieved with a MOSFET and pullup resistor or with a dedicated
+level-shifter chip.  Note, the SN74LVC1T45 level-shifter part in the
+ENCE461 Altium library is bidirectional; you need to configure the
+\pin{DIR} pin appropriately.
+
 
 
 \section{External components}
@@ -283,6 +297,7 @@ orientations. The 461 Altium library has a component named
 `Battery\_HEADER\_3pin' that is suitable to use.
 
 \subsection{LED Tape}
+\label{LED-tape}
 
 The LED tape is a daisy-chained string of WS2812 smart LEDs.  These
 LEDs use a clever mechanism to pass the RGB data down the
