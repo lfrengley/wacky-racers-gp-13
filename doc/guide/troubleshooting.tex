@@ -443,17 +443,30 @@ the the state of the AD0 pin (see datasheet).
   \hyperref[disabling-jtag-pins]{disabling JTAG pins}.
 \end{enumerate}
 
+The oscilloscopes in the ESL can be configured to trigger on I2C%
+\footnote{They also support other serial protocols including SPI and
+UART.} frames and automatically decode and display the contents of
+each frame. Press the `Protocol' button on the scope then use the
+touch screen to change the protocol to I2C. You will require a probe
+each for the data and clock signals: touch the `Trigger' button in the
+protocol menu to configure which channel corresponds to which signal.
+See \reffig{i2c-ack} and \reffig{i2c-noack} for examples.
+
 \begin{figure}[!h]
   \centering
-  \mtodo{Add scope picture of I2C signals}
-  \caption{I2c signals with acknowledgement.}
+  \includegraphics[width=\linewidth]{figs/i2c-ack.png}
+  \caption{I2C signals with acknowledgement; the green trace is
+  \code{TWD/SDA} and the yellow trace is \code{TWCK/SCL}.}
+  \label{fig:i2c-ack}
 \end{figure}
 
 
 \begin{figure}[!h]
   \centering
-  \mtodo{Add scope picture of I2C signals with no acknowledge}
-  \caption{I2c signals with no acknowledgement.}
+  \includegraphics[width=\linewidth]{figs/i2c-noack.png}
+  \caption{I2C signals with no acknowledgement; the green trace is
+  \code{TWD/SDA} and the yellow trace is \code{TWCK/SCL}.}
+  \label{fig:i2c-noack}
 \end{figure}
 
 
