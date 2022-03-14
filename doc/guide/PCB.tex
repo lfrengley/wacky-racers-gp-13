@@ -78,21 +78,27 @@ Learn page.
 
 \begin{enumerate}
 
-\item First, route high-speed (above 50\,kHz) signal traces on the top
-  layer (to form a microstrip with the ground plane).
+\item First, route high-speed (above 50\,kHz, e.g., USB, SPI, I2C)
+  signal traces on the top layer (to form a microstrip with the ground
+  plane).  These traces can be thin\footnote{The trace width affects
+    the characteristic impedance of the microstrip but this is not an
+    issue for the small boards used for the assignment}.
 
-\item Keep the high-speed traces well away from other traces to reduce
+\item Keep a high-speed trace well away from any other trace to reduce
   crosstalk (see the 3-W rule).
 
 \item Avoid high-speed signal traces jumping layers.  If you do, use
   vias close to the ends of traces and run the traces on the bottom
-  layer (to form a microstrip with the power plane).  Do not route
-  traces on the bottom layer over gaps in the power plane (this breaks
-  the microstrip).
+  layer (to form a microstrip with the power plane).  Be careful not
+  to route traces on the bottom layer over gaps in the power plane
+  (this breaks the microstrip).
 
 \item Route low-level analogue signals well away from the high-speed
   traces, preferably on the bottom layer (where they are shielded from
   the high-speed traces).
+
+\item Use thick short traces for high current signals (e.g., motor) to
+  reduce resistance.
 
 \item Finally, route the low-speed signal traces (for LEDs and buttons
   etc.)  These can jump layers to go around the high-speed traces.
