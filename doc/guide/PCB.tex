@@ -5,6 +5,20 @@ will avoid many hours of testing and rework grief!  I annotate a
 printed schematic with a highlighter to ensure I have considered
 everything.
 
+Laying out a PCB is a topological puzzle.  Note only do you need to
+connect all the components, you need to consider:
+%
+\begin{enumerate}
+\item Signal integrity
+
+\item Manufacturability
+
+\item Testability
+
+\item Thermal issues
+\end{enumerate}
+
+
 
 \section{Altium tutorial}
 
@@ -44,6 +58,8 @@ Learn page.
 
 \item Use planes for power distribution.
 
+\item Use separate vias for every power and ground connection.
+
 \item If cannot use power plane for power connection, make trace as
   wide\footnote{To reduce inductance and resistance.} as possible.
 
@@ -62,20 +78,28 @@ Learn page.
 
 \begin{enumerate}
 
-\item
-  Use microstrips for any signal above 50\,kHz.
+\item First, route high-speed (above 50\,kHz) signal traces on the top
+  layer (to form a microstrip with the ground plane).
 
-\item
-  Keep signal traces apart to reduce crosstalk (3-W rule).
+\item Keep the high-speed traces well away from other traces to reduce
+  crosstalk (see the 3-W rule).
 
-\item
-  Avoid signal traces jumping layers (especially for signals above
-  50\,kHz).  If you do, use vias close to ends of traces.
+\item Avoid high-speed signal traces jumping layers.  If you do, use
+  vias close to the ends of traces and run the traces on the bottom
+  layer (to form a microstrip with the power plane).  Do not route
+  traces on the bottom layer over gaps in the power plane (this breaks
+  the microstrip).
 
-\item
-  Use tented\footnote{These have a layer of insulating solder resist.}
-  vias under components with metal pads.
+\item Route low-level analogue signals well away from the high-speed
+  traces, preferably on the bottom layer (where they are shielded from
+  the high-speed traces).
 
+\item Finally, route the low-speed signal traces (for LEDs and buttons
+  etc.)  These can jump layers to go around the high-speed traces.
+
+\item If you use a via underneath a component with a metal heatsink
+  pad, ensure it is tented\footnote{These have a layer of insulating
+    solder resist.}.
 \end{enumerate}
 
 
@@ -91,7 +115,7 @@ chip manufacturer usually provides a recommended layout.
 \item Check your schematic.  Then get someone else to check your
   schematic.  Query every component.
 
-\item Perform a DRC (Design Rule Check)].
+\item Perform a DRC (Design Rule Check)] using Altium.
 
 \item Add PCB test points, test points, and more test points.  You
   will need one for every signal and power supply.  \textbf{You have
@@ -124,7 +148,8 @@ chip manufacturer usually provides a recommended layout.
 \item Do not connect IC pins directly between the pads since it is not
   possible to tell if a solder blob is accidental or deliberate.
 
-\item Insert vias to ground plane to ensure that all parts are connected.  Do not leave unconnected copper.
+\item Insert vias to ground plane to ensure that all parts are
+  connected.  Do not leave unconnected copper.
 
 \item If not using plated through vias do not place vias under
   components.
