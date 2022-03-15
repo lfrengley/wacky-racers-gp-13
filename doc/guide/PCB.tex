@@ -54,6 +54,9 @@ Learn page.
 
 \section{Power supplies}
 
+The goal of routing power supplies is to reduce impedance (both
+resistive and inductive).
+
 \begin{enumerate}
 
 \item Use planes for power distribution.
@@ -76,36 +79,56 @@ Learn page.
 
 \section{Signal traces}
 
+The goal of routing signal traces is to reduce crosstalk to improve
+signal integrity.
+
+% https://resources.altium.com/p/differential-pair-impedance-using-calculator-design-your-pcb
+
+% https://resources.altium.com/p/differential-microstrip-impedance-calculator
+
 \begin{enumerate}
 
-\item First, route high-speed (above 50\,kHz, e.g., USB, SPI, I2C)
-  signal traces on the top layer (to form a microstrip with the ground
-  plane).  These traces can be thin\footnote{The trace width affects
-    the characteristic impedance of the microstrip but this is not an
-    issue for the small boards used for the assignment}.
+\item First, route differential signal traces as a pair (e.g., USB) on
+  top layer (to form microstrips with the ground
+  plane)\footnote{Ideally, the differential characteristic impedance
+    should be 90 ohms.  This depends on the trace width, trace
+    separation, trace thickness, and height of the traces above the
+    ground plane.  If you are keen see \url{
+ https://resources.altium.com/p/differential-microstrip-impedance-calculator}.}.
+
+\item Route high-speed (above 50\,kHz, e.g., SPI, I2C) signal traces
+  on the top layer (to form a microstrip with the ground plane).
+  These traces can be thin\footnote{The trace width affects the
+    characteristic impedance of the microstrip but this is not an
+    issue for the small boards used for the assignment.}, say
+  0.3\,mm\footnote{The manufacturer can produce 0.15\,mm traces but
+    the Altium design rules for this assignment set a minimum width of
+    0.2\,mm to be safe.}.
 
 \item Keep a high-speed trace well away from any other trace to reduce
   crosstalk (see the 3-W rule).
 
-\item Avoid high-speed signal traces jumping layers.  If you do, use
-  vias close to the ends of traces and run the traces on the bottom
-  layer (to form a microstrip with the power plane).  Be careful not
-  to route traces on the bottom layer over gaps in the power plane
-  (this breaks the microstrip).
+\item Avoid high-speed signal traces jumping layers\footnote{This
+  makes the return current take a tortuous path, increasing
+  crosstalk.}.  If you have to, use vias close to the ends of traces
+  and run the traces on the bottom layer (to form a microstrip with
+  the power plane).  Be careful not to route traces on the bottom
+  layer over gaps in the power plane (this breaks the microstrip and
+  thus increases crosstalk).
 
 \item Route low-level analogue signals well away from the high-speed
   traces, preferably on the bottom layer (where they are shielded from
   the high-speed traces).
 
-\item Use thick short traces for high current signals (e.g., motor) to
-  reduce resistance.
+\item Use thick, short traces for high current signals (e.g., motor)
+  to reduce resistance.
 
 \item Finally, route the low-speed signal traces (for LEDs and buttons
-  etc.)  These can jump layers to go around the high-speed traces.
+  etc.).  These can jump layers to go around the high-speed traces.
 
 \item If you use a via underneath a component with a metal heatsink
-  pad, ensure it is tented\footnote{These have a layer of insulating
-    solder resist.}.
+  pad, ensure it is tented (these have a layer of insulating solder
+  resist).
 \end{enumerate}
 
 
