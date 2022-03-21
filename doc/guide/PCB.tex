@@ -131,6 +131,11 @@ signal integrity.
   resist).
 \end{enumerate}
 
+In the past it was undesirable to have acute angles ($<90^{\circ}$) in
+traces due prevent the formation of acid traps.  However, it seems
+that modern PCB etching does not have this
+problem\footnote{\url{https://resources.pcb.cadence.com/blog/are-acid-traps-still-a-problem-for-pcbs-in-2019-2}}.
+
 
 \section{Recommended layouts}
 
@@ -279,6 +284,9 @@ end up joined.
 
 \subsection{PCB assembly violations}
 
+If you want to make thousands of boards, then you want to avoid these
+violations.  For a one-off board, they do not matter since you can fix
+the faults they may cause with a soldering iron.
 
 \subsubsection{SMD neck-down constraint}
 
@@ -297,7 +305,8 @@ pad).
 \subsubsection{Silk to solder mask}
 
 Here Altium thinks the silk screen is being printed over a pad; most
-manufacturers detect this and delete the offending text.
+manufacturers detect this and delete the offending text.  The downside
+is that it might make it hard for you to find a component by name.
 
 
 \subsubsection{Minimum solder mask sliver constraint}
@@ -310,7 +319,18 @@ is not a concern since the solder blob can be easily removed with a
 small soldering iron.
 
 
+\subsubsection{SMD pad to corner}
+
+This is warning about potential acid traps.  You can ignore
+it\footnote{\url{https://resources.pcb.cadence.com/blog/are-acid-traps-still-a-problem-for-pcbs-in-2019-2}}.
+
+
 \subsection{Signal integrity violations}
+
+These are not showstoppers but are important if you want to sell a
+product that meets EMC
+regulations\footnote{\url{https://learnemc.com/emc-regulations-and-standards}}.
+
 
 \subsubsection{SMD pad to plane constraint}
 
