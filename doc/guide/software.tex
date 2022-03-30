@@ -127,6 +127,50 @@ $ brew install openocd git
 $ brew cask install gcc-arm-embedded
 \end{minted}
 
+\subsection{Toolchain for Windows}
+
+A disclaimer: setting up the toolchain on your personal Windows machine can be a
+little tricky, so we recommend using Linux (either via
+\href{https://docs.microsoft.com/en-us/windows/wsl/install}{Windows Subsystem
+for Linux} or installing a virtual machine) or using Windows on the ESL
+machines.
+
+Download the latest ARM toolchain (the file ending in
+\code{*-mingw-w64-i686-arm-none-eabi.exe}) from the site provided above and
+run the installer. When the installer completes, make sure the box labelled
+`Add path to environment variable' is checked before closing.
+
+Install MSYS2 by following the instructions at \url{https://www.msys2.org/}
+(make sure you update package database as described). Then open `MSYS MSYS2'
+from the Start menu and run
+\begin{minted}{bash}
+    pacman -S make mingw-w64-x86_64-openocd
+\end{minted}
+to install OpenOCD and make. Close the MSYS window.
+
+Finally, you need to add the MSYS binaries to your systems path, type `path'
+into the Start menu and open the option that says `Edit the system environment
+variables'. Click on the `Environment Variables\ldots' button; then in the
+bottom `System variables' box, double-click on the `Path' variable. Add the
+following two paths at the bottom:
+\begin{minted}{text}
+    C:\msys64\usr\bin
+    C:\msys64\mingw64\bin
+\end{minted}
+Click `Ok' to exit out of all the Control Panel menus.
+
+Open a command prompt and test that you can run the following commands:
+\begin{minted}{bash}
+    arm-none-eabi-gcc --version
+    arm-none-eabi-gdb --version
+    openocd --version
+    make --version
+\end{minted}
+If you get a missing \code{python27.dll} error when running GDB, you need to
+download and install the \emph{32-bit} version of
+\href{https://www.python.org/downloads/release/python-2718/}{Python 2.7}.
+
+See Section~\ref{esl-windows} for tips on using the command prompt.
 
 \section{IDE}
 
@@ -168,7 +212,7 @@ VS Code should automatically prompt you to install these when you open
   the wacky-racers directory.
 
 
-\section{Using Windows in the ESL}
+\section{Using Windows in the ESL} \label{esl-windows}
 
 On the Windows machines in the ESL, the toolchain is located at
 \file{C:\textbackslash{}ence461\textbackslash{}tool-chain}. This needs to be
