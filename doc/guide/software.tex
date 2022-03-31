@@ -260,7 +260,9 @@ Also you cannot set an environment variable when you run a command, so
 separate commands instead.
 \item To run GDB, you must invoke the complete command name
 \code{arm-none-eabi-gdb}.
-\item In path names, \file{/} is replaced by \file{\textbackslash} (backslash).
+\item In path names, \file{/} is replaced by \file{\textbackslash}
+(backslash). In \file{.c}, \file{.h}, and makefiles, however, you should use
+still use \file{/}.
 \end{itemize}
 
 If you are using Windows on the ESL machines and want to use VS Code, you can
