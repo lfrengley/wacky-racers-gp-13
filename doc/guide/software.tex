@@ -129,9 +129,36 @@ $ brew cask install gcc-arm-embedded
 
 \subsection{Toolchain for Windows}
 
-A disclaimer: setting up the toolchain on your personal Windows machine can be a
-little tricky, so we recommend using Linux (using a virtual machine or
-dual-booting) or using Windows on the ESL machines.
+A disclaimer: getting the toolchain to work on your personal Windows machine
+can be a little tricky, so we recommend using Linux (using a virtual machine
+or dual-booting) or using Windows on the ESL machines. The TAs may have
+limited ability to help you debug toolchain issues on your own Windows
+machine.
+
+There are two ways to use the toolchain on Windows without a virtual machine:
+\begin{enumerate}
+  \item Copy the toolchain from the ESL machines (recommended)
+  \item Manually install the toolchain
+\end{enumerate}
+
+Because this guide is written with Linux in mind, some commands may be
+different on Windows. See Section~\ref{esl-windows} for tips on translating
+the commands.
+
+\subsubsection{Copying the ESL toolchain}
+
+The fastest way to get the toolchain is to just copy the
+\file{C:\textbackslash{}ence461} directory from one of the ESL machines onto
+yours using a USB flash drive, for example. Then you can setup the toolchain
+environment by running
+\file{C:\textbackslash{}ence461\textbackslash{}ence461-path} as described in
+Section~\ref{esl-windows}.
+
+You will also need to install the
+\href{https://www.st.com/en/development-tools/stsw-link009.html}{ST-Link/V2
+driver}.
+
+\subsubsection{Manual installation}
 
 Download the latest ARM toolchain (the file ending in
 \code{*-mingw-w64-i686-arm-none-eabi.exe}) from the site provided above and
@@ -168,15 +195,14 @@ If you get a missing \code{python27.dll} error when running GDB, you need to
 download and install the \emph{32-bit} version of
 \href{https://www.python.org/downloads/release/python-2718/}{Python 2.7}.
 
-See Section~\ref{esl-windows} for tips on using the command prompt.
+Finally, install the ST-Link driver as described previously.
 
 \section{IDE}
 
-I am content with using the command-line and emacs as a text editor
-but I guess that you are not.  If you are familiar with geany I
-suggest that you use that.  If you want bells and whistles, I suggest
-using Visual Studio Code.  While it is written by Microsoft, it is
-free and runs on Windows, Linux and macOS.
+I am content with using the command-line and emacs as a text editor but I
+guess that you are not.  If you want bells and whistles, I suggest using
+Visual Studio Code, which is installed on the ESL machines.  While it is
+written by Microsoft, it is free and runs on Windows, Linux and macOS.
 
 
 \subsection{Visual Studio Code}
@@ -213,9 +239,9 @@ VS Code should automatically prompt you to install these when you open
 \section{Using Windows in the ESL} \label{esl-windows}
 
 On the Windows machines in the ESL, the toolchain is located at
-\file{C:\textbackslash{}ence461\textbackslash{}tool-chain}. This needs to be
-added to your session's \code{PATH} variable so toolchain commands can be run
-without needing to specify their full path. See
+\file{C:\textbackslash{}ence461}. This needs to be added to your session's
+\code{PATH} variable so toolchain commands can be run without needing to
+specify their full path. See
 \wikiref{ARM-GCC_in_the_DSL}{ARM-GCC in the DSL} on ECEWiki for more
 information.
 
@@ -234,7 +260,9 @@ Also you cannot set an environment variable when you run a command, so
 separate commands instead.
 \item To run GDB, you must invoke the complete command name
 \code{arm-none-eabi-gdb}.
-\item In path names, \file{/} is replaced by \file{\textbackslash} (backslash).
+\item In path names, \file{/} is replaced by \file{\textbackslash}
+(backslash). In \file{.c}, \file{.h}, and makefiles, however, you should use
+still use \file{/}.
 \end{itemize}
 
 If you are using Windows on the ESL machines and want to use VS Code, you can
