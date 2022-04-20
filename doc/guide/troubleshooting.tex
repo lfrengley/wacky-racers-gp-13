@@ -1,10 +1,11 @@
 \chapter{Troubleshooting}
 \label{troubleshooting}
 
-Troubleshooting can be frustrating when you are tired. You need plenty
-of gumption and an open mind. Difficult problems are usually a
-combination of two or more problems. So \textbf{do not attempt if you
-  are tired or in a hurry}.
+You learn the most through troubleshooting.  However, troubleshooting
+can be frustrating when you are tired. You need plenty of gumption and
+an open mind. Difficult problems are usually a combination of two or
+more problems. So \textbf{do not attempt if you are tired or in a
+  hurry}.
 
 Before you start, you need an A3 printed schmematic, annotated with
 any changes your group may have made.
@@ -275,7 +276,8 @@ The SAM4s has multiple clock sources:
 \item
   Internal slow RC oscillator (this can be selected to save power).
 \item
-  Main oscillator using external crystal.
+  Main oscillator using external crystal (this is selected when you
+  run a program).
 \end{enumerate}
 
 The SAM4S uses a phase-locked-loop (PLL) to multiply the frequency of
@@ -285,6 +287,21 @@ without a clock source and thus will generate an unexpected frequency.
 The clock frequency can be checked by connecting a scope to a
 peripheral pin that generates a clock, e.g., PWM, SCK, TXD, and
 programming the peripheral.
+
+
+\section{LED testing}
+\label{debugging-LED}
+
+The most common reason why an LED does not work is that you have
+incorrectly specified its PIO pin in the \file{target.h} file (see
+\protect\hyperref[configuration]{configuration}).
+
+An LED should faintly glow before the SAM4S is first programmed.  This
+is due to the internal pullup resistors on each PIO pin.  If the LED
+does not glow, check its orientation.
+
+If the LED still does not work, use an oscilloscope to check that the
+PIO pin is correctly driven.
 
 
 \section{USB serial}

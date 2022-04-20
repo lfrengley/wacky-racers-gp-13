@@ -115,9 +115,10 @@ and \code{LED2_PIO} need to be defined in \file{target.h} (see
 
 \inputminted{C}{../../src/test-apps/ledflash1/ledflash1.c}
 
-The LED should flash at 2\,Hz.  If it does not, try the
-\hyperref[pwm-test]{PWM test} program and check the frequency with an
-oscilloscope.
+If the LED does not flash see \hyperref[debugging-LED]{debugging LED}.
+If the LED does not flash at 2\,Hz, try the \hyperref[pwm-test]{PWM
+  test} program and check the frequency with an oscilloscope.  If the
+frequency is not 100\,kHz, the chief culprit is the PLL in the SAM4S.
 
 
 \section{Configuration}
