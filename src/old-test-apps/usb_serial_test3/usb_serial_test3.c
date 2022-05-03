@@ -30,21 +30,21 @@ process_command (void)
 {
     char buffer[80];
     char *str;
-    
+
     str = usb_serial_gets (usb_serial, buffer, sizeof (buffer));
     if (! str)
         return;
 
     // usb_serial (usb_serial, "<<<%s>>>\n", str);
-    
+
     switch (str[0])
     {
     case '0':
-        pio_output_set (LED1_PIO, 0);
+        pio_output_set (LED_ERROR_PIO, 0);
         break;
-        
+
     case '1':
-        pio_output_set (LED1_PIO, 1);
+        pio_output_set (LED_ERROR_PIO, 1);
         break;
 
     case 'h':
@@ -65,8 +65,8 @@ int main (void)
     int flash_ticks = 0;
     int i;
 
-    pio_config_set (LED1_PIO, PIO_OUTPUT_LOW);                
-    pio_config_set (LED2_PIO, PIO_OUTPUT_LOW);                
+    pio_config_set (LED_ERROR_PIO, PIO_OUTPUT_LOW);
+    pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
 
     // Create non-blocking tty device for USB CDC connection.
     usb_serial = usb_serial_init (&usb_serial_cfg, "");
@@ -78,7 +78,7 @@ int main (void)
     }
 
     prompt_command ();
-    
+
     pacer_init (PACER_RATE);
 
     while (1)
@@ -90,7 +90,7 @@ int main (void)
 	{
 	    flash_ticks = 0;
 
-	    pio_output_toggle (LED2_PIO);
+	    pio_output_toggle (LED_STATUS_PIO);
 
             process_command ();
 	}
