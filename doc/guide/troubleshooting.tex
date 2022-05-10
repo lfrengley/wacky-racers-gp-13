@@ -164,7 +164,7 @@ If a program has not been loaded:
   Check soldering of the SAM4S pins under a microscope. Giving
   each pin a push with a sharp spike can reveal a poorly soldered joint.
 \item
-  Check 3.3\,V and 1.2\,V power rails.
+  Check 3.3\,V and 1.2\,V power rails; none of them are optional.
 \item
   Check the serial wire debug (SWD) signals, see
   \protect\hyperref[debugging]{debugging serial wire debug (SWD)}.
@@ -181,7 +181,7 @@ If a program has been loaded:
 \item Re-enable \hyperref[booting-from-flash-memory]{booting from flash
   memory}.
 
-\item  Reprogram the SAM4S with an LED flash program.
+\item  Reprogram the SAM4S with a LED flash program.
 \end{enumerate}
 
 
@@ -296,9 +296,9 @@ The most common reason why an LED does not work is that you have
 incorrectly specified its PIO pin in the \file{target.h} file (see
 \protect\hyperref[configuration]{configuration}).
 
-An LED should faintly glow before the SAM4S is first programmed.  This
-is due to the internal pullup resistors on each PIO pin.  If the LED
-does not glow, check its orientation.
+An active-high LED should faintly glow before the SAM4S is first
+programmed.  This is due to the internal pullup resistors on each PIO
+pin.  If the LED does not glow, check its orientation.
 
 If the LED still does not work, use an oscilloscope to check that the
 PIO pin is correctly driven.
@@ -308,11 +308,29 @@ PIO pin is correctly driven.
 \label{debugging-usb}
 
 USB is a complicated protocol and there are many possibilities why it
-does not work.
+does not work.  First check your hardware by
+\hyperref[erasing-flash-memory]{erasing flash memory} and connecting
+the USB to a PC.  If a new USB device is detected, your hardware is
+correct\footnote{You may have a poorly soldered connection that gives
+  intermittent operation.}.  Note, you will then need to re-enable
+\hyperref[booting-from-flash-memory]{booting from flash} before
+loading your program.
 
-  \begin{itemize}
+If the hardware does not work:
+%
+\begin{itemize}
+  \item Check that the USB cable is not power-only, say by using a
+    known good cable.
+
   \item
     Check that the termination resistors are 27\,ohms.
+
+  \item Check the USB connector pins and the SAM4S USB pins under a
+    microscrope.  If they move if you push them with a sharp-pointy
+    thing, resolder.
+
+  \item
+    Check that the USB signals are not transposed.
 
   \item Check the SAM4S is running at the correct frequency of
     96\,MHz\footnote{The SAM4S has two PLLs so it is possible to clock
@@ -321,17 +339,20 @@ does not work.
     enabled unless a program has been loaded and running. If a 12\,MHz
     signal is not found, check the MCU solder connections under a
     microscope. Also check that the VDDPLL pin has 3.3\,V.
-  \end{itemize}
 
-  If the USB serial connection drops characters:
+  \item Try an unmodified test program in case you have introduced a
+    coding error.
+\end{itemize}
+
+If the USB serial connection drops characters:
   %
  \begin{itemize}
- \item Add a delay before sending data.  This is because the driver
-   takes a while to set up the connection after the USB cable is
-   plugged in.  If you try to send some data during this time, the
-   data gets stored into a ring buffer for later transmission.
-   However, the ring buffer is not large and once it is filled, the
-   USB serial driver will drop characters.
+ \item Add a delay before sending data, e.g., \code{delay_ms (100);}.
+   This is because the driver takes a while to set up the connection
+   after the USB cable is plugged in.  If you try to send some data
+   during this time, the data gets stored into a ring buffer for later
+   transmission.  However, the ring buffer is not large and once it is
+   filled, the USB serial driver will drop characters.
  \end{itemize}
 
 
