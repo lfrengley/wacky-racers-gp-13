@@ -4,9 +4,11 @@
 The Open On-Chip Debugger (OpenOCD) is an open-source on-chip
 debugging, in-system programming, and boundary-scan testing tool. It
 is able to communicate with various ARM and MIPS microprocessors via
-\wikiref{JTAG}{JTAG} or \wikiref{SWD}{SWD}. It works with a number of different
-\wikiref{JTAG}{JTAG} or \wikiref{SWD}{SWD} interfaces/programmers. User
-interaction can be achieved via telnet or the GNU debugger (GDB).
+\wikiref{JTAG}{JTAG} or \wikiref{SWD}{SWD}. It works with a number of
+different \wikiref{JTAG}{JTAG} or \wikiref{SWD}{SWD}
+interfaces/programmers. User interaction can be achieved via
+\file{telnet/putty} or the GNU debugger (GDB).
+
 
 \section{Configuration files}
 \label{configuration-files}
@@ -15,26 +17,33 @@ OpenOCD needs a \wikiref{OpenOCD_configuration}{configuration file} to
 specify the interface (USB or parallel port) and the target system.
 Unfortunately, these change with every new release of OpenOCD.
 
+
 \section{Running OpenOCD}
 \label{running-openocd}
 
-OpenOCD runs as a daemon program in the background and can be controlled
-from other programs using TCP/IP sockets. This means that you can
-remotely debug from another computer. The socket ports it uses are
-specified in the \wikiref{OpenOCD_configuration}{OpenOCD configuration}
-file supplied when it starts. By default, OpenOCD uses port 3333 for
-\wikiref{GDB}{GDB} and port 4444 for general interaction using Telnet.
+OpenOCD runs as a daemon program in the background and can be
+controlled from other programs using TCP/IP sockets. This means that
+you can remotely debug from another computer. The socket ports it uses
+are specified in the \wikiref{OpenOCD_configuration}{OpenOCD
+  configuration} file supplied when it starts. By default, OpenOCD
+uses port 3333 for \wikiref{GDB}{GDB} and port 4444 for general
+interaction using the \file{telnet} program.
+
 
 \subsection{Communicating with OpenOCD using telnet}
 \label{communicating-with-openocd-using-telnet}
 
-If OpenOCD is running, commands can be sent to it using telnet. For
-example,
-
+If OpenOCD is running, commands can be sent to it using the telnet
+program.  For example,
+%
 \begin{minted}{bash}
 $ telnet localhost:4444
 > monitor at91sam4s info
 \end{minted}
+%
+To exit use \code{ctrl-]} then \code{c}.  On Windows, you can use the
+  \file{putty} program.
+
 
 \subsection{Communicating with OpenOCD using GDB}
 \label{communicating-with-openocd-using-gdb}
@@ -142,3 +151,15 @@ Finally, you need to reconnect the ST-link device.
 
 
 See also \wikiref{OpenOCD_errors}{OpenOCD errors}.
+
+
+\section{Programming without GDB}
+
+OpenOCD can program the SAM4S without using GDB.  You will need to
+kill any currently running instance of OpenOCD and then use:
+%
+\begin{minted}{bash}
+  $ openocd -f path-to-sam4s-stlink.cfg -c "program program.bin verify reset exit"
+\end{minted}
+%
+Here \file{program.bin} is the name of the program to load.

@@ -7,7 +7,7 @@ an open mind. Difficult problems are usually a combination of two or
 more problems. So \textbf{do not attempt if you are tired or in a
   hurry}.
 
-Before you start, you need an A3 printed schmematic, annotated with
+Before you start, you need an A3 printed schematic, annotated with
 any changes your group may have made.
 
 
@@ -59,10 +59,12 @@ values of library functions for errors. For mmculib and mat91lib
 library functions, read the function's implementation to determine
 what value they return on failure. For standard library functions such
 as \code{printf}, for example, read the man pages by running \code{man
-3 printf} in the shell or Googling `man printf(3)'. Generally:
+  3 printf} in the shell or Googling `man printf(3)'. Generally:
+%
 \begin{itemize}
 \item Functions that return a pointer will return a \code{NULL}
-pointer on failure.
+  pointer on failure.
+
 \item Functions that return an integer will return 0 on success and a
 negative integer on failure.
 \end{itemize}
@@ -70,6 +72,7 @@ negative integer on failure.
 You should add a dedicated error LED to your board that you can flash
 in an error state. For example, you could have a panic routine that
 flashes the error LED every 400\,ms in an infinite loop:
+%
 \begin{minted}{C}
 static void panic (void)
 {
@@ -81,13 +84,16 @@ static void panic (void)
     }
 }
 \end{minted}
+%
 Then, say you are initialising a PWM module, you should check to see
 if \code{pwm_init} returns a \code{NULL} pointer:
+%
 \begin{minted}{C}
 pwm_t pwm1 = pwm_init (&pwm1_cfg);
 if (! pwm1)
     panic ();
 \end{minted}
+%
 You can also use the USB serial interface to report errors. However,
 try to keep your panic routine simple to minimise the risk of an error
 occurring during its execution!
@@ -140,9 +146,9 @@ This mode is for measuring transient or non-repetitive signals, such a
 serial bus waveforms. It will only refresh the display if a trigger
 event is detected.  You need to adjust the trigger level.
 
-It is useful to increase the \emph{trigger holdoff} to prevent
-triggering on multiple edges of a waveform.  By default, it is set to
-a ridiculously small value.
+It is useful to increase the trigger holdoff to prevent triggering on
+multiple edges of a waveform.  By default, it is set to a ridiculously
+small value.
 
 \subsection{Auto mode}
 \label{auto-mode}
@@ -249,22 +255,25 @@ then fail to communicate with the SAM4S.
 \end{figure}
 
 \begin{enumerate}
-\item Connect a scope pin to the XOUT pin. A 12\,MHz sinewave should
-  be visible, see \reffig{xout}.
+\item Connect a scope pin to the \sig{XOUT} pin. A 12\,MHz sinewave
+  should be visible, see \reffig{xout}.
 
 \item If there is no sinewave:
 
   \begin{enumerate}
-  \item Measure the voltage on the VDDPLL pin of the MCU with a
+  \item Measure the voltage on the \sig{VDDPLL} pin of the MCU with a
     scope. This should be 3.3\,V to power the oscillator.
 
   \item Check the bypass capacitors across the crystal.  These should
     be approx. 20 pF.
+
+  \item Check the \sig{XIN} and \sig{XOUT} solder connections under a
+    microscope.
   \end{enumerate}
 \end{enumerate}
 
 
-\subsection{Checking the clock}
+\subsection{Checking the CPU clock}
 \label{checking-the-clock}
 
 The SAM4s has multiple clock sources:
@@ -281,12 +290,30 @@ The SAM4s has multiple clock sources:
 \end{enumerate}
 
 The SAM4S uses a phase-locked-loop (PLL) to multiply the frequency of
-the clock source to provide the CPU clock. Sometimes the PLL will run
-without a clock source and thus will generate an unexpected frequency.
+the clock source to provide the CPU clock.  When a program is loaded,
+the SAM4S is configured so that the 12\,MHz crystal oscillator
+frequency is multiplied by 16 to 192\,MHz by the PLL and then divided
+by 2 to provide the 96\,MHz CPU clock\footnote{The CPU can run at
+  speeds up to 120\,MHz by choosing \code{MCU_PLL_MUL} and
+  \code{MCU_PLL_DIV} in \file{target.h}.  The USB peripheral needs to
+  run at 48\,MHz so either the CPU clock needs to be a multiple of
+  48\,MHz or the second PLL needs to be configured for the USB
+  peripheral.}.
 
-The clock frequency can be checked by connecting a scope to a
-peripheral pin that generates a clock, e.g., PWM, SCK, TXD, and
-programming the peripheral.
+\begin{enumerate}
+\item Sometimes the PLL will run without a clock source and thus will
+  generate an unexpected frequency.  The clock frequency can be
+  checked by connecting a scope to a peripheral pin that generates a
+  clock, e.g., PWM, SCK, TXD, and programming the peripheral.
+
+  Alternatively, the PLL frequency can be checked using the OpenOCD
+  \code{at91sam4s info} command, see
+  \hyperref[communicating-with-openocd-using-telnet]{communicating
+      with OpenOCD using telnet}.
+
+\item The PLL requires a well regulated power supply.  Check that the
+  100\,nF capacitor is not too far from the \sig{VDDPLL} pin.
+\end{enumerate}
 
 
 \section{LED testing}
@@ -318,31 +345,30 @@ loading your program.
 
 If the hardware does not work:
 %
-\begin{itemize}
+\begin{enumerate}
   \item Check that the USB cable is not power-only, say by using a
     known good cable.
 
   \item
-    Check that the termination resistors are 27\,ohms.
+    Check that the USB termination resistors are 27\,ohms.
 
   \item Check the USB connector pins and the SAM4S USB pins under a
-    microscrope.  If they move if you push them with a sharp-pointy
+    microscope.  If they move if you push them with a sharp-pointy
     thing, resolder.
 
   \item
     Check that the USB signals are not transposed.
 
-  \item Check the SAM4S is running at the correct frequency of
-    96\,MHz\footnote{The SAM4S has two PLLs so it is possible to clock
-      the CPU at other frequencies.}.  Check the SAM4S XIN pin with an
-    oscilloscope for a 12\,MHz sinusoid.  Note, the oscillator is not
-    enabled unless a program has been loaded and running. If a 12\,MHz
-    signal is not found, check the MCU solder connections under a
-    microscope. Also check that the VDDPLL pin has 3.3\,V.
+  \item Check the crystal oscillator is running at 12\,MHz, see
+    \protect\hyperref[checking-the-crystal-oscillator]{checking the
+      crystal oscillator}.
+
+  \item Check that the CPU is running at 96\,MHz, see
+    \protect\hyperref[checking-the-clock]{checking the CPU clock}.
 
   \item Try an unmodified test program in case you have introduced a
     coding error.
-\end{itemize}
+\end{enumerate}
 
 If the USB serial connection drops characters:
   %
