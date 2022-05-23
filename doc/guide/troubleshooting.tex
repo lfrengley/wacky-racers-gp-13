@@ -426,9 +426,15 @@ If PWM does not work:
 
 \begin{enumerate}
 \item
-  Check the SAM4S pin since not every pin can be a PWM signal.
+  Check the SAM4S pin since not every pin can be a PWM signal.  The
+  SAM4S can generate four independent hardware PWM
+  signals\footnote{And the complementary output.}. See
+  \wfile{mat91lib/pwm/pwm.c} for a list of supported PIO pins.  Note,
+  \pin{PA16}, \pin{PA30}, and \pin{PB13} are different options for
+  PWM2.
+
 \item
-  Check the definition in the configuration file \file{target.h}
+  Check the definition in the configuration file \file{target.h}.
 \end{enumerate}
 
 If the PWM frequency is wrong:
@@ -622,6 +628,23 @@ bit or unreliable.
   \caption{SPI signals.}
 \end{figure}
 
+
+\subsection{Debugging ADC}
+\label{debugging-adc}
+
+If the ADC does not work:
+
+\begin{enumerate}
+\item
+  Check the SAM4S pin since not every pin can be an ADC input.
+
+\item
+  Check the definition in the configuration file \file{target.h}.
+
+\item
+  Check that the SAM4S \sig{VDDVREF} pin is 3.3\,V.
+
+\end{enumerate}
 
 
 \section{Other problems}

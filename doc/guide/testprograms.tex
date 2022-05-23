@@ -77,21 +77,21 @@ Notes:
 %
 \begin{enumerate}
 \item
-  This is for a different H-bridge module that requires two PWM signals
-  and forward/reverse signals. You will need to generate four PWM
-  signals or be clever with two PWM signals.
+  This program is for a different H-bridge module that requires two
+  PWM signals and forward/reverse signals. You will need to generate
+  four PWM signals or be clever with two PWM signals.
+
 \item
-  The \code{pwm_cfg_t} structure configures the frequency, duty
-  cycle and alignment of the output PWM.
+  The \code{pwm_cfg_t} structure configures the frequency, duty cycle
+  and alignment of the output PWM.
+
 \item The frequency is likely to be too high for your motor.
-\item \code{pwm_channels_start} is used to start the PWM channels simultaneously.
+
+\item \code{pwm_channels_start} is used to start the PWM channels
+  simultaneously.
 \end{enumerate}
 
-The most likely problem is that you have not used a PIO pin that can
-be driven as a PWM output. The SAM4S can generate four independent
-hardware PWM signals. See \wfile{mat91lib/pwm/pwm.c} for a list of
-supported PIO pins. Note, \pin{PA16}, \pin{PA30}, and \pin{PB13} are
-different options for PWM2.
+If the program does not work, see  \hyperref[debugging-pwm]{PWM debugging}.
 
 To drive the motors you will need to use a bench power supply. Start
 with the current limit set at 100\,mA maximum in case there are any
@@ -193,6 +193,8 @@ channels (although it can be adapted for different purposes).  For more details
 see \wfile{mat91lib/adc/adc.h}.
 
 \inputminted{C}{../../src/test-apps/adc_usb_serial_test2/adc_usb_serial_test2.c}
+
+If the program does not work, see  \hyperref[debugging-adc]{ADC debugging}.
 
 The ADC can be also set up to stream data continuously but you need to
 use interrrupts or DMA.
