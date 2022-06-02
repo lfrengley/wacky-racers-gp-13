@@ -633,7 +633,7 @@ bit or unreliable.
 \label{debugging-adc}
 
 If the ADC does not work:
-
+%
 \begin{enumerate}
 \item
   Check the SAM4S pin since not every pin can be an ADC input.
@@ -645,6 +645,22 @@ If the ADC does not work:
   Check that the SAM4S \sig{VDDVREF} pin is 3.3\,V.
 
 \end{enumerate}
+
+
+\subsection{Debugging the LED tape}
+
+If the LED tape does not work:
+%
+\begin{enumerate}
+\item Check that it is supplied with 5\,V.
+
+\item Check that there is a data signal with 5\,V logic (the level
+  translator may be configured for the wrong direction).
+
+\item Change the timing parameter in the LED tape driver.  It appears
+  that some LED tapes have different timing specifications.
+\end{enumerate}
+
 
 
 \section{Other problems}
@@ -706,6 +722,13 @@ If the ADC does not work:
 
   \item You have a race condition---this is unlikely unless you are
     using interrupts.
+
+  \item Your power supply might be slow to rise up to operating
+    voltage.  Try adding a delay, for example, \code{delay_ms (100);},
+    at the start of \code{main}.
   \end{enumerate}
+
+\item \emph{The SAM4s works but randomly dies} The likely cause is
+  having the decoupling capacitors too far away ($\gt$ 2\cm).
 
 \end{enumerate}
