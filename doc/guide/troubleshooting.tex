@@ -161,15 +161,16 @@ display.
 \label{sam4s-not-detected-by-openocd}
 
 OpenOCD communicates with the SAM4S using either JTAG or SWD serial
-interfaces.  The following assumes SWD.  This is a two wire bus with a
-clock signal and a bi-directional data signal.
+interfaces.  The following assumes SWD as used by the ST-link
+programmer.  SWD is a two wire bus with a clock signal and a
+bi-directional data signal.
 
 
 \subsection{SAM4S never detected by OpenOCD}
 
 If the SAM4S has been previously programmed, say it has been removed
 from a previous project, \hyperref[erasing-flash-memory]{erase flash
-  memory}.
+  memory} and try reconnecting with OpenOCD.
 
 %
 \begin{enumerate}
@@ -222,32 +223,63 @@ works, you may have something wrong with your program.
 \subsection{Debugging serial wire debug (SWD)}
 \label{debugging-serial-wire-debug-swd}
 
-\program{OpenOCD} periodically polls to see if the SAM4S is alive.
-These occur every 100\,ms, see \reffig{openocd-poll}.  If the SAM4S
-responds, the waveform seen in \reffig{openocd-response} should be
-observed on the SWD pin.  Note, you will need to zoom in on the
-waveform.  If the signal looks like a clock, you may the have
-\sig{SWD} and \sig{SWCK} signals transposed\footnote{There are two
-  versions of the ST-link programmer.  They look identical!}.
+You will need a scope for this.  Hopefully you will have test-points
+for the \sig{SWCK} and \sig{SWD} signals.
+
+\begin{enumerate}
+\item Check the \sig{SWCK} signal.  \program{OpenOCD} periodically
+  polls to see if the SAM4S is alive.  These occur every 100\,ms, see
+  \reffig{openocd-poll}.  OpenOCD polls less often when it does not
+  get a response. The period increases to 6.3\,s.
+
+\item Zoom in on the \sig{SWCK} signal.  Each spike should look like a
+  clock signal.  If it is not periodic, you may have the \sig{SWD} and
+  \sig{SWCK} signals transposed\footnote{There are two versions of the
+    ST-link programmer.  They look identical!}.
+
+\item Cehck the \sig{SWD} signal.  If the SAM4S responds, the waveform
+  seen in \reffig{openocd-response} should be observed on the
+  \sig{SWD} pin.  Note, you will need to zoom in on the waveform.
+\end{enumerate}
 
 
 \begin{figure}[!h]
 \centering
 \includegraphics[height=2.60417in]{figs/OpenOCDTimingGood.png}
-\caption{OpenOCD polls every 100\,ms while connected.}
+\caption{OpenOCD polls every 100\,ms while connected.  Note, zooming
+  in on the spikes reveals serial data packets.}
 \label{fig:openocd-poll}
 \end{figure}
 
 \begin{figure}[!h]
 \centering
 \includegraphics[height=2.60417in]{figs/OpenOCDPollingGood.png}
-\caption{SWD signal when there is a response from the SAM4S.}
+\caption{\sig{SWD} signal when there is a response from the SAM4S.
+  The decaying waveform at the end occurs when the pin is tri-stated.}
 \label{fig:openocd-response}
 \end{figure}
 
 
-OpenOCD polls less often when it does not get a response. The period
-increases to 6.3\,s.
+The common problems are:
+%
+\begin{itemize}
+\item No power for SAM4S, 3.3\,V and 1.2\,V.  The 3.3\,V should be
+  supplied by the ST-link programmer and the SAM4S internal regulator
+  produces 1.2\,V.
+
+\item The \sig{SWD} and \sig{SCK} signals are transposed.  Note, there
+  are two variants of the ST-link programmer with different pin-outs!
+
+\item The \sig{SWD} and \sig{SCK} pins are not correctly soldered.
+  Check these signals with a scope on the pins of the SAM4S.
+
+\item The SAM4S has been programmed to use the crystal oscillator but
+  it is not running, see
+  \protect\hyperref[checking-the-crystal-oscillator]{checking the
+    crystal oscillator}.
+\end{itemize}
+
+
 
 \subsection{Checking the crystal oscillator}
 \label{checking-the-crystal-oscillator}
