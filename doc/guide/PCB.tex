@@ -36,7 +36,7 @@ Learn page.
   Keep small signal analogue components (radio) well away from digital
   electronics and power electronics.
 \item
-  Place local decoupling capacitors to minimise the loop area.
+  Place local decoupling capacitors close to MCU to minimise the loop area.
 \item
   Place bulk capacitors close to where power comes from.
 \item
@@ -128,7 +128,7 @@ signal integrity.
 
 \item If you use a via underneath a component with a metal heatsink
   pad, ensure it is tented (these have a layer of insulating solder
-  resist).
+  resist).  Note, untented vias are useful for test points.
 \end{enumerate}
 
 In the past it was undesirable to have acute angles ($<90^{\circ}$) in
@@ -156,7 +156,7 @@ chip manufacturer usually provides a recommended layout.
     been warned!}  If you don't believe me, compare the size of an
   oscilloscope probe to a surface mount IC pin and see if you can hold
   the probe in place.  I recommend using 1206 test points since the
-  smaller ones rip off too easily.
+  smaller ones rip off easily.
 
   \includegraphics[width=5cm]{../guide/figs/testpoints.jpg}  \includegraphics[width=5cm]{../guide/figs/micro_probe_zoom.jpg}
 
@@ -185,8 +185,8 @@ chip manufacturer usually provides a recommended layout.
 \item Insert vias to ground plane to ensure that all parts are
   connected.  Do not leave unconnected copper.
 
-\item If not using plated through vias do not place vias under
-  components.
+%\item If not using plated through vias do not place vias under
+%  components.
 
 \item If placing vias under components with exposed metal pads, make
   sure the vias are ``tented'' (covered in solder mask) to prevent
@@ -194,14 +194,15 @@ chip manufacturer usually provides a recommended layout.
 
 \item Stitch power or ground planes where vias or tracks cut them up.
 
-\item If a track is of width W it should be separated from the next
-  track by a width 2W to reduce crosstalk.  This is the 3-W rule since
-  the track centres are 3W.  An exception is for differential signals;
-  these should be routed close together with a uniform spacing.
+\item If a track is of width $W$ it should be separated from the next
+  track by a width $2W$ to reduce crosstalk.  This is the 3-W rule
+  since the track centres are $3W$.  An exception is for differential
+  signals; these should be routed close together with a uniform
+  spacing.
 
 \item Do not run a microstrip traces right on the edge of the PCB.  If
-  track is of width W it should be at least W from the edge to reduce
-  electric field fringing effects.
+  track is of width $W$ it should be at least a distance $W$ from the
+  edge to reduce electric field fringing effects.
 
 \item Use large traces for pads on connectors that may be subject to
   mechanical forces (power jacks, pluggable terminals, etc.) to
@@ -211,8 +212,8 @@ chip manufacturer usually provides a recommended layout.
 
 \item Check pad to track clearances to avoid potential solder bridges.
 
-\item Check that it is possible to top-solder through-hole components
-  on non-plated-through boards.
+% \item Check that it is possible to top-solder through-hole components
+%  on non-plated-through boards.
 
 \item Ensure like signals are grouped, data lines, address lines, control lines, analogue signals, etc.
 
@@ -252,17 +253,17 @@ chip manufacturer usually provides a recommended layout.
 
 \item Check for component clearances from enclosure including heights.
 
-\item Look at each net individually to ensure that it doesn't take an
+\item Look at each net individually to ensure that it does not take an
   overly long path around the board. Many layout tools have a
   highlight net feature that makes this a fast process.
 
-\item Don't let the silkscreen overlap pads. Try to avoid having
+\item Do not let the silkscreen overlap pads. Try to avoid having
   silkscreen overlapping via holes or areas of the board that will be
   routed away (large holes, slots, tabs, etc.), since legibility will
   be poor.
 
-\item If ICs are being soldered with solder paste ensure that there is
-  a solder mask between pads.
+% \item If ICs are being soldered with solder paste ensure that there is
+%  a solder mask between pads.
  \end{enumerate}
 
 

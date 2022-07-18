@@ -160,35 +160,50 @@ display.
 \section{SAM4S not detected by OpenOCD}
 \label{sam4s-not-detected-by-openocd}
 
-If a program has not been loaded:
+OpenOCD communicates with the SAM4S using either JTAG or SWD serial
+interfaces.  The following assumes SWD.  This is a two wire bus with a
+clock signal and a bi-directional data signal.
 
+
+\subsection{SAM4S never detected by OpenOCD}
+
+If the SAM4S has been previously programmed, say it has been removed
+from a previous project, \hyperref[erasing-flash-memory]{erase flash
+  memory}.
+
+%
 \begin{enumerate}
 \item
-  Check orientation of the SAM4S (the large circle does \textbf{not}
-  mark pin 1).
+  Check orientation of the SAM4S (the small circle marks pin 1).
+
 \item
-  Check soldering of the SAM4S pins under a microscope. Giving
-  each pin a push with a sharp spike can reveal a poorly soldered joint.
-\item
-  Check 3.3\,V and 1.2\,V power rails; none of them are optional.
+  Check 3.3\,V and 1.2\,V power rails; none of them are optional.  The
+  ST-link programmer should provide 3.3\,V and the internal regulator
+  in the SAM4S provides 1.2\,V.
+
 \item
   Check the serial wire debug (SWD) signals, see
   \protect\hyperref[debugging]{debugging serial wire debug (SWD)}.
+  Note, there are two variations of the ST-link programmer.
+
+\item
+  Check soldering of the SAM4S pins under a microscope.  Giving
+  each pin a push with a sharp spike can reveal a poorly soldered joint.
+
 \end{enumerate}
 
-If a program has been loaded:
 
-\begin{enumerate}
-\item  \protect\hyperref[checking-the-crystal-oscillator]{Check the
-    crystal oscillator}.
+\subsection{SAM4S stops being detected by OpenOCD}
 
-\item \hyperref[erasing-flash-memory]{Erase flash memory}.
+If OpenOCD stops working after a program is loaded,
+\protect\hyperref[checking-the-crystal-oscillator]{check the crystal
+  oscillator}.  This is because the crystal oscillator is selected for
+the SAM4S clock when a program starts to run.  Before the SAM4S is
+programmed, it uses an internal RC oscillator.
 
-\item Re-enable \hyperref[booting-from-flash-memory]{booting from flash
-  memory}.
-
-\item  Reprogram the SAM4S with a LED flash program.
-\end{enumerate}
+If this does not work, \hyperref[erasing-flash-memory]{erase flash
+  memory} and reprogram the SAM4S with a LED flash program.  If this
+works, you may have something wrong with your program.
 
 
 \subsection{Erasing flash memory}
@@ -210,7 +225,11 @@ If a program has been loaded:
 \program{OpenOCD} periodically polls to see if the SAM4S is alive.
 These occur every 100\,ms, see \reffig{openocd-poll}.  If the SAM4S
 responds, the waveform seen in \reffig{openocd-response} should be
-observed on the SWD pin.
+observed on the SWD pin.  Note, you will need to zoom in on the
+waveform.  If the signal looks like a clock, you may the have
+\sig{SWD} and \sig{SWCK} signals transposed\footnote{There are two
+  versions of the ST-link programmer.  They look identical!}.
+
 
 \begin{figure}[!h]
 \centering
@@ -225,7 +244,6 @@ observed on the SWD pin.
 \caption{SWD signal when there is a response from the SAM4S.}
 \label{fig:openocd-response}
 \end{figure}
-
 
 
 OpenOCD polls less often when it does not get a response. The period
@@ -729,6 +747,6 @@ If the LED tape does not work:
   \end{enumerate}
 
 \item \emph{The SAM4s works but randomly dies} The likely cause is
-  having the decoupling capacitors too far away ($\gt$ 2\cm).
+  having the decoupling capacitors too far away ($> 2$\,cm).
 
 \end{enumerate}
