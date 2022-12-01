@@ -46,7 +46,7 @@ As you get more desperate, you need more outlandish hypotheses about
 what may have gone wrong.  Here, experience helps.  However, the key
 is forming a hypothesis based on previous observations\footnote{``Once
   you eliminate the impossible, whatever remains, no matter how
-  improbable, must be the truth.'' --- Sherlock Homes.}.
+  improbable, must be the truth.'' --- Sherlock Holmes.}.
 
 
 \section{Reporting software errors}
@@ -165,7 +165,7 @@ display.
 
 In theory a digital signal will be either high or low.  In practice,
 it is an analogue signal and you will see the rise/fall transitions,
-over/undershoot, interference due to crosstalk\, and other noise.  The
+over/undershoot, interference due to crosstalk, and other noise.  The
 oscilloscope has a limited bandwidth and thus the displayed signals
 are low-pass filtered.
 
@@ -176,12 +176,12 @@ are low-pass filtered.
   \item[The signal does not go fully low] This is likely to be due to
     a resistive load connected to VDD.
 
-  \item[The signal slowly changes] This signal is likely to be
+  \item[The signal slowly changes] The signal output is likely to be
     tri-stated.
 
   \item[The waveform sometimes goes fully high or fully low but
     sometimes has intermediate values] This is likely to be due to two
-    outputs connected together that are fighting each other.
+    outputs driving the same signal that are fighting each other.
 \end{description}
 
 
@@ -383,7 +383,8 @@ by 2 to provide the 96\,MHz CPU clock\footnote{The CPU can run at
 \item Sometimes the PLL will run without a clock source and thus will
   generate an unexpected frequency.  The clock frequency can be
   checked by connecting a scope to a peripheral pin that generates a
-  clock, e.g., PWM, SCK, TXD, and programming the peripheral.
+  clock, e.g., PWM, SCK, TXD, and programming the peripheral.  For
+  example, use the \hyperref[pwm-test]{PWM test} program.
 
   Alternatively, the PLL frequency can be checked using the OpenOCD
   \code{at91sam4 info} command, see
@@ -420,7 +421,7 @@ the USB to a PC.  If a new USB device is detected, your hardware is
 correct\footnote{You may have a poorly soldered connection that gives
   intermittent operation.}.  Note, you will then need to re-enable
 \hyperref[booting-from-flash-memory]{booting from flash} before
-loading your program.
+re-loading your program.
 
 If the hardware does not work:
 %
