@@ -135,6 +135,66 @@ OpenOCD can program the flash program memory from a binary file.
 %% $ brew install openocd --enable-ft2232_libftdi
 %% \end{minted}
 
+\section{System information}
+\label{syste-information}
+
+
+The openocd command \code{at91sam4 info}, see
+\hyperref[communicating-with-openocd-using-telnet]{communicating with
+  OpenOCD using telnet}, outputs useful information about the state of
+the SAM4S.  For example:
+%
+\begin{verbatim}
+    CKGR_MOR: [0x400e0420] -> 0x01006409
+	    MOSCXTEN:     1 [0x0001] (main xtal enabled: YES)
+	    MOSCXTBY:     0 [0x0000] (main osc bypass: NO)
+	    MOSCRCEN:     1 [0x0001] (onchip RC-OSC enabled: YES)
+	     MOSCRCF:     0 [0x0000] (onchip RC-OSC freq: 4 MHz)
+	    MOSCXTST:   100 [0x0064] (startup clks, time= 3051.757812 uSecs)
+	     MOSCSEL:     1 [0x0001] (mainosc source: external xtal)
+	       CFDEN:     0 [0x0000] (clock failure enabled: NO)
+   CKGR_MCFR: [0x400e0424] -> 0x000117ac
+	    MAINFRDY:     1 [0x0001] (main ready: YES)
+	       MAINF:  6060 [0x17ac] (12.411 Mhz (32.768khz slowclk)
+  CKGR_PLLAR: [0x400e0428] -> 0x08133f01
+	        DIVA:     1 [0x0001]
+	        MULA:    19 [0x0013]
+	PLLA Freq: 248.218 MHz
+   CKGR_UCKR: [0x400e041c] -> 0x00000000
+    PMC_FSMR: [0x400e0470] -> 0x00000000
+    PMC_FSPR: [0x400e0474] -> 0x00000000
+     PMC_IMR: [0x400e046c] -> 0x00000000
+    PMC_MCKR: [0x400e0430] -> 0x00000012
+	         CSS:     2 [0x0002] plla (248.218 Mhz)
+	        PRES:     1 [0x0001] (clock/2)
+		Result CPU Freq: 124.109
+    PMC_PCK0: [0x400e0440] -> 0x00000000
+    PMC_PCK1: [0x400e0444] -> 0x00000000
+    PMC_PCK2: [0x400e0448] -> 0x00000000
+    PMC_PCSR: [0x400e0418] -> 0x41004000
+    PMC_SCSR: [0x400e0408] -> 0x00000001
+      PMC_SR: [0x400e0468] -> 0x0003000f
+ CHIPID_CIDR: [0x400e0740] -> 0x289c0ae0
+	     Version:     0 [0x0000]
+	       EPROC:     7 [0x0007] Cortex-M4
+	     NVPSIZE:    10 [0x000a] 512K bytes
+	    NVPSIZE2:     0 [0x0000] none
+	    SRAMSIZE:    12 [0x000c] 128K Bytes
+	        ARCH:   137 [0x0089] ATSAM3S/SAM4S xB Series (64-pin version)
+	      NVPTYP:     2 [0x0002] embedded flash memory
+	       EXTID:     0 [0x0000] (exists: NO)
+ CHIPID_EXID: [0x400e0744] -> 0x00000000
+   rc-osc: 4.000 MHz
+  mainosc: 12.411 MHz
+     plla: 248.218 MHz
+ cpu-freq: 124.109 MHz
+mclk-freq: 124.109 MHz
+ UniqueId: 0x53343100 0x50524a46 0x36303430 0x30363030
+\end{verbatim}
+%
+Note, the reported clock frequencies are not accurate.
+
+
 \section{Errors}
 \label{openocd_errors}
 
