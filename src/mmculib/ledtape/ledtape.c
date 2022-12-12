@@ -1,10 +1,20 @@
 #include "delay.h"
 #include "pio.h"
 
-// TPERIOD is manually tuned to generate the correct 800 kHz waveforms
-// The sum of the delays + the time it takes to set the PIO pin is about 1.25 uS
-// The high period is the most critical. This timing is tuned for the best compromise.
+// TPERIOD is manually tuned to generate the correct 800 kHz
+// waveforms.  The sum of the delays + the time it takes to set the
+// PIO pin is about 1.25 us.  The high period is the most critical.
+// This timing is tuned for the best compromise.
 #define TPERIOD     (0.32)
+
+#ifdef LEDTAPE_INVERT
+#define LEDTAPE_ASSERT_BIT(PIO) pio_output_low (pin)
+#define LEDTAPE_NEGATE_BIT(PIO) pio_output_high (pin)
+#else
+#define LEDTAPE_ASSERT_BIT(PIO) pio_output_high (pin)
+#define LEDTAPE_NEGATE_BIT(PIO) pio_output_low (pin)
+#endif
+
 
 __attribute__((optimize (2)))
 __always_inline__
@@ -16,17 +26,17 @@ static void ledtape_write_byte (pio_t pin, uint8_t byte)
     for (j = 0; j < 8; j++)
     {
         // MSB first
-        bit = (byte & 0x80);
+        bit = byte & 0x80;
 
-        pio_output_high (pin);
+        LEDTAPE_ASSERT_BIT (pin);
         DELAY_US (TPERIOD);
-        if (!bit)
-            pio_output_low (pin);
+        if (! bit)
+            LEDTAPE_NEGATE_BIT (pin);
         DELAY_US (TPERIOD);
         if (bit)
-            pio_output_low (pin);
+            LEDTAPE_NEGATE_BIT (pin);
         DELAY_US (TPERIOD);
-        
+
         byte <<= 1;
     }
 }
@@ -39,9 +49,10 @@ void ledtape_write (pio_t pin, uint8_t *buffer, uint16_t size)
 
     // Send reset code
     pio_config_set (pin, PIO_OUTPUT_LOW);
+    LEDTAPE_NEGATE_BIT (pin);
     DELAY_US (100);
 
-    // The data order is R G B per LED
+    // The data order is G R B per LED
     for (i = 0; i < size; i++)
     {
         ledtape_write_byte (pin, buffer[i]);

@@ -1,41 +1,41 @@
-
 #include "ledbuffer.h"
 #include "ledtape.h"
 
 #include <stdlib.h>
 
-ledbuffer_t*
-ledbuffer_init(pio_t pin, int leds)
-{
-    ledbuffer_t* buffer;
 
-    buffer = calloc(1, sizeof(*buffer));
+ledbuffer_t*
+ledbuffer_init (pio_t pin, int leds)
+{
+    ledbuffer_t *buffer;
+
+    buffer = calloc (1, sizeof (*buffer));
     buffer->pin = pin;
     buffer->leds = leds;
-    buffer->data = calloc(3, leds);
+    buffer->data = calloc (3, leds);
 
     return buffer;
 }
 
 
 void
-ledbuffer_clear(ledbuffer_t* buffer)
+ledbuffer_clear (ledbuffer_t *buffer)
 {
     int i;
-    for (i = 0; i < buffer->leds * 3; ++i) {
+
+    for (i = 0; i < buffer->leds * 3; i++)
+    {
         buffer->data[i] = 0;
     }
 }
 
 
-
 void
-ledbuffer_set(ledbuffer_t* buffer, uint8_t index, uint8_t r, uint8_t g, uint8_t b)
+ledbuffer_set (ledbuffer_t *buffer, uint8_t index, uint8_t r, uint8_t g, uint8_t b)
 {
-    // ensure we are inside the buffer memory
+    // Ensure we are inside the buffer memory
     if (index >= buffer->leds)
         return;
-
 
     // Set the LED values (GRB ordering)
     buffer->data[index * 3 + 0] = g;
@@ -44,25 +44,30 @@ ledbuffer_set(ledbuffer_t* buffer, uint8_t index, uint8_t r, uint8_t g, uint8_t 
 }
 
 
-
 void
-ledbuffer_advance(ledbuffer_t* buffer, int shift)
+ledbuffer_advance(ledbuffer_t *buffer, int shift)
 {
     int i, j;
+    uint8_t *temp;
 
-    // make a copy of the existing LED buffer
-    uint8_t* temp = malloc(buffer->leds * 3);
-    for (i = 0; i < buffer->leds * 3; ++i)
+    // Make a copy of the existing LED buffer
+    temp = malloc (buffer->leds * 3);
+
+    for (i = 0; i < buffer->leds * 3; i++)
         temp[i] = buffer->data[i];
 
-
-    // now we can overwrite the old led data with the shift
-    for (i = 0; i < buffer->leds; ++i) {
-        if (i + shift < 0) {
+    // Now we can overwrite the old led data with the shift
+    for (i = 0; i < buffer->leds; i++)
+    {
+        if (i + shift < 0)
+        {
             j = i + shift + buffer->leds;
-        } else if (i + shift >= buffer->leds) {
+        }
+        else if (i + shift >= buffer->leds)
+        {
             j = i + shift - buffer->leds;
-        } else {
+        } else
+        {
             j = i + shift;
         }
 
@@ -75,17 +80,15 @@ ledbuffer_advance(ledbuffer_t* buffer, int shift)
 }
 
 
-
 int
-ledbuffer_size(ledbuffer_t* buffer)
+ledbuffer_size (ledbuffer_t *buffer)
 {
     return buffer->leds * 3;
 }
 
 
-
 void
-ledbuffer_write(ledbuffer_t* buffer)
+ledbuffer_write (ledbuffer_t *buffer)
 {
-    ledtape_write(buffer->pin, buffer->data, buffer->leds * 3);
+    ledtape_write (buffer->pin, buffer->data, buffer->leds * 3);
 }

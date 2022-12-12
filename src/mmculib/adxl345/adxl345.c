@@ -108,7 +108,7 @@ adxl345_t *adxl345_init (twi_t twi, twi_slave_addr_t addr)
     /* Enable measurements.  */
     adxl345_write (dev, ADXL345_POWER_CTL, 0x08);
 
-    /* Set full range  4 mg/LSB.  */
+    /* Set full range with 4 mg/LSB.  */
     adxl345_write (dev, ADXL345_DATA_FORMAT, 0x08);
 
     return dev;
