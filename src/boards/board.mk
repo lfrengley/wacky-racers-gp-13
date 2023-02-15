@@ -2,6 +2,9 @@
 # environment variable.  For example:
 # BOARD=tank make
 
+TARGET ?= app.elf
+BUILD_DIR ?= build
+
 RUN_MODE = ROM
 
 ifndef OPT
@@ -16,5 +19,3 @@ endif
 
 include ../../boards/$(BOARD)/board.mk
 include $(MMCULIB_DIR)/mmculib.mk
-
-

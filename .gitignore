@@ -3,3 +3,4 @@
 *.map
 *.bin
 .vscode/
+build/
