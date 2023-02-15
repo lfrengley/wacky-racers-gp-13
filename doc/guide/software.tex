@@ -212,17 +212,26 @@ extensions, it can be used to develop code for just about anything!
 This project has been configured for VS Code on the ESL computers (but
 its relatively easy to modify it to work on a home computer, be it
 Windows, Linux, or Mac). For the simplest use, simply go \code{File ->
-Open Folder} and point it at the wacky-racers repository.  This will
-give you access to the build tools (Ctrl-Shift-B) that have been
-setup. These must be run from inside a program (i.e., ledflash1.c).
-Finally, opening a program and pressing F5 will launch a debugging
-session that will allow the use of breakpoints and variable
+Open Folder} and point it at the wacky-racers repository. The project
+is configured inside the \code{.vscode} directory. This will give you
+access to the build tools (Ctrl-Shift-B) that have been configured in
+the \code{.vscode/tasks.json} file. These must be run with a file of
+the app you are trying to build open in the editor (i.e.,
+ledflash1.c). Finally, opening a program and pressing F5 will launch a
+debugging session that will allow the use of breakpoints and variable
 inspection.
 
 When building your programs, the \code{BOARD} configuration variable
 must be set. In VS Code this is done by choosing your C++
 configuration (bottom right of the window) which by default will be
-either hat or racer.
+either \code{hat} or \code{racer} (\reffig{vscode-config}).
+
+\begin{figure}
+\centering
+\includegraphics{figs/vscode-config.png}
+\caption{Selecting the board type in VS Code.}
+\label{fig:vscode-config}
+\end{figure}
 
 As a side note, the compilation and debugging requires the
 installation of two VS Code extensions:
@@ -230,11 +239,19 @@ installation of two VS Code extensions:
 \begin{enumerate}
 \item C/C++ (Microsoft)
 \item Native Debug (Web Freak)
+\item Command Variable (rioj7)
 \end{enumerate}
 %
 VS Code should automatically prompt you to install these when you open
   the wacky-racers directory.
 
+The \code{.vscode} configuration in the upstream wacky-racers
+respository is configured specifically for the ESL machines and may
+require some reworking to get working on other machines. For example,
+the configuration assumes the toolchain is located at
+\file{C:\textbackslash{}ence461} (see Section~\ref{esl-windows}); this
+can be configured by changing the value of the
+\code{windowsToolchainEnvCmd} field in \code{.vscode/settings.json}.
 
 \section{Using Windows in the ESL} \label{esl-windows}
 
@@ -264,8 +281,3 @@ separate commands instead.
 (backslash). In \file{.c}, \file{.h}, and makefiles, however, you should use
 still use \file{/}.
 \end{itemize}
-
-If you are using Windows on the ESL machines and want to use VS Code, you can
-run \file{vscode.bat} located in the top level of the \file{wacky-racers}
-repository. This will open VS Code with the repository added to the workspace
-and the necessary toolchain added to \code{PATH}.
