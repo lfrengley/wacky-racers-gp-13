@@ -9,7 +9,10 @@
             },
             "command": "make -j ${config:makeNumJobs}",
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
             },
             "group": "build",
             "problemMatcher": [
@@ -24,7 +27,10 @@
             },
             "command": "make -j ${config:makeNumJobs} bootflash",
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
             },
             "group": "build",
             "problemMatcher": [
@@ -39,7 +45,10 @@
                 "command": "${config:windowsToolchainEnvCmd} && make clean"
             },
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
             },
             "group": "build",
             "problemMatcher": []
@@ -52,7 +61,10 @@
                 "command": "${config:windowsToolchainEnvCmd} && make -j ${config:makeNumJobs} program"
             },
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
             },
             "group": "build",
             "problemMatcher": [
@@ -67,7 +79,10 @@
                 "command": "${config:windowsToolchainEnvCmd} && make -j ${config:makeNumJobs} debug"
             },
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
             },
             "group": "build",
             "problemMatcher": [
@@ -82,7 +97,10 @@
                 "command": "${config:windowsToolchainEnvCmd} && openocd -f ${workspaceFolder}/src/mat91lib/sam4s/scripts/sam4s_stlink.cfg"
             },
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
             },
             "group": "build",
             "problemMatcher": []
