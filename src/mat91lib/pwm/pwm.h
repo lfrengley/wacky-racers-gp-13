@@ -1,5 +1,5 @@
 /** @file   pwm.h
-    @author
+    @author M. P. Hayes
     @date   13 February 2008
     @brief  Pulse Width Modulation routines for AT91SAM processors.
     @note   The API needs a complete re-write.

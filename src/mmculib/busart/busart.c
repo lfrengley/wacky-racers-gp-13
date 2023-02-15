@@ -27,6 +27,17 @@
 #endif
 
 
+#ifndef BUSART_LINE_BUFFER_SIZE
+#define BUSART_LINE_BUFFER_SIZE 82
+#endif
+
+
+#ifndef BUSART_SPRINTF_BUFFER_SIZE
+#define BUSART_SPRINTF_BUFFER_SIZE 128
+#endif
+
+
+
 struct busart_dev_struct
 {
     void (*tx_irq_enable) (void);
@@ -35,7 +46,7 @@ struct busart_dev_struct
     ring_t tx_ring;
     ring_t rx_ring;
     uint32_t read_timeout_us;
-    uint32_t write_timeout_us;        
+    uint32_t write_timeout_us;
 };
 
 
@@ -69,11 +80,12 @@ struct busart_dev_struct
     @param cfg pointer to configuration structure.
     @return pointer to busart device structure.
 */
-busart_t 
+busart_t
 busart_init (const busart_cfg_t *cfg)
 {
     busart_dev_t *dev = 0;
     uint16_t baud_divisor;
+    ring_size_t size;
     char *tx_buffer;
     char *rx_buffer;
 
@@ -97,17 +109,27 @@ busart_init (const busart_cfg_t *cfg)
 
     dev->read_timeout_us = cfg->read_timeout_us;
     dev->write_timeout_us = cfg->write_timeout_us;
-    
+
     tx_buffer = cfg->tx_buffer;
     rx_buffer = cfg->rx_buffer;
 
     if (!tx_buffer)
-        tx_buffer = malloc (cfg->tx_size);
+    {
+        size = cfg->tx_size;
+        if (size == 0)
+            size = 64;
+        tx_buffer = malloc (size);
+    }
     if (!tx_buffer)
         return 0;
 
     if (!rx_buffer)
-        rx_buffer = malloc (cfg->rx_size);
+    {
+        size = cfg->rx_size;
+        if (size == 0)
+            size = 64;
+        rx_buffer = malloc (size);
+    }
     if (!rx_buffer)
     {
         free (tx_buffer);
@@ -115,7 +137,7 @@ busart_init (const busart_cfg_t *cfg)
     }
 
     ring_init (&dev->tx_ring, tx_buffer, cfg->tx_size);
-    
+
     ring_init (&dev->rx_ring, rx_buffer, cfg->rx_size);
 
     /* Enable the rx interrupt now.  The tx interrupt is enabled
@@ -157,7 +179,7 @@ busart_read_nonblock (busart_t busart, void *data, size_t size)
     ssize_t ret;
 
     ret = ring_read (&dev->rx_ring, data, size);
-    
+
     if (ret == 0 && size != 0)
     {
         /* Would block.  */
@@ -174,7 +196,7 @@ ssize_t
 busart_read (void *busart, void *data, size_t size)
 {
     busart_dev_t *dev = busart;
-    
+
     return sys_read_timeout (busart, data, size, dev->read_timeout_us,
                              (void *)busart_read_nonblock);
 }
@@ -186,7 +208,7 @@ ssize_t
 busart_write (void *busart, const void *data, size_t size)
 {
     busart_dev_t *dev = busart;
-    
+
     return sys_write_timeout (busart, data, size, dev->write_timeout_us,
                               (void *)busart_write_nonblock);
 }
@@ -256,7 +278,7 @@ int
 busart_putc (busart_t busart, char ch)
 {
     if (ch == '\n')
-        busart_putc (busart, '\r');    
+        busart_putc (busart, '\r');
 
     if (busart_write (busart, &ch, sizeof (ch)) != sizeof (ch))
         return -1;
@@ -272,6 +294,61 @@ busart_puts (busart_t busart, const char *str)
         if (busart_putc (busart, *str++) < 0)
             return -1;
     return 1;
+}
+
+
+/* Non-blocking equivalent to fgets.  Returns 0 if a line is not available
+   other pointer to buffer.  */
+char *
+busart_gets (busart_t busart, char *buffer, int size)
+{
+    static char line_buffer[BUSART_LINE_BUFFER_SIZE] = "";
+    static int count = 0;
+    int c;
+    int i;
+
+    while (1)
+    {
+        c = busart_getc (busart);
+        if (c == -1)
+            return 0;
+
+        line_buffer[count] = c;
+        count++;
+        if (c == '\n' || count >= size)
+            break;
+    }
+
+    if (size > count)
+        size = count;
+
+    for (i = 0; i < size; i++)
+        buffer[i] = line_buffer[i];
+    buffer[i] = 0;
+
+    /* Could use ring buffer to avoid copying.  */
+    for (i = count - size - 1; i >= 0; i--)
+        line_buffer[i] = line_buffer[i + count];
+    count -= size;
+
+    return buffer;
+}
+
+
+int
+busart_printf (busart_t busart, const char *fmt, ...)
+{
+    // FIXME, long strings can overflow the buffer and thus be truncated.
+    char buffer[BUSART_SPRINTF_BUFFER_SIZE];
+    va_list ap;
+    int ret;
+
+    va_start (ap, fmt);
+    ret = vsnprintf (buffer, sizeof (buffer), fmt, ap);
+    va_end (ap);
+
+    busart_puts (busart, buffer);
+    return ret;
 }
 
 

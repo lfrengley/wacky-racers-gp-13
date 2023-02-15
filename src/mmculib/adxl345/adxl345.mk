@@ -1,8 +1,0 @@
-MPU_DIR = $(DRIVER_DIR)/adxl345
-
-VPATH += $(MPU_DIR)
-SRC += adxl345.c
-
-PERIPHERALS += twi
-
-INCLUDES += -I$(MPU_DIR)

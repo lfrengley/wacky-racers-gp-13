@@ -20,6 +20,26 @@
    is cunning, a 48 bit word can be transferred: 16 bits in the
    preamble and 32 bits after.  However, the 48 bits cannot be sent by
    DMA.
+
+   The transmitter and receiver can both be programmed to start their
+   operations when a start event occurs.  This can be:
+
+   * THR written or when the rx is enabled  (continuous mode)
+   * an event on RF/TF pins
+   * the receiver matches the preamble
+
+   Whenever the tx has started it will output N bits where N is the
+   number of bits per word.  If the TSR is not loaded by writing to
+   the THR before the start, the TSR will clock out N zeros.  The end
+   of frame occurs when M * N clocks have been output, where M is the
+   number of words per frame.
+
+   Whenever the rx has started, it waits for N bits.  The incoming
+   data is shifted into the RSR.  When N bits have been received, RSR
+   is copied to RHR and the RXRDY flag is set.  If another transfer is
+   received before RHR is read, the OVERRUN flag is set and the RSR is
+   copied to RHR, losing the previous data.
+
 */
 
 
@@ -82,6 +102,20 @@ ssc_fs_period_get (ssc_t ssc, ssc_module_t module)
 }
 
 
+void
+ssc_tx_start_mode_set (ssc_t ssc, ssc_start_mode_t start_mode)
+{
+    SSC->SSC_TCMR = (SSC->SSC_TCMR & ~0XF00) | start_mode;
+}
+
+
+void
+ssc_rx_start_mode_set (ssc_t ssc, ssc_start_mode_t start_mode)
+{
+    SSC->SSC_RCMR = (SSC->SSC_RCMR & ~0XF00) | start_mode;
+}
+
+
 /* Configure a module.  */
 static uint8_t
 ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
@@ -95,15 +129,6 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
 
     if (!cfg)
         return 0;
-
-    if (module == SSC_TX)
-    {
-        SSC->SSC_TCMR = 0;
-    }
-    else
-    {
-        SSC->SSC_RCMR = 0;
-    }
 
     ssc_fs_period_set (ssc, cfg->fs_period, module);
 
@@ -153,7 +178,7 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
             fmr |= SSC_TFMR_DATDEF;
 
         SSC->SSC_TFMR = fmr | cfg->sync_data_enable;
-        SSC->SSC_TCMR |= cmr;
+        SSC->SSC_TCMR = cmr;
     }
     else
     {
@@ -161,13 +186,13 @@ ssc_module_config (ssc_t ssc, ssc_module_cfg_t *cfg, ssc_module_t module)
             fmr |= SSC_RFMR_LOOP;
 
         SSC->SSC_RFMR = fmr;
-        SSC->SSC_RCMR |= cmr | cfg->stop_mode;
+        SSC->SSC_RCMR = cmr | cfg->stop_mode;
     }
     return 1;
 }
 
 
-/* Configure the ssc peripheral.  */
+/* Configure the SSC peripheral.  */
 static void
 ssc_config_set (ssc_t ssc, const ssc_cfg_t *cfg)
 {
@@ -295,7 +320,7 @@ ssc_module_disable (ssc_t ssc, ssc_module_t tx_rx)
 }
 
 
-/* Disable all of the modules.  */
+/* Disable both rx and tx.  */
 void
 ssc_disable (ssc_t ssc)
 {
@@ -307,7 +332,7 @@ ssc_disable (ssc_t ssc)
 }
 
 
-/* Enable all of the modules.  */
+/* Enable both rx and tx.  */
 void
 ssc_enable (ssc_t ssc)
 {
@@ -315,7 +340,11 @@ ssc_enable (ssc_t ssc)
         ssc_module_enable (ssc, SSC_TX);
 
     if (ssc->rx)
+    {
         ssc_module_enable (ssc, SSC_RX);
+        /* The RXRDY pin gets set mysteriously but this does not clear it.  */
+        ssc_read_value (ssc);
+    }
 }
 
 
@@ -374,11 +403,12 @@ ssc_read_32 (ssc_t ssc, void *buffer, uint32_t length)
 uint32_t
 ssc_read (ssc_t ssc, void *buffer, uint32_t bytes)
 {
-    if (ssc->rx->data_length <= 8)
-        return ssc_read_8 (ssc, buffer, bytes);
-    else if (ssc->rx->data_length <= 16)
+    if (ssc->tx->data_length > 16)
+        return ssc_read_32 (ssc, buffer, (bytes + 3) >> 2);
+    else if (ssc->tx->data_length > 8)
         return ssc_read_16 (ssc, buffer, (bytes + 1) >> 1);
-    return ssc_read_32 (ssc, buffer, (bytes + 3) >> 2);
+    else
+        return ssc_read_8 (ssc, buffer, bytes);
 }
 
 
@@ -511,11 +541,12 @@ ssc_write_32 (ssc_t ssc, void *buffer, uint16_t length)
 uint16_t
 ssc_write (ssc_t ssc, void *buffer, uint16_t bytes)
 {
-    if (ssc->tx->data_length <= 8)
-        return ssc_write_8 (ssc, buffer, bytes);
-    else if (ssc->tx->data_length <= 16)
+    if (ssc->tx->data_length > 16)
+        return ssc_write_32 (ssc, buffer, (bytes + 3) >> 2);
+    else if (ssc->tx->data_length > 8)
         return ssc_write_16 (ssc, buffer, (bytes + 1) >> 1);
-    return ssc_write_32 (ssc, buffer, (bytes + 3) >> 2);
+    else
+        return ssc_write_8 (ssc, buffer, bytes);
 }
 
 
@@ -558,6 +589,14 @@ ssc_shutdown (ssc_t ssc)
     pio_config_set (TD_PIO, PIO_OUTPUT_LOW);
     pio_config_set (TK_PIO, PIO_OUTPUT_LOW);
     pio_config_set (TF_PIO, PIO_OUTPUT_LOW);
+}
+
+
+/* Return non-zero if transmitter finished.  */
+bool
+ssc_write_finished_p (ssc_t ssc)
+{
+    return (SSC_SR_TXEMPTY & SSC->SSC_SR) != 0;
 }
 
 

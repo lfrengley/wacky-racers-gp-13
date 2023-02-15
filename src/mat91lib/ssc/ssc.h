@@ -3,10 +3,7 @@
     @date 16 December 2011
     @brief Simple hardware driver for the AT91SAM7 SSC peripheral
 
-
-    The driver does not support interrupts or DMA, and only the RX
-    module has been tested (the TX module was sort-of tested via
-    loopback mode).
+    The driver does not support interrupts or DMA.
 
     The AT91SAM7 family all have one ssc controller, which is
     essentially a highly flexible synchronous serial communication
@@ -99,12 +96,12 @@ typedef enum
 /* Clock gating.  */
 typedef enum
 {
-    // Receive clock always enabled
+    // Receive/transmit clock always enabled
     SSC_CLOCK_GATE_NONE = 0,
-    // Receive enabled when RF low
-    SSC_CLOCK_GATE_RF_LOW = 1 << 7,
-    // Receive enabled when RF high
-    SSC_CLOCK_GATE_RF_HIGH = 2 << 7
+    // Receive/transmit clock enabled when RF/TF low
+    SSC_CLOCK_GATE_RF_LOW = 1 << 6,
+    // Receive/transmit clock enabled when RF/TF high
+    SSC_CLOCK_GATE_RF_HIGH = 2 << 6
 } ssc_clock_gate_mode_t;
 
 
@@ -114,8 +111,12 @@ typedef enum
     // Start continuous transfer; either by writing to TTHR for transmit or
     // enabling receiver for receive
     SSC_START_CONTINUOUS    = SSC_RCMR_START_CONTINUOUS,
-    // Transmit/Receive start
+    // Start when the other device starts
+    SSC_START_OTHER         = SSC_RCMR_START_TRANSMIT,
+    // Start the receiver when the transmit starts
     SSC_START_TRANSMIT      = SSC_RCMR_START_TRANSMIT,
+    // Start the transmitter when the receiver starts
+    SSC_START_RECEIVE       = SSC_TCMR_START_RECEIVE,
     // Start one clock after falling edge of RF
     SSC_START_LOW           = SSC_RCMR_START_RF_LOW,
     // Start one clock after rising edge of RF
@@ -192,6 +193,7 @@ typedef struct
     ssc_fs_edge_t        fs_edge;
     bool                 loop_mode;
     bool                 data_msb_first;
+    /* Tx default value when not transmitting. */
     bool                 td_default;
     ssc_tx_fs_data_enable_t sync_data_enable;
 } ssc_module_cfg_t;
@@ -332,6 +334,17 @@ ssc_reset (ssc_t ssc);
 
 void
 ssc_sync(ssc_t ssc);
+
+
+bool
+ssc_write_finished_p (ssc_t ssc);
+
+
+void
+ssc_tx_start_mode_set (ssc_t ssc, ssc_start_mode_t start_mode);
+
+void
+ssc_rx_start_mode_set (ssc_t ssc, ssc_start_mode_t start_mode);
 
 #ifdef __cplusplus
 }

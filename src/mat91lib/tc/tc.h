@@ -4,7 +4,7 @@
     @brief  Timer counter routines for AT91 processors.
     Although the counters are only 16 bit, this driver synthesises 64 bit
     counters using overflow interrupts.   Even with a 48 MHz clock,
-    these 64 bit counters will take 3000 years to overflow!  
+    these 64 bit counters will take 3000 years to overflow!
 */
 
 #ifndef TC_H
@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 
 #include "config.h"
 #include "pio.h"
@@ -22,6 +22,8 @@ extern "C" {
 
 #define TC_PERIOD_DIVISOR(FREQ, PRESCALE) ((tc_period_t)(0.5 + TC_CLOCK_FREQUENCY (PRESCALE) / (FREQ)))
 
+#define TC_PRESCALE_MIN 2
+#define TC_PRESCALE_MAX 128
 
 typedef enum
 {
@@ -35,7 +37,7 @@ typedef enum
 typedef enum
 {
     /** Do nothing.  */
-    TC_MODE_NONE,    
+    TC_MODE_NONE,
     /** Active high repetitive pulse.  */
     TC_MODE_PULSE,
     /** Active low repetitive pulse.  */
@@ -57,6 +59,8 @@ typedef enum
     TC_MODE_CAPTURE_FALL_FALL,
     /** Triggering of ADC (this doesn't use the TC pin).  */
     TC_MODE_ADC,
+    /** Triggering of ADC or DAC (this doesn't use the TC pin).  */
+    TC_MODE_TRIGGER = TC_MODE_ADC,
     /** Free running counter (this doesn't use the TC pin).  */
     TC_MODE_COUNTER,
     /** Periodic interrupt (this doesn't use the TC pin).  */
@@ -100,15 +104,15 @@ typedef uint16_t tc_prescale_t;
 /** TC configuration structure.  */
 typedef struct
 {
-    pio_t pio;                  /* TIOA */
-    tc_mode_t mode;
-    tc_mode_t aux_mode;    
+    pio_t pio;                  /* TIOA.  */
+    tc_mode_t mode;             /* Mode for TIOA.  */
+    tc_mode_t aux_mode;         /* Auxiliary mode for TIOB.  */
     tc_prescale_t prescale;     /* 2, 8, 32, 128.  0 defaults to 2.  */
     /* If frequency is non-zero then it overrides period and delay.  */
-    tc_period_t period;         /* Clocks */
-    tc_period_t delay;          /* Clocks */
-    tc_period_t aux_delay;      /* Clocks */    
-    tc_frequency_t frequency;   /* Hz */
+    tc_period_t period;         /* Clocks. */
+    tc_period_t delay;          /* Clocks (this also controls the duty).  */
+    tc_period_t aux_delay;      /* Clocks (this also controls the duty).  */
+    tc_frequency_t frequency;   /* Hz. */
 } tc_cfg_t;
 
 
@@ -140,7 +144,7 @@ tc_counter_get (tc_t tc);
 
 tc_counter_t
 tc_capture_get (tc_t tc, tc_capture_t reg);
-              
+
 
 tc_capture_mask_t
 tc_capture_poll (tc_t tc);
@@ -151,31 +155,54 @@ tc_period_t
 tc_delay_get (tc_t tc);
 
 
-/** Set the delay in clocks.  */
+/** Get the duty in clocks.  */
 tc_period_t
-tc_delay_set (tc_t tc, tc_period_t delay);
-    
+tc_duty_get (tc_t tc);
+
 
 /** Get the aux delay in clocks.  */
 tc_period_t
-tc_aux_delay_get (tc_t tc);    
+tc_aux_delay_get (tc_t tc);
 
-    
-/** Set the aux delay in clocks.  */
+
+/** Get the aux duty in clocks.  */
 tc_period_t
-tc_aux_delay_set (tc_t tc, tc_period_t delay);    
+tc_aux_delay_get (tc_t tc);
 
-/** Set the pulse mode */
-tc_ret_t
-tc_aux_mode_set (tc_t tc, tc_mode_t mode);
-    
+
 /** Get the period in clocks.  */
 tc_period_t
 tc_period_get (tc_t tc);
 
 
+/** Set the delay in clocks.  */
+tc_period_t
+tc_delay_set (tc_t tc, tc_period_t delay);
+
+
+/** Set the duty in clocks.  */
+tc_period_t
+tc_duty_set (tc_t tc, tc_period_t duty);
+
+
+/** Set the aux delay in clocks.  */
+tc_period_t
+tc_aux_delay_set (tc_t tc, tc_period_t delay);
+
+
+/** Set the aux duty in clocks.  */
+tc_period_t
+tc_aux_delay_set (tc_t tc, tc_period_t delay);
+
+
+/** Set the period in clocks.  */
 tc_period_t
 tc_period_set (tc_t tc, tc_period_t period);
+
+
+/** Set the aux mode.  */
+tc_ret_t
+tc_aux_mode_set (tc_t tc, tc_mode_t mode);
 
 
 /** Set the TC output frequency in Hz.  This returns the actual
@@ -189,7 +216,7 @@ tc_prescale_t
 tc_prescale_set (tc_t tc, tc_prescale_t prescale);
 
 
-tc_t 
+tc_t
 tc_init (const tc_cfg_t *cfg);
 
 
@@ -208,7 +235,5 @@ tc_sync (void);
 
 #ifdef __cplusplus
 }
-#endif    
 #endif
-
-
+#endif

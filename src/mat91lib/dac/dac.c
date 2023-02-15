@@ -33,19 +33,18 @@
 #define DAC_STARTUP_TIME DAC_STARTUP_TIME_MIN
 #endif
 
-#define DAC DACC
 
 
 static uint8_t dac_devices_num = 0;
 static dac_dev_t dac_devices[DAC_DEVICES_NUM];
-static dac_dev_t *dac_config_last = 0;
+static bool dac_config_dirty = 0;
 
 
 /** Reset DAC.  */
 static void
 dac_reset (void)
 {
-    DAC->DACC_CR = DACC_CR_SWRST;
+    DACC->DACC_CR = DACC_CR_SWRST;
 }
 
 
@@ -54,13 +53,14 @@ dac_reset (void)
 void
 dac_sleep (dac_t dac)
 {
-    DAC->DACC_MR |= DACC_MR_SLEEP;
+    DACC->DACC_MR |= DACC_MR_SLEEP;
 }
 
 
-/** Set the DAC triggering.  */
+/** Set the DAC triggering.  This does not take affect until
+    dac_config called.  */
 void
-dac_trigger_set (dac_t dac, dac_trigger_t trigger) 
+dac_trigger_set (dac_t dac, dac_trigger_t trigger)
 {
     dac->trigger = trigger;
 
@@ -80,16 +80,17 @@ dac_trigger_set (dac_t dac, dac_trigger_t trigger)
         /* Enable trigger.  */
         dac->MR |= DACC_MR_TRGEN_EN;
     }
+    dac_config_dirty = 1;
 }
 
 
 /** Set the clock divider (prescaler).  */
 static void
-dac_clock_divisor_set (dac_t dac, dac_clock_divisor_t clock_divisor) 
+dac_clock_divisor_set (dac_t dac, dac_clock_divisor_t clock_divisor)
 {
-    /* The SAM4S requires 20 clocks per sample. 
+    /* The SAM4S requires 20 clocks per sample.
 
-       DAC_CLOCK = (F_CPU / 2) / clock_divisor.  
+       DAC_CLOCK = (F_CPU / 2) / clock_divisor.
     */
 
     if (clock_divisor >= 256)
@@ -97,6 +98,7 @@ dac_clock_divisor_set (dac_t dac, dac_clock_divisor_t clock_divisor)
 
     BITS_INSERT (dac->MR, clock_divisor - 1, 8, 15);
     dac->clock_divisor = clock_divisor;
+    dac_config_dirty = 1;
 }
 
 
@@ -114,6 +116,7 @@ dac_clock_speed_kHz_set (dac_t dac, dac_clock_speed_t clock_speed_kHz)
        SAM4S.  Let's allocate 512.  TODO, scan through table to find
        appropriate value.  */
     BITS_INSERT (dac->MR, 8, 16, 19);
+    dac_config_dirty = 1;
 
     return clock_speed / 1000;
 }
@@ -129,6 +132,7 @@ dac_refresh_clocks_set (dac_t dac, uint16_t refresh_clocks)
        nearest multiple.   */
     refresh = (refresh_clocks + (1 << 9)) >> 10;
     BITS_INSERT (dac->MR, refresh, 8, 15);
+    dac_config_dirty = 1;
 
     return refresh << 10;
 }
@@ -140,6 +144,7 @@ bool
 dac_channels_set (dac_t dac, dac_channels_t channels)
 {
     dac->channels = channels;
+    dac_config_dirty = 1;
     return 1;
 }
 
@@ -148,8 +153,8 @@ dac_channels_set (dac_t dac, dac_channels_t channels)
 static void
 dac_channels_select (dac_t dac)
 {
-    DAC->DACC_CHDR = ~0;
-    DAC->DACC_CHER = dac->channels;
+    DACC->DACC_CHDR = ~0;
+    DACC->DACC_CHER = dac->channels;
 }
 
 
@@ -168,14 +173,14 @@ dac_bits_set (dac_t dac, uint8_t bits)
 bool
 dac_config (dac_t dac)
 {
+    if (! dac_config_dirty)
+        return 1;
+    dac_config_dirty = 0;
+
     dac_channels_select (dac);
 
-    if (dac == dac_config_last)
-        return 1;
-    dac_config_last = dac;
-
     /* Set mode register.  */
-    DAC->DACC_MR = dac->MR;
+    DACC->DACC_MR = dac->MR;
     return 1;
 }
 
@@ -239,7 +244,7 @@ dac_init (const dac_cfg_t *cfg)
             .channel = 0,
             .clock_speed_kHz = 1000
         };
-    
+
     if (dac_devices_num >= DAC_DEVICES_NUM)
         return 0;
 
@@ -248,13 +253,13 @@ dac_init (const dac_cfg_t *cfg)
         /* The clock only needs to be enabled when sampling.  The clock is
            automatically started for the SAM7.  */
         mcu_pmc_enable (ID_DACC);
-        
+
         dac_reset ();
     }
 
     dac = dac_devices + dac_devices_num;
     dac_devices_num++;
-    
+
     dac->MR = 0;
 
     if (!cfg)
@@ -273,7 +278,7 @@ dac_init (const dac_cfg_t *cfg)
 bool
 dac_ready_p (dac_t dac)
 {
-    return (DAC->DACC_ISR & DACC_ISR_TXRDY) != 0;
+    return (DACC->DACC_ISR & DACC_ISR_TXRDY) != 0;
 }
 
 
@@ -281,7 +286,14 @@ dac_ready_p (dac_t dac)
 bool
 dac_conversion_finished_p (dac_t dac)
 {
-    return (DAC->DACC_ISR & DACC_ISR_TXRDY) != 0;
+    return (DACC->DACC_ISR & DACC_ISR_TXRDY) != 0;
+}
+
+
+uint32_t
+dac_isr_get (dac_t dac)
+{
+    return DACC->DACC_ISR;
 }
 
 
@@ -305,7 +317,7 @@ dac_write (dac_t dac, void *buffer, uint16_t size)
         while (!dac_ready_p (dac))
             continue;
 
-        DAC->DACC_CDR = data[i];
+        DAC_WRITE (dac, data[i]);
     }
 
     return samples * sizeof (dac_sample_t);
