@@ -30,18 +30,9 @@
             "setupCommands": [
                 {"text": "target remote tcp:localhost:3333", "description": ""},
                 {"text": "symbol-file ${fileDirname}/build/app.elf", "description": ""},
-
-                {"text": "define PMC", "description": ""},
-                {"text": "p/x *((Pmc    *)0x400E0400U)", "description": ""},
-                {"text": "end", "description": ""},
-
-                {"text": "define SSC", "description": ""},
-                {"text": "p/x *((Ssc    *)0x40004000U)", "description": ""},
-                {"text": "end", "description": ""},
-
                 {"text": "load ${fileDirname}/build/app.elf", "description": ""},
                 {"text": "break main", "description": ""},
-                {"text": "monitor halt", "description": ""}
+                {"text": "monitor reset halt", "description": ""}
             ],
             "launchCompleteCommand": "None",
             "externalConsole": false,
@@ -51,15 +42,6 @@
                 "setupCommands": [
                     {"text": "target remote tcp:localhost:3333", "description": ""},
                     {"text": "symbol-file ${input:windowsPathELF}", "description": ""},
-
-                    {"text": "define PMC", "description": ""},
-                    {"text": "p/x *((Pmc    *)0x400E0400U)", "description": ""},
-                    {"text": "end", "description": ""},
-
-                    {"text": "define SSC", "description": ""},
-                    {"text": "p/x *((Ssc    *)0x40004000U)", "description": ""},
-                    {"text": "end", "description": ""},
-
                     {"text": "load ${input:windowsPathELF}", "description": ""},
                     {"text": "break main", "description": ""},
                     {"text": "monitor reset halt", "description": ""}
