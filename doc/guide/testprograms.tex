@@ -98,40 +98,31 @@ with the current limit set at 100\,mA maximum in case there are any
 board shorts.  When all is well, you can increase the current limit;
 you will need at least 1\,A.
 
-\section{IMU}
-\label{imu-test}
+\section{Accelerometer}
+\label{accelerometer-test}
 
-The MPU9250 IMU connects to the SAM4S using the I2C bus (aka TWI bus).
-The program \wfile{test-apps/imu_test1/imu_test1.c} provides an
-example of using the MPU9250 IMU.  All going well, this prints three
-16-bit acceleration values per line to USB CDC. Tip your board over,
-and the the third (z-axis) value should go negative since this
-measures the effect of gravity on a little mass inside the IMU pulling
-on a spring.
+The ADXL345 accelerometer connects to the SAM4S using the I2C bus (aka
+TWI bus).  The program
+\wfile{test-apps/accelerometer_test1/accelerometer_test1.c} provides
+an example of using the ADXL345 accelerometer.  All going well, this
+prints three 16-bit acceleration values per line to USB CDC. Tip your
+board over, and the the third (z-axis) value should go negative since
+this measures the effect of gravity on a little mass inside the
+accelerometer pulling on a spring.
 
-If you get `ERROR: can't find MPU9250!', the main reasons are:
+If the program does not work, the main reasons are:
 
 \begin{enumerate}
 \item
-  You have specified the incorrect address.  Use 0x68 for
-  \code{MPU_ADDRESS} in \file{target.h} if the AD0 pin is connected to
-  ground otherwise use 0x69.
+  You have specified the incorrect address.  Use 0x1D for
+  \code{ADXL345_ADDRESS} in \file{target.h}.
 \item
   You are using TWI1. The \pin{PB4} and \pin{PB5} pins used by TWI1
   default to JTAG pins. See
   \protect\hyperref[disabling-jtag-pins]{disabling JTAG pins}.
 \end{enumerate}
 %
-See also \protect\hyperref[checking-IMU]{IMU checking}.
-
-Other problems:
-%
-\begin{enumerate}
-\item If you reset the SAM4S in the middle of a transaction with the
-IMU, the IMU gets confused and holds the \pin{TWD/SDA} line low. This
-requires recycling of the power or sending out some dummy clocks on
-the \pin{TWCK/SCL} signal.
-\end{enumerate}
+See also \protect\hyperref[checking-accelerometer]{accelerometer checking}.
 
 
 \section{Radio}

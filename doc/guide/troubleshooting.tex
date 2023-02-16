@@ -19,7 +19,7 @@ and then you test your hypothesis by making observations.  If the
 observations do not confirm your hypothesis, you need to revise your
 hypothesis and make more observations.
 
-For example, let's say the IMU does not work.  A hypothesis is that
+For example, let's say the accelerometer does not work.  A hypothesis is that
 the chip has no power, so you test this by measuring the power supply
 voltage at the chip with an \hyperref[oscilloscope]{oscilloscope}.
 But why not use a multimeter?  Well, a multimeter only gives the
@@ -28,10 +28,10 @@ oscillating or if there is a lot of noise.  If the power supply looks
 fine, you need another hypothesis, say that the MCU is not outputting
 I2C signals.  You then make observations of the I2C signals, with an
 oscilloscope, to see if they are changing.  If the waveforms seem
-fine, you might hypothesise that the IMU is not configured for the
+fine, you might hypothesise that the accelerometer is not configured for the
 correct I2C address.  So you then check that the acknowledge bit is
-driven low by the IMU.  If there is no acknowledgement, you then check
-the address that the IMU is configured for and the address sent over
+driven low by the accelerometer.  If there is no acknowledgement, you then check
+the address that the accelerometer is configured for and the address sent over
 the I2C bus.  If these match, you might hypothesise that there is a
 poor electrical connection.  So you look at the soldering under a
 microscope, and so forth.
@@ -548,33 +548,28 @@ If the PWM duty is wrong:
 \end{figure}
 
 
-\section{IMU}
-\label{imu}
+\section{accelerometer}
+\label{accelerometer}
 
-For the IMU to work:
+For the accelerometer to work:
 %
 \begin{enumerate}
-\item The IMU chip must be correctly configured.
+\item The accelerometer chip must be correctly configured.
 \item The I2C bus must be working.
 \end{enumerate}
 
 
-\subsection{IMU checking}
-\label{checking-IMU}
+\subsection{accelerometer checking}
+\label{checking-accelerometer}
 
 \begin{enumerate}
 \item Check the I2C bus (see \hyperref[debugging-i2c]{debugging I2C}).
-\item Check the auxiliary I2C bus signals are not connected on the IMU
-  (otherwise the magnetometer will not respond).
-\item Check \sig{nCS} on the IMU is pulled high.
-\item Check \sig{FSYNC} on the IMU is pulled low.
-\item Try pressing on a side of the IMU with a fingernail to see if it
+\item Try pressing on a side of the chip with a fingernail to see if it
   starts working; you might have a dry joint.  Otherwise look under
-  the microscope at the pins of the IMU and touch them up with a
+  the microscope at the pins of the chip and touch them up with a
   soldering iron if necessary.
-\item Check that you are using the correct I2C address corresponding
-the the state of the AD0 pin (see datasheet).
-\end{enumerate}
+\item Check that you are using the correct I2C address (see datasheet).
+{enumerate}
 
 
 \subsection{Debugging I2C}

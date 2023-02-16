@@ -236,16 +236,10 @@ pin is driven low to indicate a packet has been received.
 
 
 
-\subsection{MPU9250 IMU}\label{mpu9250-imu}
+\subsection{ADXL345 accelerometer}
+\label{adxl345-imu}
 
-This contains a three axis accelerometer, a three axis gyroscope, and a
-three axis magnetometer. It appears that the magnetometer has been
-bolted on to the accelerometers/gyroscopes and requires more hoop
-jumping in software to make it work. Documentation is available at
-\url{https://invensense.tdk.com/products/motion-tracking/9-axis/mpu-9250/}.
-
-It has two different I2C addresses (0x68 and Ox69) depending on the
-state of the \pin{AD0} pin.
+This contains a three axis accelerometer.  It has an I2C address 0X1D.
 
 
 \subsection{Buck converter}\label{buck-converter}
