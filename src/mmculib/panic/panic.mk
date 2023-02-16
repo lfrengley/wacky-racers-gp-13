@@ -1,6 +1,0 @@
-PANIC_DIR = $(DRIVER_DIR)/panic
-
-VPATH += $(PANIC_DIR)
-SRC += panic.c
-
-INCLUDES += -I$(PANIC_DIR)

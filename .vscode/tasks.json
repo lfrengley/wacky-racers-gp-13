@@ -2,13 +2,16 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Make",
+            "label": "Build",
             "type": "shell",
-            "command": "make",
+            "windows": {
+                "command": "${config:windowsToolchainEnvCmd} && make -j ${config:makeNumJobs}"
+            },
+            "command": "make -j ${config:makeNumJobs}",
             "options": {
                 "cwd": "${fileDirname}",
                 "env": {
-                    "BOARD": "${command:cpptools.activeConfigName}",
+                    "BOARD": "${command:cpptools.activeConfigName}"
                 }
             },
             "group": "build",
@@ -17,32 +20,68 @@
             ]
         },
         {
-            "label": "Make clean",
+            "label": "Bootflash",
             "type": "shell",
-            "command": "make",
-            "args": [
-                "clean"
-            ],
+            "windows": {
+                "command": "${config:windowsToolchainEnvCmd} && make -j ${config:makeNumJobs} bootflash"
+            },
+            "command": "make -j ${config:makeNumJobs} bootflash",
             "options": {
                 "cwd": "${fileDirname}",
                 "env": {
-                    "BOARD": "${command:cpptools.activeConfigName}",
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
+            },
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "make clean",
+            "windows": {
+                "command": "${config:windowsToolchainEnvCmd} && make clean"
+            },
+            "options": {
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
                 }
             },
             "group": "build",
             "problemMatcher": []
         },
         {
-            "label": "Make program",
+            "label": "Program",
             "type": "shell",
-            "command": "make",
-            "args": [
-                "program"
-            ],
+            "command": "make -j ${config:makeNumJobs} program",
+            "windows": {
+                "command": "${config:windowsToolchainEnvCmd} && make -j ${config:makeNumJobs} program"
+            },
             "options": {
                 "cwd": "${fileDirname}",
                 "env": {
-                    "BOARD": "${command:cpptools.activeConfigName}",
+                    "BOARD": "${command:cpptools.activeConfigName}"
+                }
+            },
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Debug",
+            "type": "shell",
+            "command": "make -j ${config:makeNumJobs} debug",
+            "windows": {
+                "command": "${config:windowsToolchainEnvCmd} && make -j ${config:makeNumJobs} debug"
+            },
+            "options": {
+                "cwd": "${fileDirname}",
+                "env": {
+                    "BOARD": "${command:cpptools.activeConfigName}"
                 }
             },
             "group": "build",
@@ -53,29 +92,18 @@
         {
             "label": "Launch OpenOCD",
             "type": "shell",
-            "command": "openocd",
-            "args": ["-f", "sam4s_stlink.cfg"],
-            "options": {
-                "cwd": "${workspaceFolder}/src/mat91lib/sam4s/scripts",
+            "command": "openocd -f ${workspaceFolder}/src/mat91lib/sam4s/scripts/sam4s_stlink.cfg",
+            "windows": {
+                "command": "${config:windowsToolchainEnvCmd} && openocd -f ${workspaceFolder}/src/mat91lib/sam4s/scripts/sam4s_stlink.cfg"
             },
-            "group": "build",
-            "problemMatcher": []
-        },
-        {
-            "label": "Set bootflash",
-            "type": "shell",
-            "command": "make",
-            "args": [
-                "bootflash"
-            ],
             "options": {
                 "cwd": "${fileDirname}",
                 "env": {
-                    "BOARD": "${command:cpptools.activeConfigName}",
+                    "BOARD": "${command:cpptools.activeConfigName}"
                 }
             },
             "group": "build",
             "problemMatcher": []
-        },
+        }
     ]
 }

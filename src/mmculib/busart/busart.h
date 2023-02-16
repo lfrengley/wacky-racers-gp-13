@@ -12,13 +12,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 
 #include "config.h"
 #include "sys.h"
 #include "ring.h"
-
 #include "usart0.h"
+#include <stdarg.h>
+
 
 typedef struct busart_dev_struct busart_dev_t;
 
@@ -41,10 +42,10 @@ typedef struct
     char *tx_buffer;
     /* Buffer used for the receive ring buffer (if zero one is
        allocated with malloc).  */
-    char *rx_buffer; 
-    /* Size of the transmit ring buffer in bytes.  */
+    char *rx_buffer;
+    /* Size of the transmit ring buffer in bytes (default 64).  */
     ring_size_t tx_size;
-    /* Size of the receive ring buffer in bytes.  */
+    /* Size of the receive ring buffer in bytes (default 64).  */
     ring_size_t rx_size;
     int read_timeout_us;
     int write_timeout_us;
@@ -113,6 +114,16 @@ int
 busart_puts (busart_t busart, const char *str);
 
 
+/* Non-blocking equivalent to fgets.  Returns 0 if a line is not available
+   other pointer to buffer.  */
+char *
+busart_gets (busart_t busart, char *buffer, int size);
+
+
+int
+busart_printf (busart_t busart, const char *fmt, ...);
+
+
 /* Clears the busart's transmit and receive buffers.  */
 void
 busart_clear (busart_t busart);
@@ -122,6 +133,5 @@ extern const sys_file_ops_t busart_file_ops;
 
 #ifdef __cplusplus
 }
-#endif    
 #endif
-
+#endif

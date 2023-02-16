@@ -2,4 +2,4 @@
 *.o
 *.map
 *.bin
-.vscode/
+build/

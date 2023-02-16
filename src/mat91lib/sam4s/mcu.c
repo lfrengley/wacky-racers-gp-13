@@ -87,8 +87,10 @@
 
 #define MCU_PLL_COUNT 0x3fu
 
-/* TODO: the required number of slow clock cycles divided by 8.  */
-#define MCU_MAINCK_COUNT 100
+/* The required number of slow clock cycles (400 Hz) divided by 8.
+   The xtal oscillator requires 14.5 ms max to start up.  This is approx
+   6 clocks.  */
+#define MCU_MAINCK_COUNT 2
 
 #define MCU_USB_LOG2_DIV 0
 
@@ -98,15 +100,15 @@
 */
 
 
-/* The AT91 Flash is single plane so it is not possible
+/* The AT91 nor flash memory is single plane so it is not possible
    to write to it while executing code out of it.  */
 
 /** Initialise flash memory controller.  */
 static void
 mcu_flash_wait_states_set (uint8_t wait_states)
 {
-    /* Set number of MCK cycles per microsecond for the Flash
-       microsecond cycle number (FMCN) field of the Flash mode
+    /* Set number of MCK cycles per microsecond for the flash
+       microsecond cycle number (FMCN) field of the flash mode
        register (FMR).  */
      EFC0->EEFC_FMR = EEFC_FMR_FWS (wait_states);
 }
@@ -120,21 +122,77 @@ mcu_flash_init (void)
 }
 
 
-static void
+void
+mcu_unique_id (mcu_unique_id_t id)
+    __attribute__ ((section(".ramtext")));
+
+
+/** Return 128-bit unique ID.  */
+void
+mcu_unique_id (mcu_unique_id_t id)
+{
+    int i;
+    uint32_t *p = (void *)0x400000;
+
+    /* I presume interrupts need to be disabled while this function is
+       being executed.  */
+
+    EFC0->EEFC_FCR = EEFC_FCR_FCMD_STUI | EEFC_FCR_FKEY_PASSWD;
+    while ((EFC0->EEFC_FSR & EEFC_FSR_FRDY))
+        continue;
+
+    for (i = 0; i < 4; i++)
+        *id++ = *p++;
+
+    EFC0->EEFC_FCR = EEFC_FCR_FCMD_SPUI | EEFC_FCR_FKEY_PASSWD;
+    while (! (EFC0->EEFC_FSR & EEFC_FSR_FRDY))
+        continue;
+}
+
+
+void
 mcu_xtal_mainck_start (void)
 {
+    /* Enable XTAL oscillator.  Be careful with read-modify-writes to
+     the CKGR_MOR register since reading of the key field does not
+     always return zero.  */
     PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCXTBY) |
         CKGR_MOR_KEY (0x37) | CKGR_MOR_MOSCXTEN |
         CKGR_MOR_MOSCXTST (MCU_MAINCK_COUNT);
-    
+
     /* Wait for the XTAL oscillator to stabilize.  */
     while (! (PMC->PMC_SR & PMC_SR_MOSCXTS))
         continue;
-    
-    PMC->CKGR_MOR |= CKGR_MOR_KEY (0x37) | CKGR_MOR_MOSCSEL;
 
-    /* Could check if XTAL oscillator fails to start; say if XTAL
-       not connected.  */
+    /* Select XTAL oscillator for MAINCK.  */
+    PMC->CKGR_MOR = (PMC->CKGR_MOR & ~CKGR_MOR_MOSCXTBY) |
+        CKGR_MOR_KEY (0x37) | CKGR_MOR_MOSCXTEN |
+        CKGR_MOR_MOSCXTST (MCU_MAINCK_COUNT) | CKGR_MOR_MOSCSEL;
+}
+
+
+static void
+mcu_fast_rc_mainck_start (void)
+{
+    /* Enable fast RC oscillator.  Be careful with read-modify-writes
+     to the CKGR_MOR register since reading of the key field does not
+     return zero.  */
+    PMC->CKGR_MOR = CKGR_MOR_KEY (0x37) | CKGR_MOR_MOSCRCEN |
+        CKGR_MOR_MOSCXTST (MCU_MAINCK_COUNT);
+
+    /* Select the 12 MHz fast RC oscillator.  There is a choice of 4
+       MHz default, 8 MHz and 12 MHz.  The 8 MHz and 12 MHz settings
+       are calibrated.  Note, cannot combine with enabling of RC
+       oscillator. */
+    PMC->CKGR_MOR = CKGR_MOR_KEY (0x37) | CKGR_MOR_MOSCRCEN |
+        CKGR_MOR_MOSCXTST (MCU_MAINCK_COUNT) | CKGR_MOR_MOSCRCF_12_MHz;
+
+    /* Wait for the RC oscillator to stabilize.  */
+    while (! (PMC->PMC_SR & PMC_SR_MOSCRCS))
+        continue;
+
+    /* Select RC oscillator for MAINCK.  */
+    PMC->CKGR_MOR = CKGR_MOR_KEY (0x37) | (PMC->CKGR_MOR & ~CKGR_MOR_MOSCSEL);
 }
 
 
@@ -148,7 +206,7 @@ mcu_mck_ready_wait (void)
 
     for (timeout = 1000; timeout && ! (PMC->PMC_SR & PMC_SR_MCKRDY); timeout--)
         continue;
- 
+
     return timeout != 0;
 }
 
@@ -159,11 +217,11 @@ mcu_clock_init (void)
 {
     /* To minimize the power required to start up the system, the main
        oscillator is disabled after reset and slow clock is
-       selected. 
+       selected.
 
-       There are four clock sources: 
+       There are four clock sources:
        1. SLCK (the 32 kHz internal RC oscillator or
-          32 kHz external crystal slow clock), 
+          32 kHz external crystal slow clock),
 
        2. MAINCK (the external 3-20 MHz crystal or internal 4/8/12 MHz
        internal fast RC oscillator main clock),
@@ -175,8 +233,8 @@ mcu_clock_init (void)
        The PLLs are driven by MAINCK.
 
        One of these four clock sources can be fed to a prescaler (with
-       divisors 2^0 ... 2^6) to drive MCK (master clock).   
-       
+       divisors 2^0 ... 2^6) to drive MCK (master clock).
+
        The main oscillator (external crystal) can range from 3--20 MHz.
        The PLLA frequency can range from 80--240 MHz.
 
@@ -190,29 +248,43 @@ mcu_clock_init (void)
        Initially MCK is driven from the 4 MHz internal fast RC oscillator.
     */
 
-    /* Hack to handle JTAG reset when the PLLA is still operating.
-       Without this call to mcu_reset, the PLLA is not enabled after
-       every second reset.  */
-    if ((PMC->PMC_MCKR & PMC_MCKR_CSS_Msk) == PMC_MCKR_CSS_PLLA_CLK)
-        mcu_reset ();
 
+    /* Select MAINCK for MCK (this should be selected on hardware
+       reset but not software reset).  */
+    if ((PMC->PMC_MCKR & PMC_MCKR_CSS_Msk) == PMC_MCKR_CSS_PLLA_CLK)
+    {
+        PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_CSS_Msk))
+            | PMC_MCKR_CSS_MAIN_CLK;
+        if (!mcu_mck_ready_wait ())
+            return 0;
+    }
+
+#ifdef MCU_12MHZ_RC_OSC
+    /* Start fast RC oscillator and select as MAINCK.  */
+    mcu_fast_rc_mainck_start ();
+#else
     /* Start XTAL oscillator and select as MAINCK.  */
     mcu_xtal_mainck_start ();
-    
+
+    /* TODO: check if XTAL oscillator fails to start; say if XTAL not
+       connected and switch to rc oscillator instead.  */
+#endif
+
     /* Select MAINCK for MCK (this should already be selected).  */
     PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_CSS_Msk))
         | PMC_MCKR_CSS_MAIN_CLK;
     if (!mcu_mck_ready_wait ())
         return 0;
 
+    /* TODO: disable RC oscillator if using XTAL oscillator.  */
+
     /* Set prescaler.  */
     PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_PRES_Msk)) | (MCU_MCK_PRESCALER_VALUE << 4);
-    
+
     if (!mcu_mck_ready_wait ())
         return 0;
 
-    /* Could disable internal fast RC oscillator here.  */
-
+    /* Could disable internal fast RC oscillator here if not being used.  */
 
     /* Disable PLLA if it is running and reset fields.  */
     PMC->CKGR_PLLAR = CKGR_PLLAR_ONE | CKGR_PLLAR_MULA (0);
@@ -220,34 +292,34 @@ mcu_clock_init (void)
     /* Configure and start PLLA.  The PLLA start delay is MCU_PLL_COUNT
        SLCK cycles.  Note, PLLA (but not PLLB) needs the mysterious
        bit CKGR_PLLAR_ONE set.  */
-    PMC->CKGR_PLLAR = CKGR_PLLAR_MULA (MCU_PLLA_MUL - 1) 
-        | CKGR_PLLAR_DIVA (MCU_PLLA_DIV) 
+    PMC->CKGR_PLLAR = CKGR_PLLAR_MULA (MCU_PLLA_MUL - 1)
+        | CKGR_PLLAR_DIVA (MCU_PLLA_DIV)
         | CKGR_PLLAR_PLLACOUNT (MCU_PLL_COUNT) | CKGR_PLLAR_ONE;
 
     #ifdef MCU_PLLB_MUL
     /* Configure and start PLLB.  The PLLB start delay is MCU_PLLB_COUNT
        SLCK cycles.  */
-    PMC->CKGR_PLLBR = CKGR_PLLBR_MULB (MCU_PLLB_MUL - 1) 
-        | CKGR_PLLBR_DIVB (MCU_PLLB_DIV) 
+    PMC->CKGR_PLLBR = CKGR_PLLBR_MULB (MCU_PLLB_MUL - 1)
+        | CKGR_PLLBR_DIVB (MCU_PLLB_DIV)
         | CKGR_PLLBR_PLLBCOUNT (MCU_PLL_COUNT);
     #endif
-    
+
     /* Wait for PLLA to start up.  */
     while (! (PMC->PMC_SR & PMC_SR_LOCKA))
         continue;
 
-    #ifdef MCU_PLLB_MUL    
+    #ifdef MCU_PLLB_MUL
     /* Wait for PLLB to start up.  */
     while (! (PMC->PMC_SR & PMC_SR_LOCKB))
         continue;
     #endif
-    
+
     /* Switch to PLLA_CLCK for MCK.  */
-    PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_CSS_Msk)) 
+    PMC->PMC_MCKR = (PMC->PMC_MCKR & (~PMC_MCKR_CSS_Msk))
         | PMC_MCKR_CSS_PLLA_CLK;
     if (!mcu_mck_ready_wait ())
         return 0;
-    
+
     return 1;
 }
 
@@ -290,7 +362,7 @@ mcu_watchdog_disable (void)
 }
 
 
-/** Disable JTAG but allow SWD.  */
+/** Disable JTAG but allow SWD.  This frees up PB5 and PB6 as PIO.  */
 void
 mcu_jtag_disable (void)
 {
@@ -302,14 +374,14 @@ mcu_jtag_disable (void)
 /** Initialise flash, disable watchdog, set up clocks.  This and any
     functions it calls must be for the C runtime startup to
     work.  */
-void 
+void
 mcu_init (void)
 {
     irq_id_t id;
     int i;
 
     mcu_flash_init ();
-    
+
     /* Disable all interrupts to be sure when debugging.  */
     for (i = 0; i < 8; i++)
         NVIC->ICER[i] = ~0;
@@ -334,7 +406,7 @@ void
 mcu_reset (void)
 {
     /* Reset processor and peripherals.  */
-    RSTC->RSTC_CR = RSTC_CR_PROCRST | RSTC_CR_PERRST 
+    RSTC->RSTC_CR = RSTC_CR_PROCRST | RSTC_CR_PERRST
         | (0xa5 << 24);
 }
 
@@ -351,7 +423,7 @@ mcu_select_slowclock (void)
 
     while (!(PMC->PMC_SR & PMC_SR_MCKRDY))
         continue;
-    
+
     /* Set prescaler to divide by 64.  */
     PMC->PMC_MCKR = (PMC->PMC_MCKR & PMC_MCKR_CSS_Msk)
         | PMC_MCKR_PRES_CLK_64;
@@ -453,7 +525,7 @@ mcu_power_mode_low (void)
 {
     /* Deactivating the brownout detector saves 20 uA; this requires
        programming of the GPNVM bits.  */
-       
+
     /* Disabling the UDP saves ??? uA.  Connecting the USB port pins
        to ground also saves about 100 uA.  */
     mcu_udp_disable ();
@@ -470,7 +542,7 @@ mcu_power_mode_low (void)
 
     while (!(PMC->PMC_SR & AT91C_PMC_MCKRDY))
         continue;
-    
+
     /* Set prescaler to divide by 64.  */
     PMC->PMC_MCKR = (PMC->PMC_MCKR & AT91C_PMC_CSS)
         | AT91C_PMC_PRES_CLK_64;
