@@ -263,26 +263,6 @@ value of the \code{windowsToolchainEnvCmd} field in
 just work as long as you have the toolchain installed as previously
 described.
 
-You may get the following error or similar on Windows when trying to
-run one of the build commands (via Ctrl-Shift-B):
-\begin{verbatim}
-  The Token '&&' Is not a valid separator...
-\end{verbatim}
-This is because your VS Code is configured to use PowerShell, which
-does not support the \verb|&&| operator, as its default shell. To fix
-this you need to change the default shell to Command Prompt (CMD):
-\begin{enumerate}
-  \item Open the command pallette (Ctrl-Shift-P) and type
-  \verb|terminal default|.
-  \item Navigate to \verb|Terminal: Set Default Profile| (on older
-  versions of VS Code this may be \verb|Terminal: Select Default Shell|),
-  and press Enter.
-  \item Set \verb|Command Prompt| as the default shell.
-\end{enumerate}
-Apparently,\footnote{\url{https://stackoverflow.com/a/564092}} newer
-versions of PowerShell support the \verb|&&| operator, but the version
-installed on the ESL machines evidently does not.
-
 \section{Using Windows in the ESL} \label{esl-windows}
 
 On the Windows machines in the ESL, the toolchain is located at
