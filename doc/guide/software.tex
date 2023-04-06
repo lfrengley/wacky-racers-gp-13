@@ -154,8 +154,10 @@ The fastest way to get the toolchain is to just copy the
 \file{C:\textbackslash{}ence461} directory from one of the ESL machines onto
 yours using a USB flash drive, for example. Then you can setup the toolchain
 environment by running
-\file{C:\textbackslash{}ence461\textbackslash{}ence461-path} as described in
-Section~\ref{esl-windows}.
+\file{C:\textbackslash{}path\textbackslash{}to\textbackslash{}ence461\textbackslash{}ence461-path}
+as described in Section~\ref{esl-windows}. (I recommend copying the folder to
+the same location as on the ESL machines, i.e. \file{C:\textbackslash{}ence461},
+since this will work out-of-the-box with the provided VS Code configuration.)
 
 You will also need to install the
 \href{https://www.st.com/en/development-tools/stsw-link009.html}{ST-Link/V2
@@ -164,9 +166,9 @@ driver}.
 \subsubsection{Manual installation}
 
 Download the latest ARM toolchain (the file ending in
-\code{*-mingw-w64-i686-arm-none-eabi.exe}) from the site provided above and
-run the installer. When the installer completes, make sure the box labelled
-`Add path to environment variable' is checked before closing.
+\code{*-mingw-w64-i686-arm-none-eabi.exe}) from the ARM website link
+provided above and run the installer. When the installer completes, make sure
+the box labelled `Add path to environment variable' is checked before closing.
 
 Install MSYS2 by following the instructions at \url{https://www.msys2.org/}
 (make sure you update package database as described). Then open `MSYS MSYS2'
@@ -213,10 +215,12 @@ written by Microsoft, it is free and runs on Windows, Linux and macOS.
 VS Code is a modern and highly versatile text editor.  With the right
 extensions, it can be used to develop code for just about anything!
 This project has been configured for VS Code on the ESL computers (but
-its relatively easy to modify it to work on a home computer, be it
-Windows, Linux, or Mac). For the simplest use, simply go \code{File ->
-Open Folder} and point it at the wacky-racers repository. The project
-is configured inside the \code{.vscode} directory. This will give you
+it's relatively easy to modify it to work on a home computer, be it
+Windows, Linux, or Mac).
+
+For the simplest use, simply go \code{File -> Open Folder} and point
+it at the wacky-racers repository. The project build settings are
+configured inside the \code{.vscode} directory. This will give you
 access to the build tools (Ctrl-Shift-B) that have been configured in
 the \code{.vscode/tasks.json} file. These must be run with a file of
 the app you are trying to build open in the editor (i.e.,
@@ -246,15 +250,38 @@ installation of two VS Code extensions:
 \end{enumerate}
 %
 VS Code should automatically prompt you to install these when you open
-  the wacky-racers directory.
+the \verb|wacky-racers| directory.
 
 The \code{.vscode} configuration in the upstream wacky-racers
-respository is configured specifically for the ESL machines and may
-require some reworking to get working on other machines. For example,
-the configuration assumes the toolchain is located at
-\file{C:\textbackslash{}ence461} (see Section~\ref{esl-windows}); this
-can be configured by changing the value of the
-\code{windowsToolchainEnvCmd} field in \code{.vscode/settings.json}.
+respository is configured specifically to work on the Windows machines
+in the ESL and may require some reworking to get working on other
+machines. For example, the Windows configuration assumes the toolchain
+is located at \file{C:\textbackslash{}ence461} (see
+Section~\ref{esl-windows}); this can be configured by changing the
+value of the \code{windowsToolchainEnvCmd} field in
+\code{.vscode/settings.json}. On Linux and macOS, the commands should
+just work as long as you have the toolchain installed as previously
+described.
+
+You may get the following error or similar on Windows when trying to
+run one of the build commands (via Ctrl-Shift-B):
+\begin{verbatim}
+  The Token '&&' Is not a valid separator...
+\end{verbatim}
+This is because your VS Code is configured to use PowerShell, which
+does not support the \verb|&&| operator, as its default shell. To fix
+this you need to change the default shell to Command Prompt (CMD):
+\begin{enumerate}
+  \item Open the command pallette (Ctrl-Shift-P) and type
+  \verb|terminal default|.
+  \item Navigate to \verb|Terminal: Set Default Profile| (on older
+  versions of VS Code this may be \verb|Terminal: Select Default Shell|),
+  and press Enter.
+  \item Set \verb|Command Prompt| as the default shell.
+\end{enumerate}
+Apparently,\footnote{\url{https://stackoverflow.com/a/564092}} newer
+versions of PowerShell support the \verb|&&| operator, but the version
+installed on the ESL machines evidently does not.
 
 \section{Using Windows in the ESL} \label{esl-windows}
 
@@ -272,7 +299,7 @@ window to source the toolchain. Although this guide is written for the Linux
 shell, the commands will also work in Command Prompt provided you observe the
 following differences:
 \begin{itemize}
-\item To change between drives (e.g. \file{C:} and \file{D:}), pass the
+\item To change between drives (e.g. \file{C:} and \file{P:}), pass the
 \code{/d} switch to the \code{cd} command.
 \item Instead of \code{export VARIABLE=value}, use \code{set VARIABLE=value}.
 Also you cannot set an environment variable when you run a command, so
@@ -281,6 +308,6 @@ separate commands instead.
 \item To run GDB, you must invoke the complete command name
 \code{arm-none-eabi-gdb}.
 \item In path names, \file{/} is replaced by \file{\textbackslash}
-(backslash). In \file{.c}, \file{.h}, and makefiles, however, you should use
-still use \file{/}.
+(backslash). In \file{.c}, \file{.h}, and makefiles, however, you
+should still use \file{/}.
 \end{itemize}
