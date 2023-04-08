@@ -31,8 +31,8 @@ int main(void)
             .payload_size = RADIO_PAYLOAD_SIZE,
             .ce_pio = RADIO_CE_PIO,
             .irq_pio = RADIO_IRQ_PIO,
+            .spi = spi_cfg,
         };
-    spi_t spi;
     nrf24_t *nrf;
 
     // Configure LED PIO as output.
@@ -48,11 +48,7 @@ int main(void)
     delay_ms (10);
 #endif
 
-    spi = spi_init ( &spi_cfg);
-    if (! spi)
-        panic (LED_ERROR_PIO, 1);
-
-    nrf = nrf24_init (spi, &nrf24_cfg);
+    nrf = nrf24_init (&nrf24_cfg);
     if (! nrf)
         panic (LED_ERROR_PIO, 2);
 
