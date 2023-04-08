@@ -11,6 +11,13 @@
 #include "adxl345.h"
 #include "panic.h"
 
+/*
+ * NOTE: you must define ADXL345_ADDRESS in target.h for this to compile.
+ */
+#ifndef ADXL345_ADDRESS
+#error ADXL345_ADDRESS must be defined
+#endif
+
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 1
 
