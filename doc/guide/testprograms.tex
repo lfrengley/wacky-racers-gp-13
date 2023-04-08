@@ -114,8 +114,10 @@ If the program does not work, the main reasons are:
 
 \begin{enumerate}
 \item
-  You have specified the incorrect address.  Use 0x1D for
-  \code{ADXL345_ADDRESS} in \file{target.h}.
+  You have specified the incorrect address.  Set
+  \code{ADXL345_ADDRESS} to either \code{0x1D} or \code{0x53} in
+  \file{target.h} depending on the state of the \verb|ALT ADDRESS| pin
+  on the chip (see datasheet).
 \item
   You are using TWI1. The \pin{PB4} and \pin{PB5} pins used by TWI1
   default to JTAG pins. See

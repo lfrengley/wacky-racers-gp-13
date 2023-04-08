@@ -239,7 +239,9 @@ pin is driven low to indicate a packet has been received.
 \subsection{ADXL345 accelerometer}
 \label{adxl345-imu}
 
-This contains a three axis accelerometer.  It has an I2C address 0X1D.
+This contains a three axis accelerometer.  It has an I2C address
+\code{0x1D} or \code{0x53} depending on the status of the
+\verb|ALT ADDRESS| pin (see the chip's datasheet).
 
 
 \subsection{Buck converter}\label{buck-converter}
