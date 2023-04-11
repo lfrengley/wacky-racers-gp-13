@@ -258,6 +258,12 @@ $ export BOARD=racer
 $ make program
 \end{minted}
 
+You can also explicitly set \code{BOARD} inside the Makefile (e.g., if
+you have a board-specific program):
+%
+\begin{minted}{makefile}
+BOARD = racer
+\end{minted}
 
 Each of the makefiles has the following phony targets:
 %
