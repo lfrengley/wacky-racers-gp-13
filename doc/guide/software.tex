@@ -272,12 +272,14 @@ specify their full path. See
 \wikiref{ARM-GCC_in_the_DSL}{ARM-GCC in the DSL} on ECEWiki for more
 information.
 
-You can use Windows Command Prompt similarly to a Linux Shell. To open, press
-\code{Windows Key} + \code{R}, type \code{cmd}, and \code{Enter}. Then run
-\file{C:\textbackslash{}ence461\textbackslash{}ence461-path} inside the CMD
-window to source the toolchain. Although this guide is written for the Linux
-shell, the commands will also work in Command Prompt provided you observe the
-following differences:
+Command Prompt (\code{cmd.exe}) is the Windows equivalent of a Unix
+shell. To open, press \verb|Windows Key + R|, type \code{cmd},
+and \code{Enter}. Then run
+\file{C:\textbackslash{}ence461\textbackslash{}ence461-path} inside
+the CMD window to source the toolchain. CMD syntax is quite different
+from that of Unix shells; however, the shell commands provided in this
+guide will also work provided you have run the toolchain batch file
+and observe the following differences:
 \begin{itemize}
 \item To change between drives (e.g. \file{C:} and \file{P:}), pass the
 \code{/d} switch to the \code{cd} command.
@@ -291,3 +293,13 @@ separate commands instead.
 (backslash). In \file{.c}, \file{.h}, and makefiles, however, you
 should still use \file{/}.
 \end{itemize}
+
+Windows also provides another command line interpreter called
+PowerShell (\code{pwsh.exe}). This is a more modern alternative to CMD
+but has quite a different syntax to it and Unix shells: for example,
+to set an environment variable you need to use \code{$env:BOARD =
+"hat"}. On VS Code on Windows, it is likely that PowerShell is set as
+the default shell (i.e. the interpreter used when you press
+\verb|Ctrl+`|); to change this, open the command palette
+(\verb|Ctrl+Shift+P|) and search for
+\code{Select Default Shell} and set it to \code{cmd.exe}.
