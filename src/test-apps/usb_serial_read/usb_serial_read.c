@@ -1,3 +1,19 @@
+/**
+ * A very simple USB serial calculator program.
+ *
+ * Supports addition:
+ *
+ *   [in]  1 + 2
+ *   [out] 3
+ *
+ * and subtraction
+ *
+ *   [in]  4 - 12
+ *   [out] -8
+ *
+ * There must be a single space either side of the operator.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include "usb_serial.h"
