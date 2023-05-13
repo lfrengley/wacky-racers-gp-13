@@ -46,6 +46,9 @@
                     {"text": "break main", "description": ""},
                     {"text": "monitor reset halt", "description": ""}
                 ]
+            },
+            "osx": {
+                "miDebuggerPath": "arm-none-eabi-gdb"
             }
         }
     ]
