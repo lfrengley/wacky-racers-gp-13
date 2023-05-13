@@ -31,6 +31,7 @@
 /* LEDs  */
 #define LED_ERROR_PIO PA20_PIO
 #define LED_STATUS_PIO PA23_PIO
+#define LED_ACTIVE 0
 
 /* General  */
 #define APPENDAGE_PIO PA1_PIO
