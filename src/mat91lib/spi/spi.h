@@ -318,7 +318,7 @@ spi_cs_negate (spi_t spi);
 
 
 bool
-spi_write_finished_p (ssc_t ssc);
+spi_write_finished_p (spi_t spi);
 
 #ifdef __cplusplus
 }

@@ -12,6 +12,8 @@
 #define PWM1_PIO PA1_PIO
 #define PWM2_PIO PA2_PIO
 
+// If you are using PWM to drive a motor you will need
+// to choose a lower frequency!
 #define PWM_FREQ_HZ 100e3
 
 static const pwm_cfg_t pwm1_cfg =
