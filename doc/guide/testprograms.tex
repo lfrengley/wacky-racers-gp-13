@@ -242,7 +242,8 @@ debouncing and state-transition detection.  For more details see
 \label{ledtape}
 
 \wfile{test-apps/ledtape_test1/ledtape_test1.c} shows how to drive the
-LEDtape.
+LEDtape.  Note, the timing is not consistent for all LED tapes so you
+may need to change \code{LEDTAPE_PERIOD} in \file{target.h}.
 
 \inputminted{C}{../../src/test-apps/ledtape_test1/ledtape_test1.c}
 

@@ -165,7 +165,8 @@ chip manufacturer usually provides a recommended layout.
 
 \item Add ground test points that you can clip an oscilloscope ground
   lead to.  Keep these away from other test points to avoid shorting
-  with the oscilloscope ground clip.
+  with the oscilloscope ground clip.  I recommend making a
+  staple-shaped wire loop, soldered between two holes.
 
 \includegraphics[width=5cm]{figs/scope_probe_testpoints.jpg}
 
@@ -196,7 +197,7 @@ chip manufacturer usually provides a recommended layout.
 
 \item Stitch power or ground planes where vias or traces cut them up.
 
-\item Traces of width $W$ it should be separated by at least $2W$ to
+\item Traces of width $W$ should be separated by at least $2W$ to
   reduce crosstalk.  This is the 3-W rule since the trace centres are
   $3W$.  An exception is for differential signals; these should be
   routed close together with a uniform spacing.
@@ -241,8 +242,8 @@ chip manufacturer usually provides a recommended layout.
   precision drilling.
 
 \item Number pins on connectors, big ICs, selection jumpers, etc. For
-  connectors, number enough pins that pin ordering is obvious. For
-  large ICs consider adding tickmarks every 5 pins.
+  connectors, number enough pins so that the pin ordering is
+  obvious.  For large ICs consider adding tickmarks every 5 pins.
 
 \item Make the pad for pin 1 of every IC square. Also consider putting
   a silkscreen dot next to pin 1.

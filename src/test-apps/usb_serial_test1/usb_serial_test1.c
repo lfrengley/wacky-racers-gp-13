@@ -22,6 +22,6 @@ int main (void)
     {
         delay_ms (HELLO_DELAY_MS);
         printf ("Hello world %d\n", i++);
-        pio_output_toggle(LED_STATUS_PIO);
+        pio_output_toggle (LED_STATUS_PIO);
     }
 }
