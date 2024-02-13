@@ -167,7 +167,7 @@ The H-bridge has four modes: forward, reverse, slow decay (brake), and
 fast decay (coast).  With slow decay mode, the motor is shorted so
 that it stops faster.  With fast decay mode, the motor is
 open-circuited and so it takes longer to stop.  However, there is
-little difference in practice, due to friction in the gearbox.
+little difference in practice, due to friction in the gearbox.  You will need to choose a suitable PWM frequency.
 
 If you want control over fast decay and slow decay in both forward and
 reverse you will need \textbf{four} independent PWM signals. The SAM4S

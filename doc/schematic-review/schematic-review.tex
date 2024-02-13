@@ -29,7 +29,7 @@
 
 \item Battery voltage monitoring
 
-\item Do the analogue inputs to the MCU exceed 3.3 V?
+\item The analogue inputs to the MCU do not exceed 3.3 V
 
 \item LEDs for debugging
 
@@ -42,13 +42,13 @@
 \item Ground test points
 
 \item USB signals are not swapped
-  
+
 \item USB has series termination resistors (27 ohm)
 
-\item VBUS detection through voltage divider to PIO pin.  This is
-  needed so that the MCU can tell when USB is plugged in or removed.
-  You will also need diodes (or jumpers) so that the USB 5\,V can be
-  connected to the 5\,V from the switching regulator.
+% \item VBUS detection through voltage divider to PIO pin.  This is
+%  needed so that the MCU can tell when USB is plugged in or removed.
+%  You will also need diodes (or jumpers) so that the USB 5\,V can be
+%  connected to the 5\,V from the switching regulator.
 
 \item Power supply filtering for radio (recommend ferrite bead or
   resistor in series with power rail with parallel capacitor)
@@ -84,17 +84,20 @@
 \section{Hat board}
 
 \begin{enumerate}
-\item Fall-back option if IMU does not work
+%\item Fall-back option if IMU does not work
 
 \item Nav-switch or joystick for remote control
 
 \item Drive circuit for piezo tweeter
 
-\item IMU nCS pin connected high to enable I2C operation
+% \item IMU nCS pin connected high to enable I2C operation
 
-\item IMU AUX pins not connected  
-  
+% \item IMU AUX pins not connected
+
+\item Acceleromter nCS pin connected high to enable I2C operation
+
 \end{enumerate}
+
 
 \section{Racer board}
 
