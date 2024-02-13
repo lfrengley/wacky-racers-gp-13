@@ -22,11 +22,11 @@
 
 \newcommand{\code}[1]{\texttt{#1}}
 
-\newcommand{\harryemail}{\url{mailto:harry.mander@pg.canterbury.ac.nz}}
+\newcommand{\fredyemail}{\url{mailto:fredy.youssif@canterbury.ac.nz}}
 \newcommand{\scottemail}{\url{mailto:scott.lloyd@.canterbury.ac.nz}}
 \newcommand{\diegoemail}{\url{mailto:diego.ramirez@canterbury.ac.nz}}
 
-\newcommand{\harry}{\href{mailto:harry.mander@pg.canterbury.ac.nz}{Harry Mander}}
+\newcommand{\fredy}{\href{mailto:fredy.youssif@pg.canterbury.ac.nz}{Fredy Youssif}}
 \newcommand{\scott}{\href{mailto:scott.lloyd@.canterbury.ac.nz}{Scott Lloyd}}
 \newcommand{\diego}{\href{mailto:diego.ramirez@canterbury.ac.nz}{Diego Ramirez}}
 
@@ -70,21 +70,22 @@ marks.
 \item Locomotion can only use two 6\,V DC motors (supplied).
 \item Everything must be powered from a single 5-cell NiMH battery pack (supplied).
 \item Use a single four layer printed circuit board of dimension 85\,mm$\times$64\,mm.
-\item Use an ARM microcontroller (Atmel SAM4S8).
+\item Use an ARM microcontroller (Atmel SAM4S).
 \item Drive the motors using H-bridges (Texas Instruments DRV8833 dual
-  H-bridge is recommended).
+  H-bridge).
 \item Regulate the nominal battery voltage to 5\,V with a buck
   regulator IC (ADP2302ARDZ-50).
 \item Be decorated with an LED tape (supplied) controlled by the MCU.
 \item Use a USB interface for debugging.
 \item Use a serial wire debug interface for MCU programming/debugging.
 \item Have adequate battery fusing and reverse polarity protection.
-\item Have a sleep pushbutton to enter low-power mode.
-\item If the battery voltage drops below 5\,V, an LED should flash and high power draw devices should be disabled.
+\item Have a pushbutton connected to the MCU to enter and wake from
+  low-power mode (optional).
 \item Have an active-high red LED to indicate errors.
 \item Have an active-high green LED to indicate status.
-\item Interface to the Wacky Hat with a Nordic nRF24 SMD radio module.
-\item Have four jumper selectable radio channels.
+\item If the battery voltage drops below 5\,V, the red LED should flash and high power draw devices should be disabled.
+\item Interface to the Wacky Hat with a Nordic nRF24 SMD radio module
+.
 %\item Have a mounted RFID card (supplied) that can be read by the Wacky ramps.
 \item Be humorous.
 \end{enumerate}
@@ -122,20 +123,21 @@ team's Wacky Racer.  However, you cannot:
 \item Everything must be powered from a single 5-cell NiMH battery pack (supplied).
 \item Have adequate battery fusing and reverse polarity protection.
 \item Use a single four layer printed circuit board of dimension 85\,mm$\times$64\,mm.
-\item Use an ARM microcontroller (Atmel SAM4S8).
+\item Use an ARM microcontroller (Atmel SAM4S).
 \item Regulate the nominal 6\,V battery voltage to 5\,V with a buck
   regulator IC (ADP2302ARDZ-50).
 \item Be decorated with an LED tape (supplied) controlled by the MCU.
 \item Use an I2C accelerometer (ADXL345) for head motion detection.
 \item Use a USB interface for debugging.
 \item Use a serial wire debug interface for MCU programming/debugging.
-\item Have a sleep pushbutton to enter low-power mode.
-\item If the battery voltage drops below 5\,V, an LED should flash and high power draw devices should be disabled.
+\item Have a pushbutton connected to the MCU to enter and wake from
+  low-power mode (optional).
+\item If the battery voltage drops below 5\,V, the red LED should flash and high power draw devices should be disabled.
 \item Have an active-high red LED to indicate errors.
 \item Have an active-high green LED to indicate status.
 \item Play sound when the bumper is hit.
 \item Interface to the Wacky Racer with a Nordic nRF24 SMD radio module.
-\item Have four jumper selectable radio channels.
+\item Have jumpers or switches to select four radio channels.
 \item Be humorous.
 \end{enumerate}
 
@@ -184,17 +186,17 @@ Notes:
 %
 \begin{enumerate}
 \item There are two lab streams.  Your group will need to sign up to
-  one of the streams.  Choose a group between 1--19 for the Thursday
-  9--11 am stream or group 20--39 for the Thursday 2--4 pm stream.
+  one of the streams.  Choose a group between 1--25 for the Wednesday
+  1--3 pm stream or group 26--50 for the Wednesday 3--5 pm stream.
 
-\item There there may be a 6--10 day delay for the PCBs to be
-  manufactured from the time of submission.  You will then need to
-  book an assembly session in the SMT lab provided you have done the
-  SMT lab induction.
+\item There may be a 6--10 day delay for the PCBs to be manufactured
+  from the time of submission.  You will then need to book an assembly
+  session in the SMT lab provided you have done the SMT lab induction.
 
-\item Do not underestimate the blinky milestone.  It requires having a
-  functional PCB, a functional toolchain, and the ability to download
-  code into the microcontroller's flash memory.
+\item Do not underestimate the blinky milestone.  The program is
+  trivial; you just have to flash an LED.  However, it requires having
+  a functional PCB, a functional toolchain, and the ability to
+  download code into the microcontroller's flash memory.
 
 \end{enumerate}
 
@@ -221,8 +223,9 @@ The marks breakdown (max. 0x64) is:
 
 There are five milestones.  To achieve the associated marks, they must
 be demonstrated to a T.A. by the end of the lab for your allotted
-stream.  If you need an exception to this, see \harry\ with a
-\emph{very} good reason.  The milestone requirements are:
+stream.  If you need an exception to this, see \fredy\ with a
+\emph{very} good reason such as isolating with COVID.  The milestone
+requirements are:
 %
 \begin{description}
 \item [Schematic review] Submit your A3 schematic on Learn for
@@ -251,12 +254,21 @@ stream.  If you need an exception to this, see \harry\ with a
 
 \item [Blinky] Demonstrate that can blink an LED controlled by the SAM4S.
 
-\item [Accelerometer/motors] For the Wacky Hat, demonstrate output of accelerometer
-  readings to a PC using USB CDC.  For the Wacky Racer, demonstrate
-  control of the motors from a PC using USB CDC.
+\item [Accelerometer/motors] For the Wacky Hat, demonstrate output of
+  accelerometer readings to a PC using USB CDC and generate a PWM
+  signal with a frequency proportional to the tilt angle of the
+  accelerometer.
 
-\item[Radio control] Demonstrate sending commands from the Wacky Hat
-  to the Wacky Racer over a radio link.
+  For the Wacky Racer, demonstrate generation of a PWM signal with a
+  duty set from a terminal program using USB CDC.
+
+\item[Radio control]
+
+  Demonstrate sending commands from the Wacky Hat to the Wacky Racer
+  and vice-versa over a radio link.
+
+%  Demonstrate sending commands from the Wacky Hat to the Wacky Racer
+%  over a radio link.
 \end{description}
 
 \textbf{If you cannot show the functionality of a previous milestone
@@ -276,7 +288,7 @@ Functionality requirements:
     Drive motors forward/backward  & Read from accelerometer \\
     Speed control of motors        & Calculate speeds from accelerometer \\
     Steering control               & Joystick control \\
-    Receive radio message          & Send radio message \\
+    Receive/send radio message     & Reeive/send radio message \\
     Jumper selectable radio channel & Jumper selectable radio channel  \\
     Dies on bump                   & Plays sound on bump \\
     Low voltage indication         & Low voltage indication \\
@@ -345,13 +357,13 @@ This is assessed after the competition.  The categories are:
 
   \begin{itemize}
   \item Form a group of four and register your group on Learn.  If you
-    cannot form a group of 4, contact \harry.
+    cannot form a group of 4, contact \fredy.
 
   \item Read the Requirements section in this document.
 
   \item Read the System Design section in the \theguide.
 
-  \item Attend Altium schematic tutorial.
+  \item Attempt Altium schematic tutorial.
 
   \end{itemize}
 
@@ -379,7 +391,7 @@ This is assessed after the competition.  The categories are:
 \item [Week~4]\mbox{}\\[-0.4cm]
 
   \begin{itemize}
-  \item Attend Altium PCB tutorial.
+  \item Attempt Altium PCB tutorial.
 
   \item Start your PCB layout.
   \end{itemize}
@@ -527,7 +539,7 @@ repository, you can get the updated stuff using:
 \subsection{Schematics}
 
 \begin{enumerate}
-\item Read the Altium tutorial on Learn.
+\item Attempt the Altium tutorial on Learn.
 
 \item Read the \theguide.
 
@@ -546,7 +558,7 @@ repository, you can get the updated stuff using:
   \includegraphics[width=5cm]{../guide/figs/testpoints.jpg}  \includegraphics[width=5cm]{../guide/figs/micro_probe_zoom.jpg}
 
 \item Ground test points are essential for an oscilloscope earth clip.
-  A U-shaped piece of wire soldered into two holes is good for this.
+  A U-shaped piece of wire soldered between two holes is good for this.
   Keep ground test points clear of other test points since the earth
   clip may short between them.  You will probably require at least two
   ground points on opposite sides of the PCB.
@@ -692,10 +704,11 @@ final mark.
 
 \section{Assistance}
 
-There is a team of TAs and technicians \scott\ (\scottemail) and
-\diego\ (\diegoemail).  \scott\ has his office in the Surface Mount
-Lab on Level 2; \diego\ has his office in the Electronics Lab on Level
-2.
+\fredy\ is our senior tutor for embedded systems and is in charge of
+the assignment.  He is supported by a team of TAs and technicians
+\scott\ (\scottemail) and \diego\ (\diegoemail).  \scott\ has his
+office in the Surface Mount Lab on Level 2; \diego\ has his office in
+the Electronics Lab on Level 2.
 
 
 \begin{itemize}
@@ -707,7 +720,7 @@ Lab on Level 2; \diego\ has his office in the Electronics Lab on Level
   post without a 30\,minute delay.
 
 \item All decisions regarding legality of your racer and dastardly
-  devices are at the whim of \diego.  Email \diego\ if you wish to
+  devices are at the whim of \fredy.  Email \fredy\ if you wish to
   keep your ideas secret.
 
 \item TAs will be available in the scheduled lab times.  Priority will
@@ -720,9 +733,9 @@ Lab on Level 2; \diego\ has his office in the Electronics Lab on Level
   surface mount rework, see \scott\ (SMT Lab technician) and
   \diego\ (Electronics Lab technician).
 
-\item Michael Hayes is really busy pulling all the string behind the
-  scenes and so will only help with gnarly problems referred to by the
-  TAs.
+\item Michael Hayes is really busy pulling all the strings behind the
+  scenes and so will only help with gnarly problems referred to by
+  \fredy.
 
 \end{itemize}
 
@@ -739,7 +752,7 @@ Lab on Level 2; \diego\ has his office in the Electronics Lab on Level
   Learn page.
 
 \item If because of illness or isolation your group cannot meet a
-  milestone, email \harry.
+  milestone, email \fredy.
 
 \item Some of the milestones may need to be altered.
 
