@@ -269,12 +269,50 @@ There are many flavours of \wikiref{voltage_regulators}{voltage regulator}.
 Some are better for digital applications, some are better for analogue
 applications, some are better for low power applications, etc.
 
+The dropout voltage must be smaller than the difference between the
+input and output voltages.  Modern low dropout (LDO) voltage
+regulators have a drop-out voltage of 300\,mV.  Note, the greater the
+voltage difference between the input and output, the more heat that is
+generated in the regulaor.
+
 If you are using a voltage regulator with an enable pin, do not forget
 to allow for the time for the output voltage to ramp up. This can be
 tens of milliseconds depending on the capacitive load and current draw.
 
 Note, some regulators have pins that you must not connect. Some have
 multiple pins for the same purpose; these must all be connected.
+
+All voltage regulators have a transient response.  So any changes of
+the input voltage or output current will produce a transient.  Adding
+more capacitance can reduce the transient peak but at the expense of a
+longer transient time.
+
+The regulation degrades at high frequencies since the control system
+of the regulator cannot keep up with disturbances.  For analogue
+supplies, a ferrite bead is useful in series with the regulator output
+to reduce high-frequency ripple.
+
+
+Note, when you connect the ST-Link programmer, the 3V3 regulator
+inside the programmer is connected in parallel with your 3V3 regulator
+powering the MCU.  There are two things to consider: back-feeding and
+current-sharing.
+
+Some regulators cannot be back-fed.  This occurs when the output
+voltage is higher than the input voltage.  In general, MOS devices can
+be back-fed since the pass transistor has a body-diode.
+
+Two regulators in parallel will not share current except on the rare
+chance that the regulated output voltage is precisely the same.  In
+practice, However, there are variations in the regulated voltage and
+so the regulator with the higher output voltage will source most of
+the current.
+
+The cat6219 3.3\,V regulator has a maximum input voltage of 5.5\,V and
+so cannot be connected directly to the battery.  It has a drop-out
+voltage of 0.3\,V at its maximum output current of 500\,mA.  The
+datasheet does not say it cannot be back-fed.  It is a CMOS device so
+is likely to be safely back-fed.
 
 
 \subsection{Level-shifter}\label{level-shifter}
