@@ -302,13 +302,14 @@ Some regulators cannot be back-fed.  This occurs when the output
 voltage is higher than the input voltage.  In general, MOS devices can
 be back-fed since the pass transistor has a body-diode.
 
-Two regulators in parallel will not share current except on the rare
-chance that the regulated output voltage is precisely the same.  In
-practice, However, there are variations in the regulated voltage and
-so the regulator with the higher output voltage will source most of
-the current.
+Two regulators in parallel will not share
+current\footnote{\url{https://www.analog.com/en/technical-articles/paralleling-linear-regulators-made-easy.html}}
+except on the rare chance that the regulated output voltage is
+precisely the same.  In practice, However, there are variations in the
+regulated voltage and so the regulator with the higher output voltage
+will source most of the current.
 
-The cat6219 3.3\,V regulator has a maximum input voltage of 5.5\,V and
+The CAT6219 3.3\,V regulator has a maximum input voltage of 5.5\,V and
 so cannot be connected directly to the battery.  It has a drop-out
 voltage of 0.3\,V at its maximum output current of 500\,mA.  The
 datasheet does not say it cannot be back-fed.  It is a CMOS device so
