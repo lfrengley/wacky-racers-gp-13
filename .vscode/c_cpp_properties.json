@@ -3,7 +3,7 @@
         {
             "name": "hat",
             "intelliSenseMode": "linux-gcc-arm",
-            "compilerPath": "",
+            "compilerPath": "/usr/bin/gcc",
             "defines": [
                 "BOARD=hat",
                 "MCU=SAM4S8B",
@@ -20,7 +20,7 @@
         {
             "name": "racer",
             "intelliSenseMode": "gcc-arm",
-            "compilerPath": "",
+            "compilerPath": "/usr/bin/gcc",
             "defines": [
                 "BOARD=racer",
                 "MCU=SAM4S8B",

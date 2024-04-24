@@ -8,8 +8,7 @@
 #include "pacer.h"
 
 /* Define LED flash rate in Hz.  */
-#define LED_FLASH_RATE 2
-
+#define LED_FLASH_RATE 4
 /*
     This test app is the faithful blinky program.  It works as follows:
     1. set the LED pin as an output low (turns on the LED if LED active low).
@@ -29,6 +28,7 @@ main (void)
 {
     /* Configure STATUS LED PIO as output.  */
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_HIGH);
+
 
     pacer_init (LED_FLASH_RATE * 2);
 
