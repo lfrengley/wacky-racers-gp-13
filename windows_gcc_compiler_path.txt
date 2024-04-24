@@ -1,0 +1,1 @@
+"compilerPath": "C:\\ence461\\tool-chain\\gcc-arm-none-eabi-9-2019-q4\\bin\\arm-none-eabi-gcc.exe"
