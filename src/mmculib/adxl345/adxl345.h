@@ -16,6 +16,12 @@ extern "C" {
 #include "config.h"
 #include "twi.h"
 
+#include <math.h>
+
+// Constants for accelerometer sensitivity and gravity
+#define ACCEL_SENSITIVITY 16384.0 // Sensitivity of the accelerometer in LSB/g
+#define GRAVITY 9.81 // Acceleration due to gravity in m/s^2
+
 typedef struct
 {
     twi_t twi;             /* TWI bus */

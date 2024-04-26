@@ -82,10 +82,5 @@
 /* SWD  */
 #define SWD_SWCLK_PIO PB7_PIO
 #define SWD_SWDIO_PIO PB6_PIO
-#define SWD_SWCLK_PIO PB7_PIO
-
-/* USB  */
-// #define USB_DP_PIO PB11_PIO
-// #define USB_DN_PIO PB10_PIO
 
 #endif /* TARGET_H  */
