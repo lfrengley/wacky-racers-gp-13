@@ -75,4 +75,7 @@
 #define SWD_SWCLK_PIO PB7_PIO
 #define SWD_SWDIO_PIO PB6_PIO
 
+/* Accelerometer */
+#define ADXL345_ADDRESS 0x53
+
 #endif /* TARGET_H  */
