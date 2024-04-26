@@ -23,6 +23,12 @@
 #define ADXL345_FIFO_CTL  0x38
 #define ADXL345_FIFO_STATUS 0x39
 
+#define ADXL345_RANGE_2G 0x40
+#define ADXL345_RANGE_16G 0x08
+
+
+
+
 
 // We only support a single device, so we will use a single
 // static allocation to store it.
@@ -109,7 +115,8 @@ adxl345_t *adxl345_init (twi_t twi, twi_slave_addr_t addr)
     adxl345_write (dev, ADXL345_POWER_CTL, 0x08);
 
     /* Set full range with 4 mg/LSB.  */
-    adxl345_write (dev, ADXL345_DATA_FORMAT, 0x08);
+    // adxl345_write (dev, ADXL345_DATA_FORMAT, ADXL345_RANGE_16G);
+    adxl345_write (dev, ADXL345_DATA_FORMAT, ADXL345_RANGE_2G); 
 
     return dev;
 }
