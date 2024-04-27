@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define NUM_SAMPELS 3
+
 void init_accelerometer(void);
 
 bool check_accelerometer(void);

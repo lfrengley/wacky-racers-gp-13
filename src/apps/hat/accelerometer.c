@@ -11,7 +11,6 @@
 #include "adxl345.h"
 #include "panic.h"
 
-static uint8_t NUM_SAMPLES = 3;
 static int8_t RANGE = 2; // accelleration range in terms of g
 static int8_t N = 10; // num bits at given range
 static uint16_t TO_DEG = 57296; // 180 * 1000 / pi
@@ -25,8 +24,8 @@ typedef struct {
 } AccelVector;
 
 typedef struct {
-    AccelVector samples[3];
-    uint8_t index;
+    AccelVector samples[NUM_SAMPELS];
+    uint8_t index = 0;
 } MovingAverageFilter;
 
 static MovingAverageFilter filter;
@@ -69,12 +68,12 @@ static void calculate_percent_gravity(AccelVector *avg_raw_accel, AccelVector *a
 }
 
 static void calculate_pitch_roll(AccelVector *accel_gravity_perc, int32_t *pitch, int32_t *roll) {
-    // Calculate pitch angle
+
     int16_t x = accel_gravity_perc->x;
     int16_t y = accel_gravity_perc->y;
     int16_t z = accel_gravity_perc->z;
+
     *pitch = (int32_t)((asinf(x / sqrtf((float)(x*x + y*y + z*z))) * TO_DEG));
-    // Calculate roll angle
     *roll = (int32_t)((atan2f(y, z) * TO_DEG));
 }
 
@@ -119,38 +118,36 @@ static void calc_moving_average(const MovingAverageFilter *filter, AccelVector *
 
 bool check_accelerometer(void) {
         /* Read in the accelerometer data.  */
+        int16_t accel_array[3];
+        AccelVector raw_accel;
+        AccelVector avg_raw_accel;
+        AccelVector accel_gravity_perc;
+        int32_t pitch, roll;
+
         bool accelerometer_state;
         if (! adxl345_is_ready (adxl345)) {
             printf ("Waiting for accelerometer to be ready...\n");
-            accelerometer_state = false;
-        } else {
-            int16_t accel_array[3];
-            AccelVector raw_accel;
-            AccelVector avg_raw_accel;
-            AccelVector accel_gravity_perc;
-
-            if (adxl345_accel_read (adxl345, accel_array)) {
-                write_accel_vector(&raw_accel, accel_array);
-                update_moving_average_filter(&filter, &raw_accel);
-                calc_moving_average(&filter, &avg_raw_accel);
-
-                // Variables to store pitch and roll angles
-                int32_t pitch, roll;
-
-                calculate_percent_gravity(&avg_raw_accel, &accel_gravity_perc);
-                calculate_pitch_roll(&accel_gravity_perc, &pitch, &roll);
-
-                printf ("x: %5ld  y: %5ld  z: %5ld\n", accel_gravity_perc.x, accel_gravity_perc.y, accel_gravity_perc.z); 
-                printf ("pitch: %3ld deg\troll %3ld deg\n", pitch/1000, roll/1000); //pitch doesn't go full 180?
-                
-                accelerometer_state = true;
-            } else {
-                printf ("ERROR: failed to read acceleration\n");
-                accelerometer_state = false;
-            }
+            return false;
         }
 
-        return accelerometer_state;
+        if (adxl345_accel_read (adxl345, accel_array)) {
+            // Filter the raw accelerometer data
+            write_accel_vector(&raw_accel, accel_array);
+            update_moving_average_filter(&filter, &raw_accel);
+            calc_moving_average(&filter, &avg_raw_accel);
+
+            // Convert raw values to pitch and roll
+            calculate_percent_gravity(&avg_raw_accel, &accel_gravity_perc);
+            calculate_pitch_roll(&accel_gravity_perc, &pitch, &roll);
+
+            // printf ("x: %5d  y: %5d  z: %5d\n", accel_gravity_perc.x, accel_gravity_perc.y, accel_gravity_perc.z); 
+            printf ("pitch: %3ld deg\troll %3ld deg\n", pitch/1000, roll/1000); //pitch doesn't go full 180?
+            
+            return true;
+        } else {
+            printf ("ERROR: failed to read acceleration\n");
+            return false;
+        }
 }
 
 void set_duty(uint8_t *duty1, uint8_t *duty2, uint8_t *duty3, uint8_t *duty4) {
