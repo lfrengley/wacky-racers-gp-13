@@ -1,5 +1,5 @@
 PERIPHERALS = pit
-DRIVERS = pacer usb_serial adxl345 panic
+DRIVERS = pacer usb_serial adxl345 panic piezo
 SRC = hat.c accelerometer.c
 
 # Use low level of optimisation to simplify debugging

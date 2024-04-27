@@ -11,6 +11,7 @@
 #include "adxl345.h"
 #include "panic.h"
 
+static uint8_t NUM_SAMPLES = 3;
 static int8_t RANGE = 2; // accelleration range in terms of g
 static int8_t N = 10; // num bits at given range
 static uint16_t TO_DEG = 57296; // 180 * 1000 / pi
@@ -23,9 +24,8 @@ typedef struct {
     int16_t z;
 } AccelVector;
 
-static uint8_t NUM_SAMPLES = 3;
 typedef struct {
-    AccelVector samples[NUM_SAMPLES];
+    AccelVector samples[3];
     uint8_t index;
 } MovingAverageFilter;
 
