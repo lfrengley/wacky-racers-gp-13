@@ -125,7 +125,7 @@ static int32_t clip_values(int32_t val, int32_t max_val, int32_t min_val) {
     return val
 }
 
-static void set_duty(MotorDuties *duties, int8_t pitch, int8_t roll) {
+static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     /*
     Takes the pitch and roll angles (degrees * 1000) of the accelerometer.
     Clips the values within accepetable range.
@@ -168,7 +168,7 @@ static void set_duty(MotorDuties *duties, int8_t pitch, int8_t roll) {
     if (left_speed == 0) {
         duties->A1 = 0;
         duties->A2 = 0;
-    } elif (left_speed > 0) {
+    } else if (left_speed > 0) {
         duties->A1 = (left_speed * 100) / max_speed;
         duties->A2 = 0;
     } else {
@@ -179,14 +179,13 @@ static void set_duty(MotorDuties *duties, int8_t pitch, int8_t roll) {
     if (right_speed == 0) {
         duties->B1 = 0;
         duties->B2 = 0;
-    } elif (right_speed > 0) {
+    } else if (right_speed > 0) {
         duties->B1 = (right_speed * 100) / max_speed;
         duties->B2 = 0;
     } else {
         duties->B2 = (right_speed * 100) / max_speed;
         duties->B1 = 0;
     }
-
 }
 
 bool check_accelerometer(MotorDuties *duties) {
