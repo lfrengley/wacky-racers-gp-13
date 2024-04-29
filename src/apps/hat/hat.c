@@ -40,10 +40,7 @@ int
 main (void)
 {
     int ticks = 0;
-    uint8_t duty1;
-    uint8_t duty2;
-    uint8_t duty3;
-    uint8_t duty4;
+    MotorDuties duties;
     //Initialise
     init();
 
@@ -58,11 +55,9 @@ main (void)
 
         pio_output_toggle (LED_STATUS_PIO);
 
-        if (check_accelerometer()) {
-            set_duty(&duty1, &duty2, &duty3, &duty4);
-            printf ("duty1: %3d, duty2: %3d, duty3: %3d, duty4: %3d \n\n", duty1, duty2, duty3, duty4);
+        if (check_accelerometer(&duties)) {
+            printf ("Duties-> A1: %3d,\tA2: %3d%,\tA3: %3d,\tA4: %3d\n\n", duties->A1, duties->A2, duties->B1, duties->B2);
         }
-
         
         // TODO: send to radio!
     }

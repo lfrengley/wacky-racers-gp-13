@@ -116,7 +116,80 @@ static void calc_moving_average(const MovingAverageFilter *filter, AccelVector *
     avg_accel->z = sum_z / NUM_SAMPLES;
 }
 
-bool check_accelerometer(void) {
+static int32_t clip_values(int32_t val, int32_t max_val, int32_t min_val) {
+    if (val < min_val) {
+        val = min_val;
+    } else if (val > max_val) {
+        val = max_val;
+    }
+    return val
+}
+
+static void set_duty(MotorDuties *duties, int8_t pitch, int8_t roll) {
+    /*
+    Takes the pitch and roll angles (degrees * 1000) of the accelerometer.
+    Clips the values within accepetable range.
+    Converts these to an abitrary forward and turning speed using the pitch
+    and roll angles, and forward and turning gains. Adds a deadband in the middle
+    where there is no speed.
+    Divides these speeds by the max possible speeds to get a duty cycle percentage
+    TODO: Check it actually works...
+    */    
+    int32_t ANGLE_MULTIPLIER = 1000; // for working with ints not floats
+    int32_t max_pitch = 60 * ANGLE_MULTIPLIER; //degrees
+    int32_t min_pitch = -max_pitch; //degrees
+    int32_t pitch_deadband = 15 * ANGLE_MULTIPLIER;
+    int32_t max_roll = 50 * ANGLE_MULTIPLIER;
+    int32_t min_roll = -max_roll;
+    int32_t roll_deadband = 15 * ANGLE_MULTIPLIER;
+
+    // Calculate forward speed
+    int32_t forward_speed = 0;
+    int8_t speed_gain = 15; // random number
+
+    if (abs(pitch) > pitch_deadband) {
+        int32_t clipped_pitch = clip_values(pitch, max_pitch, min_pitch);
+        forward_speed = clipped_pitch * speed_gain;
+
+    // Calculate turning speed
+    int32_t turning_speed = 0;
+    int8_t turning_gain = 3;
+    if (abs(roll) > roll_deadband) {
+        int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
+        turning_speed = clipped_roll * turning_gain;
+    }
+
+    // Calculate motor speeds
+    int32_t left_speed = forward_speed - turning_speed;
+    int32_t right_speed = forward_speed + turning_speed;
+    int32_t max_speed = max_pitch * speed_gain + max_roll * turning_gain;
+
+    // Calculate duty cycles (may need to flip some of these around)
+    if (left_speed == 0) {
+        duties->A1 = 0;
+        duties->A2 = 0;
+    } elif (left_speed > 0) {
+        duties->A1 = (left_speed * 100) / max_speed;
+        duties->A2 = 0;
+    } else {
+        duties->A2 = (left_speed * 100) / max_speed;
+        duties->A1 = 0;
+    }
+
+    if (right_speed == 0) {
+        duties->B1 = 0;
+        duties->B2 = 0;
+    } elif (right_speed > 0) {
+        duties->B1 = (right_speed * 100) / max_speed;
+        duties->B2 = 0;
+    } else {
+        duties->B2 = (right_speed * 100) / max_speed;
+        duties->B1 = 0;
+    }
+
+}
+
+bool check_accelerometer(MotorDuties *duties) {
         /* Read in the accelerometer data.  */
         int16_t accel_array[3];
         AccelVector raw_accel;
@@ -143,6 +216,8 @@ bool check_accelerometer(void) {
             // printf ("x: %5d  y: %5d  z: %5d\n", accel_gravity_perc.x, accel_gravity_perc.y, accel_gravity_perc.z); 
             printf ("pitch: %3ld deg\troll %3ld deg\n", pitch/1000, roll/1000); //pitch doesn't go full 180?
             
+            set_duty(&duties, pitch, roll);
+
             return true;
         } else {
             printf ("ERROR: failed to read acceleration\n");
@@ -150,10 +225,3 @@ bool check_accelerometer(void) {
         }
 }
 
-void set_duty(uint8_t *duty1, uint8_t *duty2, uint8_t *duty3, uint8_t *duty4) {
-    *duty1 = 1;
-    *duty2 = 2;
-    *duty3 = 3;
-    *duty4 = 4;
-
-}

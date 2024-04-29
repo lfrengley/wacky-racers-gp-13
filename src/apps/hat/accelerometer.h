@@ -14,10 +14,15 @@
 
 #define NUM_SAMPELS 3
 
+typedef struct {
+    int16_t A1;
+    int16_t A2;
+    int16_t A3;
+    int16_t A4;
+} MotorDuties;
+
 void init_accelerometer(void);
 
-bool check_accelerometer(void);
-
-void set_duty(uint8_t *duty1, uint8_t *duty2, uint8_t *duty3, uint8_t *duty4);
+bool check_accelerometer(MotorDuties *duties);
 
 #endif
