@@ -74,8 +74,8 @@ static void calculate_pitch_roll(AccelVector *accel_gravity_perc, int32_t *pitch
     int16_t y = accel_gravity_perc->y;
     int16_t z = accel_gravity_perc->z;
 
-    *pitch = (int32_t)((asinf(x / sqrtf((float)(x*x + y*y + z*z))) * TO_DEG));
-    *roll = (int32_t)((atan2f(y, z) * TO_DEG));
+    *roll = (int32_t)((asinf(x / sqrtf((float)(x*x + y*y + z*z))) * TO_DEG));
+    *pitch = (int32_t)((atan2f(y, z) * TO_DEG));
 }
 
 void init_accelerometer(void) {
