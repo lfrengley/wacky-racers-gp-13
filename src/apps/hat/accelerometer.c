@@ -152,7 +152,7 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     if (abs(pitch) > pitch_deadband) {
         int32_t clipped_pitch = clip_values(pitch, max_pitch, min_pitch);
         forward_speed = clipped_pitch * speed_gain;
-
+    }
     // Calculate turning speed
     int32_t turning_speed = 0;
     int8_t turning_gain = 3;
