@@ -151,6 +151,7 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
 
     if (abs(pitch) > pitch_deadband) {
         int32_t clipped_pitch = clip_values(pitch, max_pitch, min_pitch);
+        printf("Clipped Pitch: %3ld", clipped_pitch);
         forward_speed = clipped_pitch * speed_gain;
     }
     // Calculate turning speed
@@ -158,14 +159,16 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     int8_t turning_gain = 3;
     if (abs(roll) > roll_deadband) {
         int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
+        printf("Clipped Roll: %3ld", clipped_roll);
         turning_speed = clipped_roll * turning_gain;
     }
+    printf("Forward Speed: %3ld, Turning speed: %3ld", forward_speed, turning_speed);
 
     // Calculate motor speeds
     int32_t left_speed = forward_speed - turning_speed;
     int32_t right_speed = forward_speed + turning_speed;
     int32_t max_speed = max_pitch * speed_gain + max_roll * turning_gain;
-
+    printf("Left Speed: %3ld, Right Speed: %3ld, Max Speed %3ld", left_speed, right_speed, max_speed);
     // Calculate duty cycles (may need to flip some of these around)
     duties->left = (left_speed * 100) / max_speed;
     duties->right = (right_speed * 100) / max_speed;
