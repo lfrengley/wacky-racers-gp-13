@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define NUM_SAMPELS 3
+#define NUM_SAMPLES 3
 
 typedef struct {
     // int16_t A1;

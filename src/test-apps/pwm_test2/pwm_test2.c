@@ -5,7 +5,7 @@
            with respect to the other.
 */
 #include "pwm.h"
-#include "pio.h"
+#include "sam4s/pio.h"
 #include "delay.h"
 #include "panic.h"
 

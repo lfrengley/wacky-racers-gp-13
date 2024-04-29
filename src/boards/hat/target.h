@@ -40,7 +40,6 @@
 /* LEDs  */
 #define LED_STATUS_PIO PA8_PIO
 #define LED_ERROR_PIO PA9_PIO
-#define LED_USB_PIO PA31_PIO
 #define LED_ACTIVE 0
 
 /* General  */
@@ -77,12 +76,14 @@
 #define RADIO_MISO_PIO PA12_PIO
 #define RADIO_IRQ_PIO PA11_PIO
 
-/* Battery  */
+/* Connectors  */
 #define BATTERY_DETECT_PIO PA5_PIO
+#define USB_DETECT_PIO PA31_PIO
 
 /* LED tape  */
 #define LEDTAPE_PIO PA2_PIO
-
+#define LEDTAPE_ACTIVE 1
+ 
 /* SWD  */
 #define SWD_SWCLK_PIO PB7_PIO
 #define SWD_SWDIO_PIO PB6_PIO

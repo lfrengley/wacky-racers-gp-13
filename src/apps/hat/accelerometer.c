@@ -24,8 +24,8 @@ typedef struct {
 } AccelVector;
 
 typedef struct {
-    AccelVector samples[NUM_SAMPELS];
-    uint8_t index = 0;
+    AccelVector samples[NUM_SAMPLES];
+    uint8_t index;
 } MovingAverageFilter;
 
 static MovingAverageFilter filter;
@@ -80,13 +80,15 @@ static void calculate_pitch_roll(AccelVector *accel_gravity_perc, int32_t *pitch
 void init_accelerometer(void) {
     // Initialise the TWI (I2C) bus for the ADXL345
     adxl345_twi = twi_init (&adxl345_twi_cfg);
-    if (! adxl345_twi)
+    if (! adxl345_twi) {
         panic (LED_ERROR_PIO, 1);
+    }
 
     // Initialise the ADXL345
     adxl345 = adxl345_init (adxl345_twi, ADXL345_ADDRESS);   
-        if (! adxl345)
+    if (! adxl345) {
         panic (LED_ERROR_PIO, 2);
+    }
 
     init_moving_average_filter(&filter);
 }
@@ -122,7 +124,7 @@ static int32_t clip_values(int32_t val, int32_t max_val, int32_t min_val) {
     } else if (val > max_val) {
         val = max_val;
     }
-    return val
+    return val;
 }
 
 static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
@@ -170,38 +172,38 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
 }
 
 bool check_accelerometer(MotorDuties *duties) {
-        /* Read in the accelerometer data.  */
-        int16_t accel_array[3];
-        AccelVector raw_accel;
-        AccelVector avg_raw_accel;
-        AccelVector accel_gravity_perc;
-        int32_t pitch, roll;
+    /* Read in the accelerometer data.  */
+    int16_t accel_array[3];
+    AccelVector raw_accel;
+    AccelVector avg_raw_accel;
+    AccelVector accel_gravity_perc;
+    int32_t pitch, roll;
 
-        bool accelerometer_state;
-        if (! adxl345_is_ready (adxl345)) {
-            printf ("Waiting for accelerometer to be ready...\n");
-            return false;
-        }
+    bool accelerometer_state;
+    if (! adxl345_is_ready (adxl345)) {
+        printf ("Waiting for accelerometer to be ready...\n");
+        return false;
+    }
 
-        if (adxl345_accel_read (adxl345, accel_array)) {
-            // Filter the raw accelerometer data
-            write_accel_vector(&raw_accel, accel_array);
-            update_moving_average_filter(&filter, &raw_accel);
-            calc_moving_average(&filter, &avg_raw_accel);
+    if (adxl345_accel_read (adxl345, accel_array)) {
+        // Filter the raw accelerometer data
+        write_accel_vector(&raw_accel, accel_array);
+        update_moving_average_filter(&filter, &raw_accel);
+        calc_moving_average(&filter, &avg_raw_accel);
 
-            // Convert raw values to pitch and roll
-            calculate_percent_gravity(&avg_raw_accel, &accel_gravity_perc);
-            calculate_pitch_roll(&accel_gravity_perc, &pitch, &roll);
+        // Convert raw values to pitch and roll
+        calculate_percent_gravity(&avg_raw_accel, &accel_gravity_perc);
+        calculate_pitch_roll(&accel_gravity_perc, &pitch, &roll);
 
-            // printf ("x: %5d  y: %5d  z: %5d\n", accel_gravity_perc.x, accel_gravity_perc.y, accel_gravity_perc.z); 
-            printf ("pitch: %3ld deg\troll %3ld deg\n", pitch/1000, roll/1000); //pitch doesn't go full 180?
-            
-            set_duty(&duties, pitch, roll);
+        // printf ("x: %5d  y: %5d  z: %5d\n", accel_gravity_perc.x, accel_gravity_perc.y, accel_gravity_perc.z); 
+        printf ("pitch: %3ld deg\troll %3ld deg\n", pitch/1000, roll/1000); //pitch doesn't go full 180?
+        
+        set_duty(&duties, pitch, roll);
 
-            return true;
-        } else {
-            printf ("ERROR: failed to read acceleration\n");
-            return false;
-        }
+        return true;
+    } else {
+        printf ("ERROR: failed to read acceleration\n");
+        return false;
+    }
 }
 

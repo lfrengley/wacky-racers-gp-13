@@ -14,7 +14,9 @@
         "pacer.h": "c",
         "ctype.h": "c",
         "adxl345.h": "c",
-        "target.h": "c"
+        "target.h": "c",
+        "delay.h": "c",
+        "pwm.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
