@@ -15,10 +15,12 @@
 #define NUM_SAMPELS 3
 
 typedef struct {
-    int16_t A1;
-    int16_t A2;
-    int16_t A3;
-    int16_t A4;
+    // int16_t A1;
+    // int16_t A2;
+    // int16_t A3;
+    // int16_t A4;
+    int16_t left;
+    int16_t right;
 } MotorDuties;
 
 void init_accelerometer(void);

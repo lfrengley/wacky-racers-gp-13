@@ -165,27 +165,8 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     int32_t max_speed = max_pitch * speed_gain + max_roll * turning_gain;
 
     // Calculate duty cycles (may need to flip some of these around)
-    if (left_speed == 0) {
-        duties->A1 = 0;
-        duties->A2 = 0;
-    } else if (left_speed > 0) {
-        duties->A1 = (left_speed * 100) / max_speed;
-        duties->A2 = 0;
-    } else {
-        duties->A2 = (left_speed * 100) / max_speed;
-        duties->A1 = 0;
-    }
-
-    if (right_speed == 0) {
-        duties->B1 = 0;
-        duties->B2 = 0;
-    } else if (right_speed > 0) {
-        duties->B1 = (right_speed * 100) / max_speed;
-        duties->B2 = 0;
-    } else {
-        duties->B2 = (right_speed * 100) / max_speed;
-        duties->B1 = 0;
-    }
+    duties->left = (left_speed * 100) / max_speed;
+    duties->right = (right_speed * 100) / max_speed;
 }
 
 bool check_accelerometer(MotorDuties *duties) {

@@ -56,9 +56,8 @@ main (void)
         pio_output_toggle (LED_STATUS_PIO);
 
         if (check_accelerometer(&duties)) {
-            printf ("Duties-> A1: %3d,\tA2: %3d%,\tA3: %3d,\tA4: %3d\n\n", duties->A1, duties->A2, duties->B1, duties->B2);
+            printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%" duties->left, duties->right);
         }
-        
         // TODO: send to radio!
     }
 }
