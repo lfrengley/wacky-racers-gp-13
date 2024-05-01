@@ -19,6 +19,10 @@
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 1
 
+static void toggle_status_led(void) {
+    pio_output_toggle (LED_STATUS_PIO);
+}
+
 /* Initialise */
 void init(void) {
     // Redirect stdio to USB serial
@@ -33,8 +37,7 @@ void init(void) {
     // Initialise Accelerometer
     init_accelerometer ();
 
-    sched_init();
-    
+    add_task(&toggle_status_led, 1000);
     pacer_init (PACER_RATE);
 
 
@@ -48,21 +51,21 @@ main (void)
     MotorDuties duties;
     //Initialise
     init();
-
+    run_scheduler();
     // TODO: write hat program here...
-    while (1) {
-        pacer_wait ();
+    // while (1) {
+    //     pacer_wait ();
 
-        ticks++;
-        if (ticks < PACER_RATE / ACCEL_POLL_RATE)
-            continue;
-        ticks = 0;
+    //     ticks++;
+    //     if (ticks < PACER_RATE / ACCEL_POLL_RATE)
+    //         continue;
+    //     ticks = 0;
 
-        pio_output_toggle (LED_STATUS_PIO);
+    //     pio_output_toggle (LED_STATUS_PIO);
 
-        if (check_accelerometer(&duties)) {
-            printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%\n", duties.left, duties.right);
-        }
-        // TODO: send to radio!
-    }
+    //     if (check_accelerometer(&duties)) {
+    //         printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%\n", duties.left, duties.right);
+    //     }
+    //     // TODO: send to radio!
+    // }
 }
