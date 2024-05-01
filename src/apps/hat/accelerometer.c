@@ -152,7 +152,6 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
 
     if (abs(pitch) > pitch_deadband) {
         int32_t clipped_pitch = clip_values(pitch, max_pitch, min_pitch);
-        printf("Clipped Pitch: %3ld\n", clipped_pitch);
         forward_speed = clipped_pitch * speed_gain;
     }
     // Calculate turning speed
@@ -160,7 +159,6 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     int8_t turning_gain = 3;
     if (abs(roll) > roll_deadband) {
         int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
-        printf("Clipped Roll: %3ld\n", clipped_roll);
         turning_speed = clipped_roll * turning_gain;
     }
     printf("Forward Speed: %3ld, Turning speed: %3ld\n", forward_speed, turning_speed);
@@ -173,8 +171,8 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     // Calculate duty cycles (may need to flip some of these around)
     int32_t temp_left_duty = (left_speed * 100) / max_speed;
     int32_t temp_right_duty = (right_speed * 100) / max_speed;
-    duties->left = (int16_t)clip_values(temp_left_duty, -100, 100);
-    duties->right = (int16_t)clip_values(temp_right_duty, -100, 100);
+    duties->left = (int16_t)clip_values(temp_left_duty, 100, -100);
+    duties->right = (int16_t)clip_values(temp_right_duty, 100, -100);
 }
 
 bool check_accelerometer(MotorDuties *duties) {
