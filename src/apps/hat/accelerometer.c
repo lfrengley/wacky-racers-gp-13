@@ -168,11 +168,13 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     // Calculate motor speeds
     int32_t left_speed = forward_speed + turning_speed;
     int32_t right_speed = forward_speed - turning_speed;
-    int32_t max_speed = max_pitch * speed_gain + max_roll * turning_gain;
+    int32_t max_speed = max_pitch * speed_gain;
     printf("Left Speed: %3ld, Right Speed: %3ld, Max Speed %3ld\n", left_speed, right_speed, max_speed);
     // Calculate duty cycles (may need to flip some of these around)
-    duties->left = (left_speed * 100) / max_speed;
-    duties->right = (right_speed * 100) / max_speed;
+    int32_t temp_left_duty = (left_speed * 100) / max_speed;
+    int32_t temp_right_duty = (right_speed * 100) / max_speed;
+    duties->left = (int16_t)clip_values(temp_left_duty, -100, 100);
+    duties->right = (int16_t)clip_values(temp_right_duty, -100, 100);
 }
 
 bool check_accelerometer(MotorDuties *duties) {
