@@ -1,6 +1,6 @@
 PERIPHERALS = pit
 DRIVERS = pacer usb_serial adxl345 panic piezo
-SRC = hat.c accelerometer.c
+SRC = hat.c accelerometer.c ../duel/scheduler.c
 
 # Use low level of optimisation to simplify debugging
 OPT = -O1

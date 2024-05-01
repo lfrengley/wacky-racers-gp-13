@@ -16,7 +16,12 @@
         "adxl345.h": "c",
         "target.h": "c",
         "delay.h": "c",
-        "pwm.h": "c"
+        "pwm.h": "c",
+        "cpu.h": "c",
+        "sysclock.h": "c",
+        "systick.h": "c",
+        "sched.h": "c",
+        "scheduler.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

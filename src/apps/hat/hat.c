@@ -13,6 +13,7 @@
 #include "pacer.h"
 #include "usb_serial.h"
 #include "accelerometer.h"
+#include "../duel/scheduler.h"
 #include <stdbool.h>
 
 #define PACER_RATE 20
@@ -32,7 +33,11 @@ void init(void) {
     // Initialise Accelerometer
     init_accelerometer ();
 
+    sched_init();
+    
     pacer_init (PACER_RATE);
+
+
 }
 
 /* Begin */
