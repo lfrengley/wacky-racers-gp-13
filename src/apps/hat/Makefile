@@ -1,4 +1,4 @@
-PERIPHERALS = pit systick
+PERIPHERALS = pit sysclock
 DRIVERS = pacer usb_serial adxl345 panic piezo
 SRC = hat.c accelerometer.c scheduler.c
 

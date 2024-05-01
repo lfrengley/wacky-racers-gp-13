@@ -19,8 +19,15 @@
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 1
 
-static void toggle_status_led(void) {
+void toggle_status_led(void) {
     pio_output_toggle (LED_STATUS_PIO);
+    // printf("Toggling Status LED\n");
+}
+MotorDuties duties;
+void poll_accel(void) {
+    if (check_accelerometer(&duties)) {
+        printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%\n", duties.left, duties.right);
+    }   
 }
 
 /* Initialise */
@@ -36,10 +43,10 @@ void init(void) {
 
     // Initialise Accelerometer
     init_accelerometer ();
-
-    add_task(&toggle_status_led, 1000);
-    pacer_init (PACER_RATE);
-
+    sysclock_init();
+    add_task(&toggle_status_led, 500);
+    add_task(&poll_accel, 250);
+    // pacer_init (PACER_RATE);
 
 }
 
@@ -48,7 +55,7 @@ int
 main (void)
 {
     int ticks = 0;
-    MotorDuties duties;
+   
     //Initialise
     init();
     run_scheduler();

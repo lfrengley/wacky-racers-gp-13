@@ -30,14 +30,13 @@ void run_scheduler(void) {
 
     while (1) {
         current_time = sysclock_millis();
-
         for (i = 0; i < num_tasks; i++) {
             if (current_time - tasks[i].last_executed >= tasks[i].period) {
                 tasks[i].task_function();
                 tasks[i].last_executed = current_time;
             }
         }
-        uint32_t scheduler_delay = 10; //ms
+        uint32_t scheduler_delay = 1; //ms
         sysclock_millis_delay(scheduler_delay);
     }
 }
