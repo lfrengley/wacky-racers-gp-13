@@ -1,22 +1,22 @@
-/* File:   pwm_test2.c
+* File:   pwm_test2.c
    Author: M. P. Hayes, UCECE
    Date:   15 April 2013
    Descr:  This example starts two channels simultaneously; one inverted
            with respect to the other.
 */
 #include "pwm.h"
-#include "sam4s/pio.h"
+#include "pio.h"
 #include "delay.h"
 #include "panic.h"
 
-#define PWM1_PIO PA1_PIO
-#define PWM2_PIO PA2_PIO
+#define PWM1_PIO PA7_PIO
+#define PWM2_PIO PA11_PIO
 
 // If you are using PWM to drive a motor you will need
 // to choose a lower frequency!
 #define PWM_FREQ_HZ 100e3
 
-static const pwm_cfg_t pwm1_cfg =
+static pwm_cfg_t pwm1_cfg =
 {
     .pio = PWM1_PIO,
     .period = PWM_PERIOD_DIVISOR (PWM_FREQ_HZ),
@@ -32,7 +32,7 @@ static const pwm_cfg_t pwm2_cfg =
     .period = PWM_PERIOD_DIVISOR (PWM_FREQ_HZ),
     .duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 50),
     .align = PWM_ALIGN_LEFT,
-    .polarity = PWM_POLARITY_HIGH,
+    .polarity = PWM_POLARITY_LOW,
     .stop_state = PIO_OUTPUT_LOW
 };
 
@@ -59,6 +59,15 @@ main (void)
     {
         delay_ms (500);
         pio_output_toggle (LED_STATUS_PIO);
+
+        pwm1_cfg.duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 60);
+
+        delay_ms(1000);
+        pwm1_cfg.duty = PWM_DUTY_DIVISOR (PWM_FREQ_HZ, 20);
+
+
+        
+
     }
 
     return 0;
