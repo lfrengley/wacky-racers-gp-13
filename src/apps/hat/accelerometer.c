@@ -166,8 +166,8 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     printf("Forward Speed: %3ld, Turning speed: %3ld\n", forward_speed, turning_speed);
 
     // Calculate motor speeds
-    int32_t left_speed = forward_speed - turning_speed;
-    int32_t right_speed = forward_speed + turning_speed;
+    int32_t left_speed = forward_speed + turning_speed;
+    int32_t right_speed = forward_speed - turning_speed;
     int32_t max_speed = max_pitch * speed_gain + max_roll * turning_gain;
     printf("Left Speed: %3ld, Right Speed: %3ld, Max Speed %3ld\n", left_speed, right_speed, max_speed);
     // Calculate duty cycles (may need to flip some of these around)
