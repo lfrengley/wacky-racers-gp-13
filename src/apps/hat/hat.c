@@ -18,6 +18,7 @@
 
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 1
+#define STATUS_LED_BLINK_RATE 500
 
 void toggle_status_led(void) {
     pio_output_toggle (LED_STATUS_PIO);
@@ -44,7 +45,7 @@ void init(void) {
     // Initialise Accelerometer
     init_accelerometer ();
     sysclock_init();
-    add_task(&toggle_status_led, 500);
+    add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&poll_accel, 250);
     // pacer_init (PACER_RATE);
 
