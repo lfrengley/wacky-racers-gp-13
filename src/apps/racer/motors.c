@@ -85,32 +85,23 @@ void init_motors (void) {
 void set_motor_duties (int16_t left, int16_t right) {
 
     if (left < 0) { // if reversing left 
+        pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+        pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(left)));
         if (right < 0) {
-            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
             pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
-
-            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(left)));
             pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(right)));
         } else {
-            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
             pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
-
-            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(left)));
             pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, right));
         }
-
     } else {
+        pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+        pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, left));
         if (right < 0) {
-            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
             pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
-
-            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, left));
             pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(right)));
         } else {
-            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
             pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
-
-            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, left));
             pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, right));
         }
     }
