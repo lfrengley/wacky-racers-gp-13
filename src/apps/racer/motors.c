@@ -66,15 +66,15 @@ void init_motors (void) {
         panic (LED_ERROR_PIO, 1);
 
     PWM2 = pwm_init (&pwm2_cfg);
-    if (! PWM1)
+    if (! PWM2)
         panic (LED_ERROR_PIO, 2);
 
     PWM3 = pwm_init (&pwm3_cfg);
-    if (! PWM1)
+    if (! PWM3)
         panic (LED_ERROR_PIO, 3);
     
     PWM4 = pwm_init (&pwm4_cfg);
-    if (!PWM3)
+    if (!PWM4)
         panic (LED_STATUS_PIO, 4);
 
     pwm_channels_start (pwm_channel_mask (PWM1) | pwm_channel_mask (PWM2));
@@ -84,20 +84,36 @@ void init_motors (void) {
 
 void set_motor_duties (int16_t left, int16_t right) {
 
-    if (left < 0) { // if reversing
+    if (left < 0) { // if reversing left 
+        if (right < 0) {
+            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+            pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
 
-        pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
-        pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(left)));
+            pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(right)));
+        } else {
+            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+            pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
 
-        pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(left)));
-        pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(right)));
+            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(left)));
+            pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, right));
+        }
 
     } else {
- 
-        pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
-        pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+        if (right < 0) {
+            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+            pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
 
-        pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, left));
-        pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, right));
+            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, left));
+            pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, abs(right)));
+        } else {
+            pwm_duty_set(PWM1, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+            pwm_duty_set(PWM3, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, 0));
+
+            pwm_duty_set(PWM2, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, left));
+            pwm_duty_set(PWM4, PWM_DUTY_DIVISOR(PWM_FREQ_HZ, right));
+        }
     }
+
+
 }
