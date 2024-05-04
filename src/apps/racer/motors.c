@@ -73,7 +73,7 @@ void init_motors (void) {
     if (! PWM1)
         panic (LED_ERROR_PIO, 3);
     
-    PWM3 = pwm_init (&pwm4_cfg);
+    PWM4 = pwm_init (&pwm4_cfg);
     if (!PWM3)
         panic (LED_STATUS_PIO, 4);
 
