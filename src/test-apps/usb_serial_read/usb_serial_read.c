@@ -36,12 +36,12 @@ int main (void)
         delay_ms (DELAY_MS);
         char buf[256];
         if (fgets(buf, sizeof(buf), stdin)) {
-            int pwm1, pwm2;
+            int16_t pwm_left, pwm_right;
             char operator;
             // sscanf returns the number of input items successfully matched
-            if (sscanf(buf, "%d %d",&pwm1, &pwm2) == 2) {
-                printf("%d\n",  pwm1);
-                printf("%d\n", pwm2);
+            if (sscanf(buf, "%d %d",&pwm_left, &pwm_right) == 2) {
+                printf("%d\n",  pwm_left);
+                printf("%d\n", pwm_right);
             } else {
                 printf("Invalid input\n");
             }
