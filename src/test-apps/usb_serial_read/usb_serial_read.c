@@ -36,20 +36,12 @@ int main (void)
         delay_ms (DELAY_MS);
         char buf[256];
         if (fgets(buf, sizeof(buf), stdin)) {
-            int op1, op2;
+            int pwm1, pwm2;
             char operator;
             // sscanf returns the number of input items successfully matched
-            if (sscanf(buf, "%d %c %d",&op1, &operator, &op2) == 3) {
-                switch (operator) {
-                case '+':
-                    printf("%d\n", op1 + op2);
-                    break;
-                case '-':
-                    printf("%d\n", op1 - op2);
-                    break;
-                default:
-                    printf("Invalid operator: %c\n", operator);
-                }
+            if (sscanf(buf, "%d %d",&pwm1, &pwm2) == 2) {
+                printf("%d\n",  pwm1);
+                printf("%d\n", pwm2);
             } else {
                 printf("Invalid input\n");
             }
