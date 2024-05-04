@@ -7,6 +7,7 @@
     @date   28 April 2024
     @brief  TODO: Write a description
 */
+
 #include "accelerometer.h"
 #include "adxl345.h"
 #include "panic.h"

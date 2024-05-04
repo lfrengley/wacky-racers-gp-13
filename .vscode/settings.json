@@ -21,7 +21,11 @@
         "sysclock.h": "c",
         "systick.h": "c",
         "sched.h": "c",
-        "scheduler.h": "c"
+        "scheduler.h": "c",
+        "panic.h": "c",
+        "usb_serial.h": "c",
+        "accelerometer.h": "c",
+        "stdbool.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
