@@ -3,7 +3,7 @@
    Date:   3 May 2021
    Descr:  Simple button test demo using debouncing
 */
-#include "mcu.h"
+// #include "mcu.h"
 #include "led.h"
 #include "pio.h"
 #include "pacer.h"
@@ -22,7 +22,7 @@ static const led_cfg_t led1_cfg =
 /* Define button configuration.  */
 static const button_cfg_t button1_cfg =
 {
-    .pio = BUTTON_PIO
+    .pio = PA0_PIO
 };
 
 int main (void)

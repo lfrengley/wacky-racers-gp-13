@@ -20,6 +20,7 @@
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 100
 
+
 void toggle_status_led(void) {
     pio_output_toggle (LED_STATUS_PIO);
     // printf("Toggling Status LED\n");
@@ -45,8 +46,10 @@ void init(void) {
     // Initialise Accelerometer
     init_accelerometer ();
     sysclock_init();
+    // init_sleep_butt();
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&poll_accel, 250);
+
     // pacer_init (PACER_RATE);
 
 }
