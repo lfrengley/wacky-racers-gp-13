@@ -15,6 +15,7 @@
 #include "accelerometer.h"
 #include "scheduler.h"
 #include <stdbool.h>
+#include "radio.h"
 
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
@@ -28,7 +29,8 @@ void toggle_status_led(void) {
 MotorDuties duties;
 void poll_accel(void) {
     if (check_accelerometer(&duties)) {
-        printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%\n\n", duties.left, duties.right);
+        printf ("Left Duty: %3d%%, \tRight Duty: %3d%%\n\n", duties.left, duties.right);
+        radio_write_duties(duties.left, duties.right);
     }   
 }
 
@@ -43,10 +45,18 @@ void init(void) {
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
     pio_output_set (LED_STATUS_PIO, ! LED_ACTIVE);
 
-    // Initialise Accelerometer
-    init_accelerometer ();
+    // Initialise sysclock
     sysclock_init();
+
+    // Initialise Accelerometer
+    init_accelerometer();
+
+    // Initialise Radio
+    init_radio();
+
     // init_sleep_butt();
+
+    // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&poll_accel, 250);
 
