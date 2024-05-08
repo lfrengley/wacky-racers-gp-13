@@ -25,7 +25,8 @@
         "panic.h": "c",
         "usb_serial.h": "c",
         "accelerometer.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "nrf24.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
