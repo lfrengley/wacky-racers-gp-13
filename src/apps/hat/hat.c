@@ -18,8 +18,8 @@
 #include "radio.h"
 
 #define PACER_RATE 20
-#define ACCEL_POLL_RATE 10
-#define STATUS_LED_BLINK_RATE 100
+#define ACCEL_POLL_RATE 10000 //micros
+#define STATUS_LED_BLINK_RATE 100000 //micros
 
 
 void toggle_status_led(void) {
