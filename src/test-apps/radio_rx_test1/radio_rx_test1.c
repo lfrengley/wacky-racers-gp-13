@@ -19,7 +19,7 @@ int main(void)
         {
             .channel = 0,
             .clock_speed_kHz = 1000,
-            .cs = RADIO_CS_PIO,
+            .cs = RADIO_CSN_PIO,
             .mode = SPI_MODE_0,
             .cs_mode = SPI_CS_MODE_FRAME,
             .bits = 8
