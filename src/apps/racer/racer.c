@@ -12,7 +12,7 @@
 #include "pio.h"
 #include "usb_serial.h"
 #include "motors.h"
-#include "scheduler.h"
+#include "../libs/scheduler.h"
 
 #define PACER_RATE 20
 #define SERIAL_POLL_RATE 1

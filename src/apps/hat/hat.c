@@ -13,7 +13,7 @@
 #include "pacer.h"
 #include "usb_serial.h"
 #include "accelerometer.h"
-#include "scheduler.h"
+#include "../libs/scheduler.h"
 #include <stdbool.h>
 
 #define PACER_RATE 20
@@ -27,7 +27,7 @@ void toggle_status_led(void) {
 MotorDuties duties;
 void poll_accel(void) {
     if (check_accelerometer(&duties)) {
-        printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%\n", duties.left, duties.right);
+        printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%\n\n", duties.left, duties.right);
     }   
 }
 

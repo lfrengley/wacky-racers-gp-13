@@ -162,13 +162,13 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
         int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
         turning_speed = clipped_roll * turning_gain;
     }
-    printf("Forward Speed: %3ld, Turning speed: %3ld\n", forward_speed, turning_speed);
+    // printf("Forward Speed: %3ld, Turning speed: %3ld\n", forward_speed, turning_speed);
 
     // Calculate motor speeds
     int32_t left_speed = forward_speed + turning_speed;
     int32_t right_speed = forward_speed - turning_speed;
     int32_t max_speed = max_pitch * speed_gain;
-    printf("Left Speed: %3ld, Right Speed: %3ld, Max Speed %3ld\n", left_speed, right_speed, max_speed);
+    // printf("Left Speed: %3ld, Right Speed: %3ld, Max Speed %3ld\n", left_speed, right_speed, max_speed);
     // Calculate duty cycles (may need to flip some of these around)
     int32_t temp_left_duty = (left_speed * 100) / max_speed;
     int32_t temp_right_duty = (right_speed * 100) / max_speed;
@@ -201,7 +201,7 @@ bool check_accelerometer(MotorDuties *duties) {
         calculate_pitch_roll(&accel_gravity_perc, &pitch, &roll);
 
         // printf ("x: %5d  y: %5d  z: %5d\n", accel_gravity_perc.x, accel_gravity_perc.y, accel_gravity_perc.z); 
-        printf ("pitch: %3ld deg\troll %3ld deg\n", pitch/1000, roll/1000); //pitch doesn't go full 180?
+        // printf ("pitch: %3ld deg\troll %3ld deg\n", pitch/1000, roll/1000); //pitch doesn't go full 180?
         
         set_duty(duties, pitch, roll);
 
