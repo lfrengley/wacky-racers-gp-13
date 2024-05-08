@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "panic.h"
 
+#define MILLI_TO_MICRO 1000
+
 void add_task(void (*task_function)(void), unsigned long period);
 void run_scheduler(void);
 // void sched_init(void);

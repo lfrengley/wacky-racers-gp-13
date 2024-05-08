@@ -13,13 +13,13 @@
 #include "pacer.h"
 #include "usb_serial.h"
 #include "accelerometer.h"
-#include "scheduler.h"
+#include "../libs/scheduler.h"
 #include <stdbool.h>
-#include "radio.h"
+#include "../libs/radio.h"
 
 #define PACER_RATE 20
-#define ACCEL_POLL_RATE 10000 //micros
-#define STATUS_LED_BLINK_RATE 100000 //micros
+#define ACCEL_POLL_RATE 1*MILLI_TO_MICRO //micros
+#define STATUS_LED_BLINK_RATE 5000*MILLI_TO_MICRO //micros
 
 
 void toggle_status_led(void) {
