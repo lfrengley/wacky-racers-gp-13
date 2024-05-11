@@ -52,22 +52,52 @@ void init_radio (void) {
         panic (LED_ERROR_PIO, 2);
 }
 
-void radio_write_duties (int16_t left, int16_t right) {
+void rx_to_tx (void) {
+    nrf24_power_down (NRF);
+}
+
+bool radio_write_duties (int16_t left, int16_t right) {
     snprintf (BUFFER, sizeof (BUFFER), "%d %d\r\n", left, right);
     if (! nrf24_write (NRF, BUFFER, RADIO_PAYLOAD_SIZE))  {
         pio_output_set (LED_ERROR_PIO, 0);
+        return true;
     } else {
         pio_output_set (LED_ERROR_PIO, 1);
     }
+    return false;
 }
 
-void radio_read_duties (int16_t *left, int16_t *right) {
+bool radio_read_duties (int16_t *left, int16_t *right) {
     if (nrf24_read (NRF, BUFFER, sizeof (BUFFER))) {
             printf ("RX: %s\n", BUFFER);            
         if (sscanf(BUFFER, "%hd %hd", left, right) == 2) {
             printf ("Left Duty: %3d%%, \tRight Duty: %3d%%\n\n", *left, *right);
+            return true;
         } else {
             printf("Invalid message\n");
         }
     }
+    return false;
 }
+
+bool radio_write_bump (bool bump) {
+    snprintf (BUFFER, sizeof (BUFFER), "%d\r\n", bump);
+    if (! nrf24_write (NRF, BUFFER, RADIO_PAYLOAD_SIZE))  {
+        pio_output_set (LED_ERROR_PIO, 0);
+        return true;
+    } else {
+        pio_output_set (LED_ERROR_PIO, 1);
+    }
+    return false;
+}
+
+bool radio_read_bump (bool *bump) {
+    if (nrf24_read (NRF, BUFFER, sizeof (BUFFER))) {
+            printf ("RX: %s\n", BUFFER);            
+        if (sscanf(BUFFER, "%hd %hd", bump) == 1) {
+            printf ("Bump status: %3d%%\n\n", *bump);
+        } else {
+            printf("Invalid message\n");
+        }
+    }
+    return false;

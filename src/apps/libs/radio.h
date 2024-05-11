@@ -10,11 +10,18 @@
 #define RADIO_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 void init_radio (void);
 
-void radio_write_duties (int16_t left, int16_t right);
+void rx_to_tx (void);
 
-void radio_read_duties (int16_t *left, int16_t *right);
+bool radio_write_duties (int16_t left, int16_t right);
+
+bool radio_read_duties (int16_t *left, int16_t *right);
+
+bool radio_write_bump (bool bump);
+
+bool radio_read_bump (bool *bump);
 
 #endif

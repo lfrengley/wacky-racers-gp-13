@@ -13,25 +13,48 @@
 #include "pacer.h"
 #include "usb_serial.h"
 #include "accelerometer.h"
-#include "scheduler.h"
+#include "../libs/scheduler.h"
 #include <stdbool.h>
-#include "radio.h"
+#include "../libs/radio.h"
 
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 100
 
+MotorDuties duties;
+bool listening = true;
+bool bump = false;
 
 void toggle_status_led(void) {
     pio_output_toggle (LED_STATUS_PIO);
     // printf("Toggling Status LED\n");
 }
-MotorDuties duties;
-void poll_accel(void) {
-    if (check_accelerometer(&duties)) {
-        printf ("Left Duty: %3d%%, \tRight Duty: %3d%%\n\n", duties.left, duties.right);
-        radio_write_duties(duties.left, duties.right);
-    }   
+
+//TODO: play a song for 5 seconds if bump is true and then set bump to false after
+void communicate(void) {
+
+    if (listening & !bump) {
+        if (radio_read_bump) {
+            listening = false;
+            bump = true;
+            rx_to_tx(); // this is based on what is written in rf_tester 
+        } else if (check_accelerometer(&duties)){
+            listening = false;
+            rx_to_tx(); // this is based on what is written in rf_tester 
+        }
+    }
+
+    if (!listening) {
+        if (bump) {
+            if (radio_write_duties(0, 0)) {
+                listening = true;
+            }
+        } else {
+            if (radio_write_duties(duties.left, duties.right)) {
+                listening = true;
+            }
+        }
+    }
 }
 
 /* Initialise */
@@ -58,10 +81,9 @@ void init(void) {
 
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&poll_accel, 250);
+    add_task(&communicate, 250);
 
     // pacer_init (PACER_RATE);
-
 }
 
 /* Begin */
