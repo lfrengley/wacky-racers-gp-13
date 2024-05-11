@@ -63,8 +63,8 @@ bool radio_write_duties (int16_t left, int16_t right) {
         return true;
     } else {
         pio_output_set (LED_ERROR_PIO, 1);
+        return false;
     }
-    return false;
 }
 
 bool radio_read_duties (int16_t *left, int16_t *right) {
@@ -87,19 +87,20 @@ bool radio_write_bump (bool bump) {
         return true;
     } else {
         pio_output_set (LED_ERROR_PIO, 1);
+        return false;
     }
-    return false;
 }
 
-bool radio_read_bump (bool *bump) {
+void radio_read_bump (bool *bump) {
     if (nrf24_read (NRF, BUFFER, sizeof (BUFFER))) {
             printf ("RX: %s\n", BUFFER);            
-        if (sscanf(BUFFER, "%hd %hd", bump) == 1) {
+        if (sscanf(BUFFER, "%hd", bump) == 1) {
             printf ("Bump status: %3d%%\n\n", *bump);
-            return true;
         } else {
             printf("Invalid message\n");
+            *bump = false;
         }
     }
-    return false;
+    *bump = false;
+    printf ("Bump status: %3d%%\n\n", *bump);
 }

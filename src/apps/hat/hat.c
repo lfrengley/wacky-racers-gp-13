@@ -18,8 +18,8 @@
 #include "../libs/radio.h"
 
 #define PACER_RATE 20
-#define ACCEL_POLL_RATE 10
-#define STATUS_LED_BLINK_RATE 1000
+#define ACCEL_POLL_RATE 250
+#define STATUS_LED_BLINK_RATE 100
 
 MotorDuties duties;
 bool listening = true;
@@ -34,9 +34,9 @@ void toggle_status_led(void) {
 void communicate(void) {
 
     if (listening & !bump) {
-        if (radio_read_bump) {
+        radio_read_bump(&bump);
+        if (bump) {
             listening = false;
-            bump = true;
             rx_to_tx(); // this is based on what is written in rf_tester 
         } else if (check_accelerometer(&duties)){
             listening = false;
@@ -77,13 +77,10 @@ void init(void) {
     // Initialise Radio
     init_radio();
 
-    // init_sleep_butt();
-
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&communicate, ACCEL_POLL_RATE);
 
-    // pacer_init (PACER_RATE);
 }
 
 /* Begin */
