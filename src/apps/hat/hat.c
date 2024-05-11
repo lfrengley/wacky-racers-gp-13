@@ -95,20 +95,4 @@ main (void)
     //Initialise
     init();
     run_scheduler();
-    // TODO: write hat program here...
-    // while (1) {
-    //     pacer_wait ();
-
-    //     ticks++;
-    //     if (ticks < PACER_RATE / ACCEL_POLL_RATE)
-    //         continue;
-    //     ticks = 0;
-
-    //     pio_output_toggle (LED_STATUS_PIO);
-
-    //     if (check_accelerometer(&duties)) {
-    //         printf ("Pseudo Duties-> Left: %3d%%, \tRight: %3d%%\n", duties.left, duties.right);
-    //     }
-    //     // TODO: send to radio!
-    // }
 }

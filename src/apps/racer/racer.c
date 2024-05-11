@@ -22,6 +22,7 @@
 bool listening = true;
 bool bump = false;
 int16_t duty_left, duty_right;
+uint8_t current_bump, previous_bump;
 
 
 void toggle_status_led(void) {
@@ -29,8 +30,19 @@ void toggle_status_led(void) {
     // printf("Toggling Status LED\n");
 }
 
-//TODO: set bump to true on rising edge (only if going no bump -> bump)
+//TODO: configure actual bump sensor
+void check_bump() {
+    previous_bump = current_bump;
+    current_bump = pio_input_get(RADIO_DIP1_PIO);
+    if (previous_bump == 0 && current_bump == 1) {
+        bump = true;
+    } else {
+        bump = false;
+    }
+}
+
 void communicate(void) {
+    check_bump();
     if (listening) {
         if (radio_read_duties(&duty_left, &duty_right)) {
             set_motor_duties(duty_left, duty_right);
@@ -61,6 +73,7 @@ void init(void) {
     pio_output_set (LED_ERROR_PIO, ! LED_ACTIVE);
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
     pio_output_set (LED_STATUS_PIO, ! LED_ACTIVE);
+    pio_config_set (PIO_INPUT, RADIO_DIP1_PIO);
 
     // Initialise sysclock
     sysclock_init();
