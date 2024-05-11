@@ -13,11 +13,11 @@
 #include "usb_serial.h"
 #include "motors.h"
 #include "../libs/scheduler.h"
-#include "radio.h"
+#include "../libs/radio.h"
 
 #define PACER_RATE 20
 #define SERIAL_POLL_RATE 1
-#define STATUS_LED_BLINK_RATE 100
+#define STATUS_LED_BLINK_RATE 1000
 
 void toggle_status_led(void) {
     pio_output_toggle (LED_STATUS_PIO);
