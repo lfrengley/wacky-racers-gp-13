@@ -96,8 +96,10 @@ bool radio_read_bump (bool *bump) {
             printf ("RX: %s\n", BUFFER);            
         if (sscanf(BUFFER, "%hd %hd", bump) == 1) {
             printf ("Bump status: %3d%%\n\n", *bump);
+            return true;
         } else {
             printf("Invalid message\n");
         }
     }
     return false;
+}
