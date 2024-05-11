@@ -19,7 +19,7 @@
 
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
-#define STATUS_LED_BLINK_RATE 100
+#define STATUS_LED_BLINK_RATE 1000
 
 MotorDuties duties;
 bool listening = true;
@@ -81,7 +81,7 @@ void init(void) {
 
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&communicate, 250);
+    add_task(&communicate, ACCEL_POLL_RATE);
 
     // pacer_init (PACER_RATE);
 }

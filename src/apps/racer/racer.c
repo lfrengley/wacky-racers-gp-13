@@ -17,7 +17,7 @@
 
 #define PACER_RATE 20
 #define SERIAL_POLL_RATE 1
-#define STATUS_LED_BLINK_RATE 100
+#define STATUS_LED_BLINK_RATE 1000
 
 bool listening = true;
 bool bump = false;

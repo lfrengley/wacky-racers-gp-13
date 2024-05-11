@@ -26,7 +26,8 @@
         "usb_serial.h": "c",
         "accelerometer.h": "c",
         "stdbool.h": "c",
-        "nrf24.h": "c"
+        "nrf24.h": "c",
+        "radio.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
