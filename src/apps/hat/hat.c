@@ -58,7 +58,7 @@ void init(void) {
 
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&poll_accel, 250);
+    add_task(&poll_accel, ACCEL_POLL_RATE);
 
     // pacer_init (PACER_RATE);
 
