@@ -13,7 +13,7 @@
 #include "usb_serial.h"
 #include "motors.h"
 #include "../libs/scheduler.h"
-#include "../libs/radio.h"
+#include "radio.h"
 
 #define PACER_RATE 20
 #define SERIAL_POLL_RATE 1
@@ -33,8 +33,9 @@ void toggle_status_led(void) {
 //TODO: configure actual bump sensor
 void check_bump() {
     previous_bump = current_bump;
-    current_bump = pio_input_get(RADIO_DIP1_PIO);
-    if (previous_bump == 0 && current_bump == 1) {
+    current_bump = pio_input_get(BUMPER_POSITIVE);
+    if (previous_bump == 1 && current_bump == 0) {
+        printf ("Bump\n");
         bump = true;
     } else {
         bump = false;
@@ -51,10 +52,10 @@ void communicate(void) {
             listening = false;
         }
     }
-
     if (!listening) {
         rx_to_tx(); // this is based on what is written in rf_tester 
         if (radio_write_bump(true)) {
+            printf ("Y\n");
             listening = true;
         } else {
             radio_read_duties(&duty_left, &duty_right);
@@ -73,7 +74,7 @@ void init(void) {
     pio_output_set (LED_ERROR_PIO, ! LED_ACTIVE);
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
     pio_output_set (LED_STATUS_PIO, ! LED_ACTIVE);
-    pio_config_set (PIO_INPUT, RADIO_DIP1_PIO);
+    pio_config_set (BUMPER_POSITIVE, PIO_PULLUP);
 
     // Initialise sysclock
     sysclock_init();

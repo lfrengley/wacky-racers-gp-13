@@ -47,7 +47,7 @@
 #define GENERAL_PA16_PIO PA16_PIO
 #define SIGNAL_TP_PIO PA6_PIO
 
-/* Buzzer  */
+/* Bumper  */
 #define BUMPER_POSITIVE PB13_PIO
 
 /* Buttons  */

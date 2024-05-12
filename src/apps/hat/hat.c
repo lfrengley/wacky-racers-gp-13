@@ -15,11 +15,11 @@
 #include "accelerometer.h"
 #include "../libs/scheduler.h"
 #include <stdbool.h>
-#include "../libs/radio.h"
+#include "radio.h"
 
 #define PACER_RATE 20
-#define ACCEL_POLL_RATE 250
-#define STATUS_LED_BLINK_RATE 100
+#define ACCEL_POLL_RATE 10
+#define STATUS_LED_BLINK_RATE 1000
 
 MotorDuties duties;
 bool listening = true;
@@ -32,27 +32,14 @@ void toggle_status_led(void) {
 
 //TODO: play a song for 5 seconds if bump is true and then set bump to false after
 void communicate(void) {
-
-    if (listening & !bump) {
-        radio_read_bump(&bump);
-        if (bump) {
-            listening = false;
-            rx_to_tx(); // this is based on what is written in rf_tester 
-        } else if (check_accelerometer(&duties)){
-            listening = false;
-            rx_to_tx(); // this is based on what is written in rf_tester 
-        }
-    }
-
-    if (!listening) {
-        if (bump) {
-            if (radio_write_duties(0, 0)) {
-                listening = true;
-            }
-        } else {
-            if (radio_write_duties(duties.left, duties.right)) {
-                listening = true;
-            }
+    radio_read_bump(&bump);
+    if (bump) {
+        rx_to_tx();
+        radio_write_duties(0, 0);
+        //play music for 5 seconds and then set bump to false 
+    } else if (check_accelerometer(&duties)) {
+        rx_to_tx();
+        if (radio_write_duties(duties.left, duties.right)) {
         }
     }
 }
