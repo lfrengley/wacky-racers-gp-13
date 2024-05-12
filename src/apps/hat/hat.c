@@ -16,6 +16,7 @@
 #include "../libs/scheduler.h"
 #include <stdbool.h>
 #include "radio.h"
+#include "buzzer.h"
 
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
@@ -64,9 +65,12 @@ void init(void) {
     // Initialise Radio
     init_radio();
 
+    // Initialise Piezo
+    init_buzzer();
+
     // Initialise Tasks
-    add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&communicate, ACCEL_POLL_RATE);
+    //add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
+    //add_task(&communicate, ACCEL_POLL_RATE);
 
 }
 
