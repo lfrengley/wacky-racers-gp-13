@@ -12,8 +12,8 @@
 #include "nrf24.h"
 #include "pio.h"
 
-#define RADIO_CHANNEL 4                 //TODO: Change?
-#define RADIO_ADDRESS 0x0123456789LL    //TODO: Change?
+#define RADIO_CHANNEL 5                 //TODO: Change?
+#define RADIO_ADDRESS 0x0228576780LL    //TODO: Change?
 #define RADIO_PAYLOAD_SIZE 32
 
 static nrf24_t *NRF;
