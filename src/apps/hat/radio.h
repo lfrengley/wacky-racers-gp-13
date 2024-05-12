@@ -18,10 +18,6 @@ void init_radio (void);
 
 bool radio_write_duties (int16_t left, int16_t right);
 
-//bool radio_read_duties (int16_t *left, int16_t *right);
-
-//bool radio_write_bump (bool bump);
-
 void radio_read_bump (bool *bump);
 
 #endif

@@ -12,8 +12,8 @@
 #include "nrf24.h"
 #include "pio.h"
 
-#define RADIO_CHANNEL 4                 //TODO: Change?
-#define RADIO_ADDRESS 0x0123456789LL    //TODO: Change?
+#define RADIO_CHANNEL 5                 //TODO: Change?
+#define RADIO_ADDRESS 0x0228576780LL    //TODO: Change?
 #define RADIO_PAYLOAD_SIZE 32
 
 static nrf24_t *NRF;
@@ -60,47 +60,22 @@ bool radio_write_duties (int16_t left, int16_t right) {
     snprintf (BUFFER, sizeof (BUFFER), "%d %d\r\n", left, right);
     if (! nrf24_write (NRF, BUFFER, RADIO_PAYLOAD_SIZE))  {
         pio_output_set (LED_ERROR_PIO, 0);
-        return true;
+        return false;
     } else {
         pio_output_set (LED_ERROR_PIO, 1);
-        return false;
+        return true;
     }
 }
-
-// bool radio_read_duties (int16_t *left, int16_t *right) {
-//     if (nrf24_read (NRF, BUFFER, sizeof (BUFFER))) {
-//             printf ("RX: %s\n", BUFFER);            
-//         if (sscanf(BUFFER, "%hd %hd", left, right) == 2) {
-//             printf ("Left Duty: %3d%%, \tRight Duty: %3d%%\n\n", *left, *right);
-//             return true;
-//         } else {
-//             printf("Invalid message\n");
-//         }
-//     }
-//     return false;
-// }
-
-// bool radio_write_bump (bool bump) {
-//     snprintf (BUFFER, sizeof (BUFFER), "%d\r\n", bump);
-//     if (! nrf24_write (NRF, BUFFER, RADIO_PAYLOAD_SIZE))  {
-//         pio_output_set (LED_ERROR_PIO, 0);
-//         return true;
-//     } else {
-//         pio_output_set (LED_ERROR_PIO, 1);
-//         return false;
-//     }
-// }
 
 void radio_read_bump (bool *bump) {
     if (nrf24_read (NRF, BUFFER, sizeof (BUFFER))) {
             printf ("RX: %s\n", BUFFER);            
         if (sscanf(BUFFER, "%hd", bump) == 1) {
-            printf ("Bump status: %3d%%\n\n", *bump);
+            printf ("Bump: %3d\n", *bump);
         } else {
-            printf("Invalid message\n");
-            *bump = false;
+            printf("Invalid\n");
         }
+    } else {
+        printf ("No new bump: %3d\n", *bump);
     }
-    *bump = false;
-    printf ("Bump status: %3d%%\n\n", *bump);
 }

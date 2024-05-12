@@ -13,31 +13,55 @@
 #include "usb_serial.h"
 #include "motors.h"
 #include "../libs/scheduler.h"
-#include "../libs/radio.h"
+#include "radio.h"
 
 #define PACER_RATE 20
 #define SERIAL_POLL_RATE 1
 #define STATUS_LED_BLINK_RATE 1000
+
+bool listening = true;
+bool bump = false;
+int16_t duty_left, duty_right;
+uint8_t current_bump, previous_bump;
+
 
 void toggle_status_led(void) {
     pio_output_toggle (LED_STATUS_PIO);
     // printf("Toggling Status LED\n");
 }
 
-void scan_serial(void) {
-    int16_t duty_left, duty_right;
-    char buf[256];
-    radio_read_duties(&duty_left, &duty_right);
-    set_motor_duties(duty_left, duty_right);
-    // if (fgets(buf, sizeof(buf), stdin)) {
-    //     // sscanf returns the number of input items successfully matched
-    //     if (sscanf(buf, "%hd %hd",&duty_left, &duty_right) == 2) {
-    //         set_motor_duties(duty_left, duty_right);
-    //         printf ("Left Duty: %3d%%, \tRight Duty: %3d%%\n\n", duty_left, duty_right);
-    //     } else {
-    //         printf("Invalid input\n");
-    //     }
-    // }
+//TODO: configure actual bump sensor
+void check_bump() {
+    previous_bump = current_bump;
+    current_bump = pio_input_get(BUMPER_POSITIVE);
+    if (previous_bump == 1 && current_bump == 0) {
+        printf ("Bump\n");
+        bump = true;
+    } else {
+        bump = false;
+    }
+}
+
+void communicate(void) {
+    check_bump();
+    if (listening) {
+        if (radio_read_duties(&duty_left, &duty_right)) {
+            set_motor_duties(duty_left, duty_right);
+        }
+        if (bump){
+            listening = false;
+        }
+    }
+    if (!listening) {
+        rx_to_tx(); // this is based on what is written in rf_tester 
+        if (radio_write_bump(true)) {
+            printf ("Y\n");
+            listening = true;
+        } else {
+            radio_read_duties(&duty_left, &duty_right);
+            set_motor_duties(duty_left, duty_right);
+        }
+    }
 }
 
 /* Initialise */
@@ -50,6 +74,7 @@ void init(void) {
     pio_output_set (LED_ERROR_PIO, ! LED_ACTIVE);
     pio_config_set (LED_STATUS_PIO, PIO_OUTPUT_LOW);
     pio_output_set (LED_STATUS_PIO, ! LED_ACTIVE);
+    pio_config_set (BUMPER_POSITIVE, PIO_PULLUP);
 
     // Initialise sysclock
     sysclock_init();
@@ -62,7 +87,7 @@ void init(void) {
 
     // Initialise tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&scan_serial, SERIAL_POLL_RATE);
+    add_task(&communicate, SERIAL_POLL_RATE);
 
 }
 
