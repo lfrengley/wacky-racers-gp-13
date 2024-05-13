@@ -85,13 +85,11 @@ static pwm_cfg_t pwm_buzz_config =
 };
 
 void init_buzzer (void) {
-    // BUZZER = piezo_init(&piezo_cfg);
     PWM_buzzer = pwm_init (&pwm_buzz_config);
     if (! PWM_buzzer) {
         panic (LED_ERROR_PIO, 1);
     }
 }
-
 
 static int32_t note_index = 0;
 
