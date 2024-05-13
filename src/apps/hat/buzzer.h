@@ -27,15 +27,12 @@
 #define LEN_SONG NUM_NOTES * SONG_MS_PER_NOTE
 
 void init_buzzer (void);
-
-bool init_song (void);
-
 // Turn the buzzer off, at the initialised frequency. Resets song index to 0
 void reset_buzzer (void);
 
 
-// Sets the buzzer to the next frequency in the song array
-void play_next_freq (void);
+// Play current buzzer frequency
+void play_current_freq (void);
 
 
 #endif

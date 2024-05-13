@@ -72,11 +72,6 @@ const uint8_t durations[NUM_NOTES] = {
 2,2,4,2,2,4,2,2,4,2,2,2,2,2,2,2,2,4,2,2,4,2,2,2,2,8,8,4,4,8,8,8,8,8,8,8,2,8,8,4,2,8,8,4,8,8,8,4,4,8,8,8,8,8,4,8,4,8,8,8,8,4,2,8,8,8,8,4,8,8,8,8,8,8,2,8,4,8,8,8,8,8,2,4,8,8,2,4,8,8,8,8,8,8,2,8,8,4,4,4,8,8,2,4,4,2,4,2,2,4,8,8,8,2,2,8,4,8,4,4,4,4,8,8,8,8,2,8,8,4,8,8,4,2,8,4,8,4,4,4,4,2,2,2,2,4,8,8,8,2,2,2,4,8,4,4,4,4,8,8,8,8,2,8,8,4,8,8,4,2,8,8,4,8,8,4,2,2,4,2,8,8,4,8,8,4,8,8,2,8,8,4,8,8,4,8,8,2,8,8,4,4,4,8,8,2,8,8,4,8,8,8,4,8,2,4,4,8,8,4,4,8,2,8,8,4,4,4,8,8,4,8,8,8,8,8,8,4,4,4,4,8,2,8,8,4,8,8,8,4,8,4,4,4,4,4,4,4,2,8,8,4,8,8,8,4,8,4,4,4,4,4,4,4,2,8,8,4,8,8,8,4,8,4,4,4,4,4,4,4,2,8,8,4,8,8,8,4,8,4,8,8,8,8,8,8,4,4,4,4
 };
 
-uint16_t song[LEN_SONG] = {
-
-};
-
-
 static pwm_t PWM_buzzer;
 #define INIT_BUZZ_PWM_FREQ 1000 //hz
 static pwm_cfg_t pwm_buzz_config =
@@ -98,39 +93,33 @@ void init_buzzer (void) {
 }
 
 
-bool init_song (void) {
-    for (int i=0; i<NUM_NOTES; i++) { // Iterate through the notes in the song
-        int32_t note = notes[i];
-        int32_t duration = durations[i];
-        if (i + duration >= LEN_SONG) {
-            return false;
-        }
-        for (int j=0; j<duration; j++) { // Write the note to the song array for the 'length' of the duration
-            song[i+j] = note;
-        }
+static int32_t note_index = 0;
+
+
+void play_current_freq (void) {
+    // Check how far through the note we are
+    static int8_t eighth_beat = 1;
+    if (eighth_beat > durations[note_index]) { //if we have played all of the note, move on to the next
+        eighth_beat = 1;
+        note_index++;
+    } else { // increase the note count
+        eighth_beat++;
     }
-    return true;
-}
 
+    // Restart song if needed
+    if (note_index >= NUM_NOTES) {
+        note_index == 0;
+    }
 
-static int32_t song_index = 0;
-
-
-void play_next_freq (void) {
-    // static uint32_t start_time_ms = 0
-   
-    int32_t freq = song[song_index];
+    //play the current note
+    int32_t freq = notes[note_index];
     if (freq == REST) {
         pwm_duty_set(PWM_buzzer, PWM_DUTY_DIVISOR(INIT_BUZZ_PWM_FREQ, 0)); // stop the buzzer
     }
     pwm_duty_set(PWM_buzzer, PWM_DUTY_DIVISOR(freq, 100));
-    song_index++;  
-    if (song_index >= LEN_SONG) { // restart song
-        song_index == 0;
-    }
 }
 
 void reset_buzzer (void) {
     pwm_duty_set(PWM_buzzer, PWM_DUTY_DIVISOR(INIT_BUZZ_PWM_FREQ, 0));
-    song_index = 0;
+    note_index = 0;
 }

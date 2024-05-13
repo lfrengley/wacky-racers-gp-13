@@ -62,9 +62,9 @@ void check_bump_status (void) {
     if (bump && !prev_bump) { // Rising edge of bump, start song
         bump_start_time_ms = sysclock_millis();
         reset_buzzer(); // doubling up on the reset (from falling edge). Currently doing this for certainty.
-        play_next_freq();
+        play_current_freq();
     } else if (bump && prev_bump) { // Continue playing song
-        play_next_freq();
+        play_current_freq();
     } else if (!bump && prev_bump) { // Falling edge of bump, end song
         reset_buzzer();
     }
@@ -93,11 +93,6 @@ void init(void) {
 
     // Initialise Piezo
     init_buzzer();
-
-    // Initialise Song Array
-    if (!init_song()) {
-        printf("Failed to init song array");
-    }
 
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
