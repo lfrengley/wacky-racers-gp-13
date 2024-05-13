@@ -115,8 +115,9 @@ void play_current_freq (void) {
     int32_t freq = notes[note_index];
     if (freq == REST) {
         pwm_duty_set(PWM_buzzer, PWM_DUTY_DIVISOR(INIT_BUZZ_PWM_FREQ, 0)); // stop the buzzer
+    } else {
+        pwm_duty_set(PWM_buzzer, PWM_DUTY_DIVISOR(freq, 100));
     }
-    pwm_duty_set(PWM_buzzer, PWM_DUTY_DIVISOR(freq, 100));
 }
 
 void reset_buzzer (void) {
