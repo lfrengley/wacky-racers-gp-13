@@ -23,7 +23,7 @@
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 1000
-#define CHECK_BUMP_POLL_RATE EIGHTH_NOTE_DURATION_MS
+#define CHECK_BUMP_POLL_RATE SONG_MS_PER_NOTE
 
 MotorDuties duties;
 bool listening = true;
@@ -55,9 +55,9 @@ void check_bump_status (void) {
         return; // return immediately if there's no bump signal, without wasting clock cycles
     }
 
-    if (sysclock_millis() - bump_start_time_ms > BUMP_TIME_MS) {
-        bump = false;
-    }
+    // if (sysclock_millis() - bump_start_time_ms > BUMP_TIME_MS) {
+    //     bump = false;
+    // }
 
     if (bump && !prev_bump) { // Rising edge of bump, start song
         bump_start_time_ms = sysclock_millis();
@@ -94,9 +94,14 @@ void init(void) {
     // Initialise Piezo
     init_buzzer();
 
+    // Initialise Song Array
+    if (!init_song()) {
+        printf("Failed to init song array");
+    }
+
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&communicate, ACCEL_POLL_RATE);
+    // add_task(&communicate, ACCEL_POLL_RATE);
     add_task(&check_bump_status, CHECK_BUMP_POLL_RATE);
 }
 
