@@ -27,7 +27,8 @@
 
 MotorDuties duties;
 bool listening = true;
-bool bump = false;
+// bool bump = false;
+bool bump = true;
 int32_t bump_start_time_ms = 0;
 
 void toggle_status_led(void) {
@@ -67,9 +68,9 @@ void check_bump_status (void) {
     }
     prev_bump = bump;
 
-    if (sysclock_millis() - bump_start_time_ms > BUMP_TIME_MS) {
-        bump = false;
-    }
+    // if (sysclock_millis() - bump_start_time_ms > BUMP_TIME_MS) {
+    //     bump = false;
+    // }
 }
 
 /* Initialise */

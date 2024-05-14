@@ -28,6 +28,11 @@
 #define NUM_NOTES 310 //manually counted (with python) test array
 #define LEN_SONG NUM_NOTES * SONG_MS_PER_NOTE
 
+#define DURATION_EIGHTH 1
+#define DURATION_QUARTER 2
+#define DURATION_HALF 4
+#define DURATION_FULL 8
+
 void init_buzzer (void);
 // Turn the buzzer off, at the initialised frequency. Resets song index to 0
 void reset_buzzer (void);
