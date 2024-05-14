@@ -25,7 +25,7 @@
 
 // #define NUM_NOTES EIGHTH_NOTE_DURATION_MS * BUMP_TIME_MS
 // #define LEN_SONG EIGHTH_NOTE_DURATION_MS * NUM_NOTES
-#define NUM_NOTES 310 //manually counted (with python) test array
+#define NUM_NOTES 33 //manually counted (with python) test array
 #define LEN_SONG NUM_NOTES * SONG_MS_PER_NOTE
 
 #define DURATION_EIGHTH 1
