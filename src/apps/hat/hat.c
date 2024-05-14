@@ -51,13 +51,10 @@ void communicate(void) {
 
 void check_bump_status (void) {
     static bool prev_bump = false;
+    // printf("Checking bump status\n");
     if (!bump && !prev_bump) {
         return; // return immediately if there's no bump signal, without wasting clock cycles
     }
-
-    // if (sysclock_millis() - bump_start_time_ms > BUMP_TIME_MS) {
-    //     bump = false;
-    // }
 
     if (bump && !prev_bump) { // Rising edge of bump, start song
         bump_start_time_ms = sysclock_millis();
@@ -69,6 +66,10 @@ void check_bump_status (void) {
         reset_buzzer();
     }
     prev_bump = bump;
+
+    if (sysclock_millis() - bump_start_time_ms > BUMP_TIME_MS) {
+        bump = false;
+    }
 }
 
 /* Initialise */
@@ -93,10 +94,11 @@ void init(void) {
 
     // Initialise Piezo
     init_buzzer();
+    // reset_buzzer();
 
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    // add_task(&communicate, ACCEL_POLL_RATE);
+    add_task(&communicate, ACCEL_POLL_RATE);
     add_task(&check_bump_status, CHECK_BUMP_POLL_RATE);
 }
 
