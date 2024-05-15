@@ -10,6 +10,7 @@
 #include "pacer.h"
 #include "button.h"
 
+
 #define BUTTON_POLL_RATE 100
 
 /* Define button configuration.  */
@@ -51,23 +52,18 @@ void enter_sleep_mode(void)
 
 
 
-int main (void)
+void sleeper_stuff (void)
 {
     button_t sleep_button;
     sleep_button = button_init (&sleep_button_cfg);
 
-    button_poll_count_set (BUTTON_POLL_COUNT (BUTTON_POLL_RATE));
-    pacer_init (BUTTON_POLL_RATE);
+    // button_poll_count_set (BUTTON_POLL_COUNT (BUTTON_POLL_RATE));
+    // pacer_init (BUTTON_POLL_RATE);
 
-    while (1)
+    button_poll (sleep_button);
+    if (button_pushed_p (sleep_button))
     {
-        pacer_wait ();
-        button_poll (sleep_button);
-        if (button_pushed_p (sleep_button))
-        {
-            enter_sleep_mode();
-        }
+        enter_sleep_mode();
     }
-    return 0;
 }
 

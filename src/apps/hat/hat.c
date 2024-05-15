@@ -17,9 +17,13 @@
 #include <stdbool.h>
 #include "radio.h"
 
+#include "sleep_interruptz.h"
+
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 1000
+#define SLEEP_RATE 50
+
 
 MotorDuties duties;
 bool listening = true;
@@ -64,10 +68,12 @@ void init(void) {
     // Initialise Radio
     init_radio();
 
-    // Initialise Tasks
-    add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&communicate, ACCEL_POLL_RATE);
+    // // Initialise Tasks
+    // add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
+    // add_task(&communicate, ACCEL_POLL_RATE);
+    add_task(&sleeper_stuff, SLEEP_RATE);
 
+//
 }
 
 /* Begin */
