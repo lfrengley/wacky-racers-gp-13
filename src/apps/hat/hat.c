@@ -79,6 +79,9 @@ void init(void) {
     // Initialise Radio
     init_radio();
 
+    // Init button 
+    init_sleeper();
+
     // Initialise Led Strip
     init_led_strip();
 
