@@ -13,6 +13,8 @@
 
 #define BUTTON_POLL_RATE 100
 
+button_t sleep_button;
+
 /* Define button configuration.  */
 static const button_cfg_t sleep_button_cfg =
 {
@@ -50,13 +52,12 @@ void enter_sleep_mode(void)
     alarm.  The supply monitor monitors the voltage on the
     VDDIO pin if it is enabled.  The MCU is reset.  */
 
-
+void init_sleeper(void) {
+    sleep_button = button_init (&sleep_button_cfg);
+}
 
 void sleeper_stuff (void)
 {
-    button_t sleep_button;
-    sleep_button = button_init (&sleep_button_cfg);
-
     // button_poll_count_set (BUTTON_POLL_COUNT (BUTTON_POLL_RATE));
     // pacer_init (BUTTON_POLL_RATE);
 

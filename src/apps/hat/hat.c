@@ -68,6 +68,9 @@ void init(void) {
     // Initialise Radio
     init_radio();
 
+    // Init button 
+    init_sleeper();
+
     // // Initialise Tasks
     // add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     // add_task(&communicate, ACCEL_POLL_RATE);
