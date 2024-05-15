@@ -14,7 +14,7 @@ extern "C" {
 
 
 #include "config.h"
-#include "sam4s/pio.h"
+#include "pio.h"
 
 
 #define PWM_PERIOD_DIVISOR(FREQ) ((pwm_period_t)(F_CPU / (FREQ)))

@@ -28,9 +28,7 @@
         "stdbool.h": "c",
         "nrf24.h": "c",
         "radio.h": "c",
-        "ios": "c",
-        "piezo.h": "c",
-        "buzzer.h": "c"
+        "ios": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
