@@ -10,7 +10,6 @@
 #include "pacer.h"
 #include "button.h"
 
-
 #define BUTTON_POLL_RATE 100
 
 button_t sleep_button;
@@ -52,15 +51,14 @@ void enter_sleep_mode(void)
     alarm.  The supply monitor monitors the voltage on the
     VDDIO pin if it is enabled.  The MCU is reset.  */
 
+//Initialises the button
 void init_sleeper(void) {
     sleep_button = button_init (&sleep_button_cfg);
 }
 
+//Main check button function that is periodically called by scheduler
 void sleeper_stuff (void)
 {
-    // button_poll_count_set (BUTTON_POLL_COUNT (BUTTON_POLL_RATE));
-    // pacer_init (BUTTON_POLL_RATE);
-
     button_poll (sleep_button);
     if (button_pushed_p (sleep_button))
     {
