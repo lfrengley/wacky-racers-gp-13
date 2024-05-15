@@ -34,9 +34,12 @@ mcu_sleep_wakeup_set (const mcu_sleep_wakeup_cfg_t *cfg)
         };
 
     if (!cfg)
+    {
+        printf("notconfig");
         return 0;
+    }
 
-    if (cfg->pio)
+    if ((cfg->pio) == PA0_PIO)
     {
         unsigned int i;
 
@@ -48,11 +51,18 @@ mcu_sleep_wakeup_set (const mcu_sleep_wakeup_cfg_t *cfg)
                 SUPC->SUPC_WUIR |= BIT (i);                
                 if (cfg->active_high)
                     SUPC->SUPC_WUIR |= BIT (i + 16);
+                printf("configured pin to wake");
                 return 1;
+                
+
             }
         }
     }
+    else {
+        printf("\nbleughdfjgd did nothing at all\n");
+    }
     return 0;
+
 }
 
 
