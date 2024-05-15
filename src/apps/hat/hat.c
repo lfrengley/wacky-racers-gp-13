@@ -27,6 +27,8 @@
 #include "button.h"
 button_t sleep_button;
 
+#include "sleep_interruptz.h"
+
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 1000
@@ -83,7 +85,7 @@ void init(void) {
     // Init button 
     init_sleeper();
 
-    // // Initialise Tasks
+    // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     // add_task(&communicate, ACCEL_POLL_RATE);
     // add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
@@ -147,7 +149,7 @@ void sleeper_stuff (void)
         printf("\nenterning sleep mode func\n");
         enter_sleep_mode();
 
-    }
+    }    add_task(&sleeper_stuff, SLEEP_RATE);
 }
 
 /* Begin */
