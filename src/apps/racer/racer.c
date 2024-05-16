@@ -14,10 +14,12 @@
 #include "motors.h"
 #include "../libs/scheduler.h"
 #include "radio.h"
+#include "../libs/led_strip_blink.h"
 
 #define PACER_RATE 20
 #define SERIAL_POLL_RATE 1
 #define STATUS_LED_BLINK_RATE 1000
+#define LED_STRIP_UPDATE_RATE 70
 
 bool listening = true;
 bool bump = false;
@@ -85,9 +87,13 @@ void init(void) {
     // Initialise Radio
     init_radio();
 
+    // Initialise Led Strip
+    init_led_strip();
+
     // Initialise tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&communicate, SERIAL_POLL_RATE);
+    add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
 
 }
 
