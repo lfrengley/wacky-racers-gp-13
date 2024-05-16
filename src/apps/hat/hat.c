@@ -152,3 +152,14 @@ void sleeper_stuff (void)
 
     }    add_task(&sleeper_stuff, SLEEP_RATE);
 }
+
+int
+main (void)
+{
+    int ticks =0;
+    
+    //Initialise
+    init();
+    
+    run_scheduler();
+}
