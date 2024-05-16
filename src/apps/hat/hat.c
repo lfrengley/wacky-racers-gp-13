@@ -14,6 +14,7 @@
 #include "usb_serial.h"
 #include "accelerometer.h"
 #include "../libs/scheduler.h"
+#include "../libs/led_strip_blink.h"
 #include <stdbool.h>
 #include "radio.h"
 
@@ -29,6 +30,7 @@ button_t sleep_button;
 #define PACER_RATE 20
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 1000
+#define LED_STRIP_UPDATE_RATE 70
 #define SLEEP_RATE 50
 
 
@@ -75,15 +77,17 @@ void init(void) {
     // Initialise Radio
     init_radio();
 
+    // Initialise Led Strip
+    init_led_strip();
+
     // Init button 
     init_sleeper();
 
     // // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     // add_task(&communicate, ACCEL_POLL_RATE);
+    // add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
     add_task(&sleeper_stuff, SLEEP_RATE);
-
-//
 }
 
 
@@ -145,15 +149,6 @@ void sleeper_stuff (void)
 
     }
 }
-
-
-
-
-
-
-
-
-
 
 /* Begin */
 int
