@@ -22,6 +22,7 @@
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 1000
 #define LED_STRIP_UPDATE_RATE 70
+#define DIP_POLL_RATE 500
 
 MotorDuties duties;
 bool listening = true;
@@ -64,6 +65,7 @@ void init(void) {
     init_accelerometer();
 
     // Initialise Radio
+    init_radio_dips(); //Must do before init radio
     init_radio();
 
     // Initialise Led Strip
@@ -73,6 +75,7 @@ void init(void) {
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&communicate, ACCEL_POLL_RATE);
     add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
+    add_task(&poll_radio_dips, DIP_POLL_RATE);
 
 }
 
