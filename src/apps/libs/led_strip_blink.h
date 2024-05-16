@@ -1,0 +1,18 @@
+/** @file   led_strip_blink.h
+    @author Lucy Frengley
+            Hayden Evans
+            Penelope Keeling
+            Michael Spurdle
+            M. P. Hayes
+    @date   4 May 2024
+    @brief  TODO: Write a description
+*/
+
+#ifndef LED_STRIP_BLINK_H
+#define LED_STRIP_BLINK_H
+
+void init_led_strip (void);
+
+void update_led_strip (void);
+
+#endif

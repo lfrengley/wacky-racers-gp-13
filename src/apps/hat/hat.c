@@ -15,6 +15,7 @@
 #include "usb_serial.h"
 #include "accelerometer.h"
 #include "../libs/scheduler.h"
+#include "../libs/led_strip_blink.h"
 #include <stdbool.h>
 #include "radio.h"
 #include "buzzer.h"
@@ -24,6 +25,7 @@
 #define ACCEL_POLL_RATE 10
 #define STATUS_LED_BLINK_RATE 1000
 #define CHECK_BUMP_POLL_RATE SONG_MS_PER_NOTE
+#define LED_STRIP_UPDATE_RATE 70
 
 MotorDuties duties;
 bool listening = true;
@@ -97,10 +99,15 @@ void init(void) {
     init_buzzer();
     // reset_buzzer();
 
+    // Initialise Led Strip
+    init_led_strip();
+
     // Initialise Tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&communicate, ACCEL_POLL_RATE);
     add_task(&check_bump_status, CHECK_BUMP_POLL_RATE);
+    add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
+
 }
 
 /* Begin */
