@@ -18,12 +18,6 @@
 #include <stdbool.h>
 #include "radio.h"
 
-#define PACER_RATE 20
-#define ACCEL_POLL_RATE 10
-#define STATUS_LED_BLINK_RATE 1000
-#define LED_STRIP_UPDATE_RATE 70
-#define DIP_POLL_RATE 500
-
 MotorDuties duties;
 bool listening = true;
 bool bump = false;
@@ -72,11 +66,10 @@ void init(void) {
     init_led_strip();
 
     // Initialise Tasks
-    add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&communicate, ACCEL_POLL_RATE);
-    add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
-    add_task(&poll_radio_dips, DIP_POLL_RATE);
-
+    status_led_task_id = add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
+    accel_task_id = add_task(&communicate, ACCEL_POLL_RATE);
+    led_strip_task_id = add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
+    dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
 }
 
 /* Begin */

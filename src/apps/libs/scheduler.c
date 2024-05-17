@@ -1,27 +1,53 @@
 #include "scheduler.h"
 
 
-#define MAX_TASKS 10
+#define MAX_TASKS 20
 
 // Task structure
 typedef struct {
     void (*task_function)(void);
     unsigned long period;  // Period in milliseconds
     unsigned long last_executed; // Last time the task was executed
+    int task_id;
+    bool disabled;
 } Task;
 
 Task tasks[MAX_TASKS];
 int num_tasks = 0;
+int next_available_task_id = 0;
 
-void add_task(void (*task_function)(void), unsigned long period) {
+int add_task(void (*task_function)(void), unsigned long period) {
     if (num_tasks >= MAX_TASKS) {
         printf("Cannot add more tasks, reached maximum limit\n");
         return;
     }
+    int current_task_id = next_available_task_id++;
+
     tasks[num_tasks].task_function = task_function;
     tasks[num_tasks].period = period;
     tasks[num_tasks].last_executed = 0;
+    tasks[num_tasks].task_id = current_task_id;
+    tasks[num_tasks].disabled = false;
     num_tasks++;
+    return current_task_id;
+}
+
+void disable_task(int task_id) {
+    for (int i=0; i<num_tasks; i++) {
+        if (tasks[i].task_id == task_id) {
+            tasks[i].disabled = true;
+            break;
+        }
+    }
+}
+
+void enable_task(int task_id) {
+    for (int i=0; i<num_tasks; i++) {
+        if (tasks[i].task_id == task_id) {
+            tasks[i].disabled = false;
+            break;
+        }
+    }
 }
 
 void run_scheduler(void) {
@@ -31,7 +57,7 @@ void run_scheduler(void) {
     while (1) {
         current_time = sysclock_millis();
         for (i = 0; i < num_tasks; i++) {
-            if (current_time - tasks[i].last_executed >= tasks[i].period) {
+            if (!tasks[i].disabled && current_time - tasks[i].last_executed >= tasks[i].period) {
                 tasks[i].task_function();
                 tasks[i].last_executed = current_time;
             }
