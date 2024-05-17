@@ -19,7 +19,7 @@
 #define PACER_RATE 20
 #define SERIAL_POLL_RATE 1
 #define STATUS_LED_BLINK_RATE 1000
-#define LED_STRIP_UPDATE_RATE 70
+#define LED_STRIP_UPDATE_RATE 50
 #define DIP_POLL_RATE 500
 
 bool listening = true;
@@ -50,6 +50,7 @@ void communicate(void) {
     if (listening) {
         if (radio_read_duties(&duty_left, &duty_right)) {
             set_motor_duties(duty_left, duty_right);
+            set_strip_mode(duty_left, duty_right);
         }
         if (bump){
             listening = false;
@@ -95,7 +96,7 @@ void init(void) {
     // Initialise tasks
     add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
     add_task(&communicate, SERIAL_POLL_RATE);
-    add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
+    add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
     add_task(&poll_radio_dips, DIP_POLL_RATE);
 
 }
