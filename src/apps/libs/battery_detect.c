@@ -8,6 +8,7 @@
 */
 
 #include "target.h"
+#include "pio.h"
 
 void init_battery_detect (void) {
     
