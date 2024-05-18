@@ -12,6 +12,8 @@
 
 void init_battery_detect (void);
 
+uint16_t calculate_battery_average (void);
+
 void poll_charge_status (void);
 
 #endif

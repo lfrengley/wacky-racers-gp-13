@@ -26,8 +26,10 @@ int status_led_task_id;
 int led_strip_task_id;
 #define DIP_POLL_RATE 500
 int dip_poll_rate_task_id;
-#define CHARGE_STATUS_POLL_RATE 1000
+#define CHARGE_STATUS_POLL_RATE 25
 int charge_status_task_id;
+#define BATTERY_POLL_RATE 500
+int battery_task_id;
 
 bool listening = true;
 bool bump = false;
@@ -75,6 +77,11 @@ void communicate(void) {
     }
 }
 
+void check_battery(void) {
+    uint16_t battery = calculate_battery_average();
+    printf ("Average Battery: %d\n", battery);
+}
+
 /* Initialise */
 void init(void) {
     // Redirect stdio to USB serial
@@ -105,10 +112,11 @@ void init(void) {
 
     // Initialise tasks
     status_led_task_id = add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
-    led_strip_task_id = add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
-    dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
+    //radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
+    //led_strip_task_id = add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
+    //dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
     charge_status_task_id = add_task(&poll_charge_status, CHARGE_STATUS_POLL_RATE);
+    battery_task_id = add_task(&check_battery, BATTERY_POLL_RATE);
 }
 
 
