@@ -23,6 +23,10 @@ void init_led_strip (void) {
     leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
 }
 
+void turn_off_strip () {
+    ledbuffer_clear(leds);
+    ledbuffer_write (leds);
+}
 
 void update_led_strip (void) {
     if (start) {

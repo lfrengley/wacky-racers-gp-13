@@ -15,6 +15,7 @@
 #include "../libs/scheduler.h"
 #include "radio.h"
 #include "../libs/led_strip_blink.h"
+#include "../libs/battery_detect.h"
 
 #define PACER_RATE 20
 #define RADIO_POLL_RATE 10
@@ -25,6 +26,8 @@ int status_led_task_id;
 int led_strip_task_id;
 #define DIP_POLL_RATE 500
 int dip_poll_rate_task_id;
+#define CHARGE_STATUS_POLL_RATE 1000
+int charge_status_task_id;
 
 bool listening = true;
 bool bump = false;
@@ -87,6 +90,9 @@ void init(void) {
     // Initialise sysclock
     sysclock_init();
 
+    // Initialise battery
+    init_battery_detect();
+
     //Initialiase Motors
     init_motors();
 
@@ -102,7 +108,7 @@ void init(void) {
     radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
     led_strip_task_id = add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
     dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
-
+    charge_status_task_id = add_task(&poll_charge_status, CHARGE_STATUS_POLL_RATE);
 }
 
 
