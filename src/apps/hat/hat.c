@@ -149,8 +149,7 @@ void sleeper_stuff (void)
     if (button_pushed_p (sleep_button)) {
         printf("\nenterning sleep mode func\n");
         enter_sleep_mode();
-
-    }    add_task(&sleeper_stuff, SLEEP_RATE);
+    }    
 }
 
 int
