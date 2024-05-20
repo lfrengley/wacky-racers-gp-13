@@ -19,7 +19,7 @@
 #include <stdbool.h>
 #include "radio.h"
 
-#define LOW_V_ADC 1055
+#define LOW_V_ADC 2755
 #define ADC_RANGE 4095
 
 /* TASK RATES AND ID'S*/
