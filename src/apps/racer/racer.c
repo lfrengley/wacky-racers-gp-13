@@ -15,11 +15,25 @@
 #include "../libs/scheduler.h"
 #include "radio.h"
 #include "../libs/led_strip_blink.h"
+#include "../libs/battery_detect.h"
 
-#define PACER_RATE 20
-#define SERIAL_POLL_RATE 1
+#define LOW_V_ADC 1055
+#define ADC_RANGE 4095
+
+/* TASK RATES AND ID'S*/
+#define RADIO_POLL_RATE 10
+int radio_task_id;
 #define STATUS_LED_BLINK_RATE 1000
-#define LED_STRIP_UPDATE_RATE 70
+int status_led_task_id;
+int battery_led_task_id;
+#define LED_STRIP_UPDATE_RATE 45
+int led_strip_task_id;
+#define DIP_POLL_RATE 500
+int dip_poll_rate_task_id;
+#define CHARGE_STATUS_POLL_RATE 30
+int charge_status_task_id;
+#define BATTERY_POLL_RATE 400
+int battery_task_id;
 
 bool listening = true;
 bool bump = false;
@@ -32,7 +46,11 @@ void toggle_status_led(void) {
     // printf("Toggling Status LED\n");
 }
 
-//TODO: configure actual bump sensor
+void toggle_battery_led(void) {
+    pio_output_toggle (LED_ERROR_PIO);
+    // printf("Toggling Status LED\n");
+}
+
 void check_bump() {
     previous_bump = current_bump;
     current_bump = pio_input_get(BUMPER_POSITIVE);
@@ -49,6 +67,7 @@ void communicate(void) {
     if (listening) {
         if (radio_read_duties(&duty_left, &duty_right)) {
             set_motor_duties(duty_left, duty_right);
+            set_strip_mode(duty_left, duty_right);
         }
         if (bump){
             listening = false;
@@ -63,6 +82,25 @@ void communicate(void) {
             radio_read_duties(&duty_left, &duty_right);
             set_motor_duties(duty_left, duty_right);
         }
+    }
+}
+
+void check_battery(void) {
+    uint16_t battery = calculate_battery_average();
+    printf ("Average Battery: %d\n", battery);
+    if (battery < LOW_V_ADC) {
+        enable_task(battery_led_task_id);
+        disable_task(led_strip_task_id);
+        turn_off_strip ();
+        disable_task (radio_task_id);
+        set_motor_duties(0, 0);
+        disable_task (dip_poll_rate_task_id);
+
+    } else { //Maybe not reenable
+        disable_task(battery_led_task_id);
+        enable_task(led_strip_task_id);
+        enable_task(radio_task_id);
+        enable_task(dip_poll_rate_task_id);
     }
 }
 
@@ -81,27 +119,37 @@ void init(void) {
     // Initialise sysclock
     sysclock_init();
 
+    // Initialise battery
+    init_battery_detect();
+
     //Initialiase Motors
     init_motors();
 
     // Initialise Radio
+    init_radio_dips(); //This must be done first
     init_radio();
 
-    // Initialise Led Strip
+    // Initialise Led Stripx
     init_led_strip();
 
     // Initialise tasks
-    add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    add_task(&communicate, SERIAL_POLL_RATE);
-    add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
 
+    status_led_task_id = add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
+    battery_led_task_id = add_task(&toggle_battery_led, STATUS_LED_BLINK_RATE);
+    disable_task(battery_led_task_id);
+
+    radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
+    led_strip_task_id = add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
+    dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
+
+    charge_status_task_id = add_task(&poll_charge_status, CHARGE_STATUS_POLL_RATE);
+    battery_task_id = add_task(&check_battery, BATTERY_POLL_RATE);
 }
 
 
 int
 main (void)
 {
-    
     init();
     run_scheduler();
 }
