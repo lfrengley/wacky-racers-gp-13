@@ -91,9 +91,15 @@ void check_battery(void) {
         enable_task(battery_led_task_id);
         disable_task(led_strip_task_id);
         turn_off_strip ();
-    } else {
+        disable_task (radio_task_id);
+        set_motor_duties(0, 0);
+        disable_task (dip_poll_rate_task_id);
+
+    } else { //Maybe not reenable
         disable_task(battery_led_task_id);
         enable_task(led_strip_task_id);
+        enable_task(radio_task_id);
+        enable_task(dip_poll_rate_task_id);
     }
 }
 
