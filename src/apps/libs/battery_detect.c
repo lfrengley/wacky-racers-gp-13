@@ -14,8 +14,7 @@
 #include <stdlib.h>
 #include "circular_buffer.h"
 
-#define BUF_SIZE 12
-#define ADC_RANGE 4095
+#define BUF_SIZE 20
 
 static circBuf_t g_inBuffer;  
 adc_t adc;
@@ -24,7 +23,7 @@ uint16_t current_adc;
 static const adc_cfg_t adc_cfg =
 {
     .bits = 12,
-    .channels = BIT (ADC_CHANNEL_1),
+    .channels = BIT (ADC_CHANNEL_3),
     .trigger = ADC_TRIGGER_SW,
     .clock_speed_kHz = 1000
 };
@@ -32,6 +31,9 @@ static const adc_cfg_t adc_cfg =
 void init_battery_detect (void) {
     adc = adc_init (&adc_cfg);
     initCircBuf (&g_inBuffer, BUF_SIZE);
+    for (size_t i = 0; i < BUF_SIZE; i++) {
+        writeCircBuf (&g_inBuffer, 4095);
+    }
     if (! adc)
         panic (LED_ERROR_PIO, 1);
 }
@@ -49,5 +51,6 @@ uint16_t calculate_battery_average (void)
 void poll_charge_status (void) {
     uint16_t data[1];
     adc_read (adc, data, sizeof (data));
+    printf ("Read adc: %d\n", data[0]);
     writeCircBuf (&g_inBuffer, data[0]);
 }

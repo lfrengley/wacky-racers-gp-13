@@ -17,18 +17,21 @@
 #include "../libs/led_strip_blink.h"
 #include "../libs/battery_detect.h"
 
-#define PACER_RATE 20
+#define LOW_V_ADC 1055
+#define ADC_RANGE 4095
+
 #define RADIO_POLL_RATE 10
 int radio_task_id;
 #define STATUS_LED_BLINK_RATE 1000
 int status_led_task_id;
-#define LED_STRIP_UPDATE_RATE 50
+int battery_led_task_id;
+#define LED_STRIP_UPDATE_RATE 45
 int led_strip_task_id;
 #define DIP_POLL_RATE 500
 int dip_poll_rate_task_id;
-#define CHARGE_STATUS_POLL_RATE 25
+#define CHARGE_STATUS_POLL_RATE 30
 int charge_status_task_id;
-#define BATTERY_POLL_RATE 500
+#define BATTERY_POLL_RATE 400
 int battery_task_id;
 
 bool listening = true;
@@ -42,7 +45,11 @@ void toggle_status_led(void) {
     // printf("Toggling Status LED\n");
 }
 
-//TODO: configure actual bump sensor
+void toggle_battery_led(void) {
+    pio_output_toggle (LED_ERROR_PIO);
+    // printf("Toggling Status LED\n");
+}
+
 void check_bump() {
     previous_bump = current_bump;
     current_bump = pio_input_get(BUMPER_POSITIVE);
@@ -80,6 +87,14 @@ void communicate(void) {
 void check_battery(void) {
     uint16_t battery = calculate_battery_average();
     printf ("Average Battery: %d\n", battery);
+    if (battery < LOW_V_ADC) {
+        enable_task(battery_led_task_id);
+        disable_task(led_strip_task_id);
+        turn_off_strip ();
+    } else {
+        disable_task(battery_led_task_id);
+        enable_task(led_strip_task_id);
+    }
 }
 
 /* Initialise */
@@ -107,14 +122,18 @@ void init(void) {
     init_radio_dips(); //This must be done first
     init_radio();
 
-    // Initialise Led Strip
+    // Initialise Led Stripx
     init_led_strip();
 
     // Initialise tasks
+
     status_led_task_id = add_task(&toggle_status_led, STATUS_LED_BLINK_RATE);
-    //radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
-    //led_strip_task_id = add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
-    //dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
+    battery_led_task_id = add_task(&toggle_battery_led, STATUS_LED_BLINK_RATE);
+    disable_task(battery_led_task_id);
+
+    radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
+    led_strip_task_id = add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
+    dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
     charge_status_task_id = add_task(&poll_charge_status, CHARGE_STATUS_POLL_RATE);
     battery_task_id = add_task(&check_battery, BATTERY_POLL_RATE);
 }

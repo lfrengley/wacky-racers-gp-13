@@ -104,13 +104,13 @@ bool radio_read_duties (int16_t *left, int16_t *right) {
     if (nrf24_read (NRF, BUFFER, sizeof (BUFFER))) {
             printf ("RX: %s\n", BUFFER);            
         if (sscanf(BUFFER, "%hd %hd", left, right) == 2) {
-            printf ("Left Duty: %3d%%, \tRight Duty: %3d%%\n\n", *left, *right);
+            //printf ("Left Duty: %3d%%, \tRight Duty: %3d%%\n\n", *left, *right);
             return true;
         } else {
-            printf("Invalid\n\n");
+            //printf("Invalid\n\n");
         }
     }
-    printf ("No duty\n\n");
+    //printf ("No duty\n\n");
     return false;
 }
 
