@@ -41,5 +41,6 @@ void set_buzzer_high (void);
 // Play current buzzer frequency
 void play_current_freq (void);
 
+uint32_t get_current_freq (void);
 
 #endif

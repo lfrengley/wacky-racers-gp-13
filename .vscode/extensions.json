@@ -2,6 +2,8 @@
     "recommendations": [
         "ms-vscode.cpptools",
         "webfreak.debug",
-        "rioj7.command-variable"
+        "rioj7.command-variable",
+        "ms-vscode.vscode-serial-monitor",
+        "eamodio.gitlens"
     ]
 }

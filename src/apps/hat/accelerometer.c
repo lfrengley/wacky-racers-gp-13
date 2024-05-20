@@ -157,7 +157,7 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     }
     // Calculate turning speed
     int32_t turning_speed = 0;
-    int8_t turning_gain = 3;
+    int8_t turning_gain = 6;
     if (abs(roll) > roll_deadband) {
         int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
         turning_speed = clipped_roll * turning_gain;
