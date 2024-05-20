@@ -74,7 +74,7 @@
 #define RADIO_IRQ_PIO PA4_PIO
 
 /* Battery  */
-#define BATTERY_DETECT_PIO PA5_PIO
+#define BATTERY_DETECT_PIO ADC_CHANNEL_3
 
 /* LED tape  */
 #define LEDTAPE_PIO PA3_PIO

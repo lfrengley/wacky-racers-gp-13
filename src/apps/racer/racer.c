@@ -20,6 +20,7 @@
 #define LOW_V_ADC 1055
 #define ADC_RANGE 4095
 
+/* TASK RATES AND ID'S*/
 #define RADIO_POLL_RATE 10
 int radio_task_id;
 #define STATUS_LED_BLINK_RATE 1000
@@ -140,6 +141,7 @@ void init(void) {
     radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
     led_strip_task_id = add_task(&update_racer_led_strip, LED_STRIP_UPDATE_RATE);
     dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
+
     charge_status_task_id = add_task(&poll_charge_status, CHARGE_STATUS_POLL_RATE);
     battery_task_id = add_task(&check_battery, BATTERY_POLL_RATE);
 }

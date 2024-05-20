@@ -77,7 +77,7 @@
 #define RADIO_IRQ_PIO PA11_PIO
 
 /* Connectors  */
-#define BATTERY_DETECT_PIO PA5_PIO
+#define BATTERY_DETECT_PIO ADC_CHANNEL_8
 #define USB_DETECT_PIO PA31_PIO
 
 /* LED tape  */

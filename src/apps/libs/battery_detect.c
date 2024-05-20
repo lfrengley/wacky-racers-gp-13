@@ -23,7 +23,7 @@ uint16_t current_adc;
 static const adc_cfg_t adc_cfg =
 {
     .bits = 12,
-    .channels = BIT (ADC_CHANNEL_3),
+    .channels = BIT (BATTERY_DETECT_PIO),
     .trigger = ADC_TRIGGER_SW,
     .clock_speed_kHz = 1000
 };
