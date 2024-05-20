@@ -12,9 +12,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-void init_radio (void);
+void init_radio_dips (void);
 
 void init_radio (void);
+
+void poll_radio_dips (void);
 
 bool radio_read_duties (int16_t *left, int16_t *right);
 

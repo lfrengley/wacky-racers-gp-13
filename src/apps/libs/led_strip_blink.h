@@ -15,4 +15,8 @@ void init_led_strip (void);
 
 void update_led_strip (void);
 
+void update_racer_led_strip (void);
+
+void set_strip_mode(int16_t duty_left, int16_t duty_right);
+
 #endif
