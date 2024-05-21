@@ -1,9 +1,10 @@
 {
     "recommendations": [
         "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.vscode-serial-monitor",
         "webfreak.debug",
         "rioj7.command-variable",
-        "ms-vscode.vscode-serial-monitor",
         "eamodio.gitlens"
     ]
 }
