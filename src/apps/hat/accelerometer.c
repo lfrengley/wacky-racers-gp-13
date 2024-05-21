@@ -137,7 +137,6 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     and roll angles, and forward and turning gains. Adds a deadband in the middle
     where there is no speed.
     Divides these speeds by the max possible speeds to get a duty cycle percentage
-    TODO: Check it actually works...
     */    
     int32_t ANGLE_MULTIPLIER = 1000; // for working with ints not floats
     int32_t max_pitch = 60 * ANGLE_MULTIPLIER; //degrees
@@ -157,7 +156,7 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     }
     // Calculate turning speed
     int32_t turning_speed = 0;
-    int8_t turning_gain = 3;
+    int8_t turning_gain = 6;
     if (abs(roll) > roll_deadband) {
         int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
         turning_speed = clipped_roll * turning_gain;
@@ -165,9 +164,18 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     // printf("Forward Speed: %3ld, Turning speed: %3ld\n", forward_speed, turning_speed);
 
     // Calculate motor speeds
-    int32_t left_speed = forward_speed + turning_speed;
-    int32_t right_speed = forward_speed - turning_speed;
+    int32_t left_speed;
+    int32_t right_speed;
     int32_t max_speed = max_pitch * speed_gain;
+    if (forward_speed >= 0) {
+        left_speed = forward_speed - turning_speed;
+        right_speed = forward_speed + turning_speed;
+    } else {
+        left_speed = forward_speed + turning_speed;
+        right_speed = forward_speed - turning_speed;
+    }
+
+    
     // printf("Left Speed: %3ld, Right Speed: %3ld, Max Speed %3ld\n", left_speed, right_speed, max_speed);
     // Calculate duty cycles (may need to flip some of these around)
     int32_t temp_left_duty = (left_speed * 100) / max_speed;

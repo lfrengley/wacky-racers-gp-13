@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "panic.h"
 
 void init_radio_dips (void);
 
@@ -21,5 +22,7 @@ void poll_radio_dips (void);
 bool radio_write_duties (int16_t left, int16_t right);
 
 void radio_read_bump (bool *bump);
+
+void rx_to_tx (void);
 
 #endif

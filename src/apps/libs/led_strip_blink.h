@@ -11,12 +11,17 @@
 #ifndef LED_STRIP_BLINK_H
 #define LED_STRIP_BLINK_H
 
-void init_led_strip (void);
+#include "../hat/pitches.h"
 
+
+void init_led_strip (void);
+void restart_led_strip (void);
 void update_led_strip (void);
 
 void update_racer_led_strip (void);
 
 void set_strip_mode(int16_t duty_left, int16_t duty_right);
+
+void react_to_music (void);
 
 #endif

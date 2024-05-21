@@ -36,7 +36,8 @@
         "bitset": "c",
         "initializer_list": "c",
         "string": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "buzzer.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
