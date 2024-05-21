@@ -68,6 +68,7 @@ void communicate(void) {
     if (bump) {
         rx_to_tx();
         radio_write_duties(0, 0);
+        //play music for 5 seconds and then set bump to false
     } else if (check_accelerometer(&duties)) {
         rx_to_tx();
         if (radio_write_duties(duties.left, duties.right)) {
@@ -163,15 +164,14 @@ void init(void) {
     disable_task(battery_led_task_id);
 
     accel_task_id = add_task(&communicate, ACCEL_POLL_RATE);
-    // disable_task(accel_task_id);
     led_strip_normal_task_id = add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
     led_strip_music_task_id = add_task(&react_to_music, LED_STRIP_MUSIC_UPDATE_RATE);
     disable_task(led_strip_music_task_id);
     dip_poll_rate_task_id = add_task(&poll_radio_dips, DIP_POLL_RATE);
 
-    // charge_status_task_id = add_task(&poll_charge_status, CHARGE_STATUS_POLL_RATE);
-    // battery_task_id = add_task(&check_battery, BATTERY_POLL_RATE);
-    // disable
+    charge_status_task_id = add_task(&poll_charge_status, CHARGE_STATUS_POLL_RATE);
+    battery_task_id = add_task(&check_battery, BATTERY_POLL_RATE);
+
     bump_task_id = add_task(&check_bump_status, CHECK_BUMP_POLL_RATE);
 }
 

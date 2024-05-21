@@ -11,7 +11,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "usb_serial.h"
 
 #define NUM_SAMPLES 3
 

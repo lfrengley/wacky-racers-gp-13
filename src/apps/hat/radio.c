@@ -120,6 +120,6 @@ void radio_read_bump (bool *bump) {
             printf("Invalid\n");
         }
     } else {
-        // printf ("No new bump: %3d\n", *bump);
+        printf ("No new bump: %3d\n", *bump);
     }
 }

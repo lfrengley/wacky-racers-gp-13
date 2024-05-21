@@ -9,15 +9,13 @@
 */
 
 #include "accelerometer.h"
-#include <math.h>
 #include "adxl345.h"
 #include "panic.h"
 #include <stdlib.h>
 
 static int8_t RANGE = 2; // accelleration range in terms of g
 static int8_t N = 10; // num bits at given range
-
-static uint16_t TO_DEG = 5729; // 180 * 100 / pi
+static uint16_t TO_DEG = 57296; // 180 * 1000 / pi
 static twi_t adxl345_twi;
 static adxl345_t *adxl345;
 
@@ -79,8 +77,6 @@ static void calculate_pitch_roll(AccelVector *accel_gravity_perc, int32_t *pitch
 
     *roll = (int32_t)((asinf(x / sqrtf((float)(x*x + y*y + z*z))) * TO_DEG));
     *pitch = (int32_t)((atan2f(y, z) * TO_DEG));
-    // *pitch = y/z * TO_DEG;
-    // *pitch = (*pitch) + cbrt(*pitch)/5;
 }
 
 void init_accelerometer(void) {
@@ -142,36 +138,35 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     where there is no speed.
     Divides these speeds by the max possible speeds to get a duty cycle percentage
     */    
-    int32_t ANGLE_MULTIPLIER = 100; // for working with ints not floats
+    int32_t ANGLE_MULTIPLIER = 1000; // for working with ints not floats
     int32_t max_pitch = 60 * ANGLE_MULTIPLIER; //degrees
     int32_t min_pitch = -max_pitch; //degrees
-    int32_t pitch_deadband = 1 * ANGLE_MULTIPLIER;
+    int32_t pitch_deadband = 15 * ANGLE_MULTIPLIER;
     int32_t max_roll = 50 * ANGLE_MULTIPLIER;
     int32_t min_roll = -max_roll;
     int32_t roll_deadband = 15 * ANGLE_MULTIPLIER;
 
     // Calculate forward speed
     int32_t forward_speed = 0;
-    int8_t speed_gain = 75; // random number
-    int16_t flatting_coefficient = 300;
+    int8_t speed_gain = 15; // random number
+
     if (abs(pitch) > pitch_deadband) {
         int32_t clipped_pitch = clip_values(pitch, max_pitch, min_pitch);
-
-        forward_speed = (clipped_pitch * abs(clipped_pitch)*speed_gain/flatting_coefficient)/(ANGLE_MULTIPLIER);
+        forward_speed = clipped_pitch * speed_gain;
     }
     // Calculate turning speed
     int32_t turning_speed = 0;
-    int8_t turning_gain = 25;
+    int8_t turning_gain = 6;
     if (abs(roll) > roll_deadband) {
         int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
-        turning_speed = -((clipped_roll * abs(clipped_roll)) * turning_gain/flatting_coefficient) /(ANGLE_MULTIPLIER);
+        turning_speed = clipped_roll * turning_gain;
     }
     // printf("Forward Speed: %3ld, Turning speed: %3ld\n", forward_speed, turning_speed);
 
     // Calculate motor speeds
     int32_t left_speed;
     int32_t right_speed;
-    int32_t max_speed = (max_pitch*abs(max_pitch)*speed_gain/flatting_coefficient)/(ANGLE_MULTIPLIER);
+    int32_t max_speed = max_pitch * speed_gain;
     if (forward_speed >= 0) {
         left_speed = forward_speed - turning_speed;
         right_speed = forward_speed + turning_speed;
@@ -181,14 +176,12 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     }
 
     
+    // printf("Left Speed: %3ld, Right Speed: %3ld, Max Speed %3ld\n", left_speed, right_speed, max_speed);
     // Calculate duty cycles (may need to flip some of these around)
     int32_t temp_left_duty = (left_speed * 100) / max_speed;
     int32_t temp_right_duty = (right_speed * 100) / max_speed;
     duties->left = (int16_t)clip_values(temp_left_duty, 100, -100);
     duties->right = (int16_t)clip_values(temp_right_duty, 100, -100);
-
-    printf("Pitch: %3ld, Roll: %3ld, Forward: %3ld, Turning: %3ld, Max: %3ld, Left: %3ld%% Right: %3ld%%\n", pitch, roll, forward_speed, turning_speed, max_speed, temp_left_duty, temp_right_duty);
-
 }
 
 bool check_accelerometer(MotorDuties *duties) {
