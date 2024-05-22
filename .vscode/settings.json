@@ -37,7 +37,9 @@
         "initializer_list": "c",
         "string": "c",
         "string_view": "c",
-        "buzzer.h": "c"
+        "buzzer.h": "c",
+        "pitches.h": "c",
+        "battery_detect.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

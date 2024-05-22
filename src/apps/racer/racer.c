@@ -14,7 +14,7 @@
 #include "motors.h"
 #include "../libs/scheduler.h"
 #include "radio.h"
-#include "../libs/led_strip_blink.h"
+#include "led_strip_blink.h"
 #include "../libs/battery_detect.h"
 
 #define LOW_V_ADC 1055
@@ -50,12 +50,11 @@ void toggle_battery_led(void) {
     pio_output_toggle (LED_ERROR_PIO);
     // printf("Toggling Status LED\n");
 }
-
-void check_bump() {
+void check_bump(void) {
     previous_bump = current_bump;
     current_bump = pio_input_get(BUMPER_POSITIVE);
     if (previous_bump == 1 && current_bump == 0) {
-        printf ("Bump\n");
+        // printf ("Bump\n");
         bump = true;
     } else {
         bump = false;
@@ -76,7 +75,7 @@ void communicate(void) {
     if (!listening) {
         rx_to_tx(); // this is based on what is written in rf_tester 
         if (radio_write_bump(true)) {
-            printf ("Y\n");
+            // printf ("Y\n");
             listening = true;
         } else {
             radio_read_duties(&duty_left, &duty_right);
