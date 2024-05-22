@@ -11,6 +11,7 @@
 #include "radio.h"
 #include "nrf24.h"
 #include "pio.h"
+// #include "led_strip_blink.h"
 #define RADIO_CHANNEL0 5                 
 #define RADIO_CHANNEL1 7                 
 #define RADIO_CHANNEL2 9                 
@@ -103,7 +104,7 @@ void rx_to_tx (void) {
 bool radio_write_duties (int16_t left, int16_t right) {
     snprintf (BUFFER, sizeof (BUFFER), "%d %d\r\n", left, right);
     if (! nrf24_write (NRF, BUFFER, RADIO_PAYLOAD_SIZE))  {
-        pio_output_set (LED_ERROR_PIO, 0);
+        // pio_output_set (LED_ERROR_PIO, 0);
         return false;
     } else {
         pio_output_set (LED_ERROR_PIO, 1);

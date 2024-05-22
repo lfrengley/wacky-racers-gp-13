@@ -106,3 +106,13 @@ void set_strip_mode(int16_t duty_left, int16_t duty_right) {
         direction = 0;
     }
 }
+
+void lost_connection(void) {
+    ledbuffer_clear(leds);
+    for (int i=0; i<NUM_LEDS; i++) {
+        if (i%2 == 1) {
+            ledbuffer_set(leds,i, 255,0,0);
+        }
+    }
+    ledbuffer_write(leds);
+}
