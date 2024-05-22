@@ -1,7 +1,7 @@
 /*
 From https://gist.github.com/mikeputnam/2820675
 */
-
+#define NOTE_REST 0
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
