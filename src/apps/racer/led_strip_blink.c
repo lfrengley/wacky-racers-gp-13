@@ -7,6 +7,7 @@
     @brief  TODO: Write a description
 */
 
+#include "led_strip_blink.h"
 #include "ledbuffer.h"
 #include "target.h"
 #include "led_strip_blink.h"
@@ -34,7 +35,7 @@ void init_led_strip (void) {
     leds = ledbuffer_init (LEDTAPE_PIO, NUM_LEDS);
 }
 
-void turn_off_strip () {
+void turn_off_strip (void) {
     ledbuffer_clear(leds);
     ledbuffer_write (leds);
 }
@@ -104,63 +105,4 @@ void set_strip_mode(int16_t duty_left, int16_t duty_right) {
         moving = true;
         direction = 0;
     }
-}
-
-
-bool freq_in_colour (uint32_t notes[], uint32_t freq) {
-    for (int i=0; i<NOTES_PER_COLOUR; i++) {
-        if (freq == notes[i]) {
-            return true;
-        }
-    }
-    return false;
-}
-void map_freq_to_colour (uint32_t freq, uint8_t* r, uint8_t* g, uint8_t* b) {
-    if (freq_in_colour(A_notes, freq)) { //light green
-        *r = 144;
-        *g = 238;
-        *b = 144;
-    } else if (freq_in_colour(B_notes, freq)) { //sky blue?
-        *r = 75;
-        *g = 170;
-        *b = 255;
-    } else if (freq_in_colour(C_notes, freq)) { // red
-        *r = 255;
-        *g = 0;
-        *b = 0; 
-    } else if (freq_in_colour(D_notes, freq)) { // yellow
-        *r = 255;
-        *g = 255;
-        *b = 0; 
-    } else if  (freq_in_colour(E_notes, freq)) { //light blue
-        *r = 68;
-        *g = 85;
-        *b = 90;
-    } else if (freq_in_colour(F_notes, freq)) { // violet
-        *r = 218;
-        *g = 188;
-        *b = 255;
-    } else if (freq_in_colour(G_notes, freq)) { // Orange
-        *r = 255;
-        *g = 165;
-        *b = 0;
-    } else {
-        *r = 255;
-        *g = 255;
-        *b = 255; 
-    }
-}
-
-void react_to_music (void) {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-
-    uint32_t freq = get_current_freq();
-    map_freq_to_colour(freq, &r,&g, &b);
-
-    for (int i=0; i<NUM_LEDS; i++) {
-        ledbuffer_set(leds, i, r,g,b);
-    }
-    ledbuffer_write(leds);
 }

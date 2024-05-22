@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "hat",
-            "intelliSenseMode": "linux-gcc-arm",
+            "intelliSenseMode": "C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin/arm-none-eabi-gcc",
             "compilerPath": "/usr/bin/gcc",
             "defines": [
                 "BOARD=hat",
@@ -20,7 +20,7 @@
         {
             "name": "racer",
             "intelliSenseMode": "gcc-arm",
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin/arm-none-eabi-gcc",
             "defines": [
                 "BOARD=racer",
                 "MCU=SAM4S8B",

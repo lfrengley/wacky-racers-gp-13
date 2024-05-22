@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "circular_buffer.h"
+#include "battery_detect.h"
 
 #define BUF_SIZE 20
 

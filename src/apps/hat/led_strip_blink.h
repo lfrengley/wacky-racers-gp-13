@@ -24,4 +24,5 @@ void set_strip_mode(int16_t duty_left, int16_t duty_right);
 
 void react_to_music (void);
 
+void turn_off_strip (void);
 #endif

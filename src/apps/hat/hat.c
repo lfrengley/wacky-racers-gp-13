@@ -15,7 +15,7 @@
 #include "usb_serial.h"
 #include "accelerometer.h"
 #include "../libs/scheduler.h"
-#include "../libs/led_strip_blink.h"
+#include "led_strip_blink.h"
 #include "../libs/battery_detect.h"
 #include <stdbool.h>
 #include "radio.h"
