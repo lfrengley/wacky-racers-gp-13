@@ -11,7 +11,40 @@
 
 #include "buzzer.h"
 #include "target.h"
-#include "this_aint_texas.h"
+
+// // Notes array for "Old MacDonald Had a Farm"
+// const uint32_t notes[NUM_NOTES] = {
+//     "NOTE_E4", "NOTE_E4", "NOTE_F4", "NOTE_G4", "NOTE_G4", "NOTE_F4", "NOTE_E4",
+//     "NOTE_D4", "NOTE_D4", "NOTE_E4", "NOTE_E4", "NOTE_D4", "NOTE_D4", "NOTE_E4",
+//     "NOTE_G4", "NOTE_G4", "NOTE_E4", "NOTE_E4", "NOTE_G4", "NOTE_G4", "NOTE_E4",
+//     "NOTE_E4", "NOTE_G4", "NOTE_G4", "NOTE_E4", "NOTE_E4", "NOTE_D4", "NOTE_D4"
+// };
+
+// const uint32_t durations[NUM_NOTES] = {
+//     8,8,8,8,8,8,8,
+//     8,8,8,8,8,8,8,
+//     8,8,8,8,8,8,8,
+//     8,8,8,8,8,8,8
+// };
+
+//texas holdem
+const uint32_t notes[NUM_NOTES] = {
+    NOTE_D3, NOTE_A4, NOTE_D4, NOTE_REST, NOTE_D4, NOTE_B3,
+    NOTE_D3, NOTE_A4, NOTE_D4, NOTE_A3, NOTE_B3, NOTE_A4, NOTE_D4,
+    NOTE_D3, NOTE_A4, NOTE_D4, NOTE_REST, NOTE_D4, NOTE_B3,
+    NOTE_D3, NOTE_REST, NOTE_B3, NOTE_D4, NOTE_REST, NOTE_D4, NOTE_B3
+};
+
+const uint8_t durations[NUM_NOTES] = {
+    4,2,2,2,2,4,
+    4,2,2,2,2,2,2,
+    4,2,2,2,2,4,
+    4,4,2,2,2,6,2
+//     2,1,1,1,1,2,
+//     2,1,1,1,1,1,1,
+//     2,1,1,1,1,2,
+//     2,2,1,1,1,3,2,
+};
 
 
 static pwm_t PWM_buzzer;

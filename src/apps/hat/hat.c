@@ -48,8 +48,8 @@ int bump_task_id;
 
 MotorDuties duties;
 bool listening = true;
-bool bump = false;
-// bool bump = true;
+// bool bump = false; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+bool bump = true;
 int32_t bump_start_time_ms = 0;
 
 void toggle_status_led(void) {

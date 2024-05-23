@@ -1,4 +1,9 @@
+#ifndef DURATIONS_H
+#define DURATIONS_H
+
 #define DURATION_EIGHTH 1
 #define DURATION_QUARTER 2
 #define DURATION_HALF 4
 #define DURATION_FULL 8
+
+#endif

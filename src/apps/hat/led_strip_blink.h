@@ -8,11 +8,11 @@
     @brief  TODO: Write a description
 */
 
-#ifndef LED_STRIP_BLINK_H
-#define LED_STRIP_BLINK_H
+#ifndef LED_STRIP_BLINK_HAT_H
+#define LED_STRIP_BLINK_HAT_H
 
 #include "../hat/pitches.h"
-
+#include "stdint.h"
 
 void init_led_strip (void);
 void restart_led_strip (void);

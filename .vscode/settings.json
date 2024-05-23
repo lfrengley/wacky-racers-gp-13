@@ -40,7 +40,8 @@
         "buzzer.h": "c",
         "pitches.h": "c",
         "battery_detect.h": "c",
-        "this_aint_texas.h": "c"
+        "this_aint_texas.h": "c",
+        "durations.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

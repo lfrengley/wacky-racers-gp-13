@@ -15,10 +15,18 @@
 #include "pitches.h"
 #include "usb_serial.h"
 #include "panic.h"
+// #include "this_aint_texas.h"
+
+
+
 
 #define BUMP_TIME_MS 5000
-
+#define NUM_NOTES 26
+// #define NUM_NOTES 28
+#define SONG_MS_PER_NOTE 68
+// #define SONG_MS_PER_NOTE 80
 #define LEN_SONG NUM_NOTES * SONG_MS_PER_NOTE
+
 
 
 
