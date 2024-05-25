@@ -18,7 +18,7 @@ int next_available_task_id = 0;
 int add_task(void (*task_function)(void), unsigned long period) {
     if (num_tasks >= MAX_TASKS) {
         printf("Cannot add more tasks, reached maximum limit\n");
-        return;
+        return 0;
     }
 
     tasks[num_tasks].task_function = task_function;

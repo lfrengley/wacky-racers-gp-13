@@ -2,8 +2,8 @@
     "configurations": [
         {
             "name": "hat",
-            "intelliSenseMode": "C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin/arm-none-eabi-gcc",
-            "compilerPath": "/usr/bin/gcc",
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "C:/ence461/tool-chain/gcc-arm-none-eabi-9-2019-q4/bin/arm-none-eabi-gcc",
             "defines": [
                 "BOARD=hat",
                 "MCU=SAM4S8B",

@@ -10,7 +10,7 @@
 #include "led_strip_blink.h"
 #include "ledbuffer.h"
 #include "target.h"
-#include "led_strip_blink.h"
+#include "buzzer.h"
 
 #define NUM_LEDS 21
 

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "circular_buffer.h"
+#include "panic.h"
 #include "battery_detect.h"
 
 #define BUF_SIZE 20
@@ -41,7 +42,7 @@ void init_battery_detect (void) {
 
 uint16_t calculate_battery_average (void)
 {
-    uint32_t sum;
+    uint32_t sum = 0;
     for (size_t i = 0; i < BUF_SIZE; i++) {
         sum = sum + readCircBuf (&g_inBuffer); 
     }
