@@ -139,16 +139,18 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     Divides these speeds by the max possible speeds to get a duty cycle percentage
     */    
     int32_t ANGLE_MULTIPLIER = 1000; // for working with ints not floats
-    int32_t max_pitch = 60 * ANGLE_MULTIPLIER; //degrees
+    int32_t FORWARD_OFFSET = 10;
+    int32_t max_pitch = 40 * ANGLE_MULTIPLIER; //degrees
     int32_t min_pitch = -max_pitch; //degrees
-    int32_t pitch_deadband = 15 * ANGLE_MULTIPLIER;
-    int32_t max_roll = 50 * ANGLE_MULTIPLIER;
+    int32_t pitch_deadband = 10 * ANGLE_MULTIPLIER;
+    int32_t max_roll = 40 * ANGLE_MULTIPLIER;
     int32_t min_roll = -max_roll;
-    int32_t roll_deadband = 15 * ANGLE_MULTIPLIER;
+    int32_t roll_deadband = 10 * ANGLE_MULTIPLIER;
 
     // Calculate forward speed
     int32_t forward_speed = 0;
     int8_t speed_gain = 15; // random number
+    pitch += FORWARD_OFFSET; 
 
     if (abs(pitch) > pitch_deadband) {
         int32_t clipped_pitch = clip_values(pitch, max_pitch, min_pitch);
@@ -156,7 +158,7 @@ static void set_duty(MotorDuties *duties, int32_t pitch, int32_t roll) {
     }
     // Calculate turning speed
     int32_t turning_speed = 0;
-    int8_t turning_gain = 6;
+    int8_t turning_gain = 8; //prev values: 6, 
     if (abs(roll) > roll_deadband) {
         int32_t clipped_roll = clip_values(roll, max_roll, min_roll);   
         turning_speed = clipped_roll * turning_gain;

@@ -26,8 +26,12 @@
 #define ADC_RANGE 4095
 
 /* TASK RATES AND ID'S*/
-#define ACCEL_POLL_RATE 10
+#define ACCEL_POLL_RATE 2
 int accel_task_id;
+bool accel_status = false;
+
+#define RADIO_POLL_RATE 10
+int radio_task_id;
 #define STATUS_LED_BLINK_RATE 1000
 int status_led_task_id;
 int battery_led_task_id;
@@ -62,14 +66,16 @@ void toggle_battery_led(void) {
     // printf("Toggling Status LED\n");
 }
 
-//TODO: play a song for 5 seconds if bump is true and then set bump to false after
+void get_duties (void) {
+    accel_status = check_accelerometer(&duties);
+}
+
 void communicate(void) {
     radio_read_bump(&bump);
     if (bump) {
         rx_to_tx();
         radio_write_duties(0, 0);
-        //play music for 5 seconds and then set bump to false
-    } else if (check_accelerometer(&duties)) {
+    } else if (accel_status) {
         rx_to_tx();
         if (radio_write_duties(duties.left, duties.right)) {
         }
@@ -163,7 +169,8 @@ void init(void) {
     battery_led_task_id = add_task(&toggle_battery_led, STATUS_LED_BLINK_RATE);
     disable_task(battery_led_task_id);
 
-    accel_task_id = add_task(&communicate, ACCEL_POLL_RATE);
+    accel_task_id = add_task(&get_duties, ACCEL_POLL_RATE);
+    radio_task_id = add_task(&communicate, RADIO_POLL_RATE);
     led_strip_normal_task_id = add_task(&update_led_strip, LED_STRIP_UPDATE_RATE);
     led_strip_music_task_id = add_task(&react_to_music, LED_STRIP_MUSIC_UPDATE_RATE);
     disable_task(led_strip_music_task_id);
