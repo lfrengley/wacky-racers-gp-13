@@ -10,7 +10,7 @@
 #include "led_strip_blink.h"
 #include "ledbuffer.h"
 #include "target.h"
-// #include "buzzer.h"
+#include "buzzer.h"
 
 #define NUM_LEDS 21
 
@@ -157,8 +157,7 @@ void react_to_music (void) {
     uint8_t g;
     uint8_t b;
 
-    // uint32_t freq = get_current_freq();
-    uint32_t freq = 1000; // debugging
+    uint32_t freq = get_current_freq();
     map_freq_to_colour(freq, &r,&g, &b);
 
     for (int i=0; i<NUM_LEDS; i++) {
