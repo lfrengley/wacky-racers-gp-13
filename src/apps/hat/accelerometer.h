@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define NUM_SAMPLES 3
+#define NUM_SAMPLES 4 //set to 4 as we're polling accelerometer every 2 ms, and radio every 10ms
 
 typedef struct {
     int16_t left;
